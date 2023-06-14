@@ -20,6 +20,7 @@ public class Editor extends Account{
     
     public Editor() {
         super();
+        super.setUserType("E");
     }
 
     public Integer getApprovalCount() {

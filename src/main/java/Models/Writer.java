@@ -22,6 +22,7 @@ public class Writer extends Reader{
     
     public Writer(){
         super();
+        super.setUserType("W");
     }
     
     public List<Integer> getSubmittedStoryIds() {

@@ -22,6 +22,7 @@ public class Reader extends Account{
     
     public Reader(){
         super();
+        super.setUserType("R");
     }
 
     public List<Integer> getFavouriteGenreIds() {
