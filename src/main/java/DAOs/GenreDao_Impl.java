@@ -5,29 +5,209 @@
 package DAOs;
 
 import Models.Genre;
+import Utils.DBManager;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
- * @author jarro
+ * @author 27713
  */
-public class GenreDao_Impl implements GenreDao_Interface{
+public class GenreDao_Impl implements GenreDao_Interface {
+    private Connection connection;
+    private PreparedStatement prepStmt;
+    private ResultSet rs;
+
+    public GenreDao_Impl() {
+    }
+    
 
     @Override
     public Genre getGenre(Integer id) {
         Genre genre = null;
+        try {
+            
+            
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT * FROM genres WHERE genreId=?");
+            prepStmt.setInt(1, id);
+            rs = prepStmt.executeQuery();
+            
+            if(rs.next()){
+                genre = new Genre(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getInt(3)
+                );
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            
+            if(prepStmt!=null){
+                try {
+                    prepStmt.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
         
         return genre;
     }
 
     @Override
     public List<Genre> getAllGenres() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        List<Genre> genres = new ArrayList<>();
+        Genre genre;
+        
+        try {     
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT * FROM genres");
+            rs = prepStmt.executeQuery();
+            while (rs.next()){
+                genre = new Genre(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getInt(3)
+                );
+                genres.add(genre);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            
+            if(prepStmt!=null){
+                try {
+                    prepStmt.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        
+        return genres;
     }
 
     @Override
-    public List<Genre> getAllGenresForStory(Integer id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Boolean deleteGenre(Integer id) {
+        
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("DELETE FROM genres WHERE genreId = ?");
+            prepStmt.setInt(1, id);
+            prepStmt.executeUpdate();
+            
+            //check to see if the genre was deleted
+            prepStmt = connection.prepareStatement("SELECT * FROM genres WHERE genreId = ?");
+            prepStmt.setInt(1, id);
+            rs = prepStmt.executeQuery();
+            if(rs!=null){
+                return false;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }finally{
+            
+            if(prepStmt!=null){
+                try {
+                    prepStmt.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        
+        return true;
+    }
+
+    @Override
+    public Boolean addGenre(Genre genre) {
+        
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("INSERT INTO genres (genreName) VALUES (?)");
+            prepStmt.setString(1, genre.getName());
+            prepStmt.executeUpdate();            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }finally{
+            
+            if(prepStmt!=null){
+                try {
+                    prepStmt.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }        
+        
+        return true;
     }
     
 }

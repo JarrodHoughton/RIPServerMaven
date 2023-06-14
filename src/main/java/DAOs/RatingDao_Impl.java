@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -175,6 +174,90 @@ public class RatingDao_Impl implements RatingDao_Interface {
         }
         
         return ratings;
+    }
+
+    @Override
+    public boolean addRating(Integer accountId, Integer storyId, Integer ratingValue) {
+        
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("INSERT into ratings (accountId, storyId, ratingValue) values (?,?,?)");
+            prepStmt.setInt(1, accountId);
+            prepStmt.setInt(2, storyId);
+            prepStmt.setInt(3, ratingValue);
+            prepStmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }finally{
+            
+            if(prepStmt!=null){
+                try {
+                    prepStmt.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public Integer getRatingValue(Integer storyId) {
+        Integer integer = null;
+        
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT AVG(ratingValue) as ratingAverage FROM ratings WHERE storyId = ?");
+            prepStmt.setInt(1, storyId);
+            rs = prepStmt.executeQuery();
+            
+            if(rs!=null){
+                integer = rs.getInt(1);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            
+            if(prepStmt!=null){
+                try {
+                    prepStmt.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        
+        return integer;
     }
 
     

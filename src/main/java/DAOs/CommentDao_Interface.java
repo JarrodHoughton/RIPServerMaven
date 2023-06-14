@@ -4,16 +4,13 @@
  */
 package DAOs;
 
-import Models.Genre;
+import Models.Comment;
 import java.util.List;
 
 /**
  *
- * @author jarro
+ * @author 27713
  */
-public interface GenreDao_Interface {
-    public Genre getGenre(Integer id);
-    public List<Genre> getAllGenres();
-    public Boolean deleteGenre(Integer id);
-    public Boolean addGenre(Genre genre);
+public interface CommentDao_Interface {
+    public List<Comment> getAllCommentForStory(Integer storyId);
 }
