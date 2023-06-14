@@ -177,6 +177,7 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
             rs.close();
         } catch (SQLException e) {
             Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
+            return false;
         } finally {
             closeConnection();
         }
