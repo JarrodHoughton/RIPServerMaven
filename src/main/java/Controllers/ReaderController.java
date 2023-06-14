@@ -26,6 +26,6 @@ public class ReaderController {
     @Path("/userExists/{email}")
     @GET
     public Response userExists(@PathParam("email") String email) {
-        return Response.ok().entity(String.valueOf(readerService.userExists(email))).build();
+        return Response.ok().entity(readerService.userExists(email)).build();
     }
 }

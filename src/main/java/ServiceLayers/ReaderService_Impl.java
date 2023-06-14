@@ -37,6 +37,10 @@ public class ReaderService_Impl implements ReaderService_Interface{
 
     @Override
     public String addReader(Reader reader) {
+        if (readerDao.userExists(reader.getEmail())) {
+            return "This email already exists";
+        }
+        
         if (readerDao.addReader(reader)) {
             return "Reader account has been successfully created.";
         } else {

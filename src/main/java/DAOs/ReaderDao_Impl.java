@@ -112,10 +112,8 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
 
     @Override
     public Boolean addReader(Reader reader) {
+        System.out.println(reader);
         String sql = "INSERT INTO accounts (accountName, accountSurname, accountEmail, accountPasswordHash, accountSalt, accountPhoneNumber, accountType) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        if (userExists(reader.getEmail())) {
-            return false;
-        }
         try {
             connection = DBManager.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -130,6 +128,7 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
             ps.close();
         } catch (SQLException e) {
             Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
+            return false;
         } finally {
             closeConnection();
         }
