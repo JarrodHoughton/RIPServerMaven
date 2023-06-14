@@ -20,12 +20,12 @@ public class DBManager {
     public DBManager() {}
 
     static {
-        GetProperties properties = new GetProperties("C:\\Users\\jarro\\OneDrive\\Documents\\NetBeansProjects\\RIPServer\\src\\java\\Properties\\config.properties");
+//        GetProperties properties = new GetProperties("src\\java\\Properties\\config.properties");
         dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(properties.get("dbDriverClassName"));
-        dataSource.setUrl(properties.get("url"));
-        dataSource.setPassword(properties.get("dbPassword"));
-        dataSource.setUsername(properties.get("dbUser"));
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/RIPDB?autoReconnect=true&useSSL=false");
+        dataSource.setPassword("root");
+        dataSource.setUsername("root");
         dataSource.setMinIdle(10);
         dataSource.setMaxIdle(10);
         dataSource.setMaxOpenPreparedStatements(100);
