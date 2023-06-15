@@ -43,6 +43,6 @@ public class Writer extends Reader{
 
     @Override
     public String toString() {
-        return "Writer{" + super.toString().replace("{", " ").replace("}", " ").replace("Reader", "") + "submittedStoryIds=" + submittedStoryIds + ", draftedStoryIds=" + draftedStoryIds + '}';
+        return "Writer{" + super.toString().replace("{", " ").replace("}", " ").replace("Reader", "") + ", submittedStoryIds=" + submittedStoryIds + ", draftedStoryIds=" + draftedStoryIds + '}';
     }
 }
