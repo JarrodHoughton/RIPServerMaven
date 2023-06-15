@@ -138,7 +138,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
             //getting all the writer's favourite story Ids
             List<Integer> favouriteStoryIds = new ArrayList<>();
             prepStmt = connection.prepareStatement(
-                    "SELECT storyId FROM likes WHERE accountEmail = ?;");
+                    "SELECT storyId FROM likes WHERE accountId = ?;");
             prepStmt.setString(1, email);
             rs = prepStmt.executeQuery();
             while (rs.next()) {
@@ -149,8 +149,8 @@ public class WriterDao_Impl implements WriterDao_Interface {
             //getting all the writer's favourite genre Ids
             List<Integer> favouriteGenreIds = new ArrayList<>();
             prepStmt = connection.prepareStatement(
-                    "SELECT genreId FROM genres_readers WHERE accountEmail = ?;");
-            prepStmt.setString(1, email);
+                    "SELECT genreId FROM genres_readers WHERE accountId = ?;");
+            prepStmt.setInt(1, writer.getId());
             rs = prepStmt.executeQuery();
             while (rs.next()) {
                 favouriteGenreIds.add(rs.getInt(1));
@@ -161,8 +161,8 @@ public class WriterDao_Impl implements WriterDao_Interface {
             List<Integer> submittedStoryIds = new ArrayList<>();
             List<Integer> draftedStoryIds = new ArrayList<>();
             prepStmt = connection.prepareStatement(
-                    "SELECT storyId, submitted FROM stories WHERE accountEmail = ?;");
-            prepStmt.setString(1, email);
+                    "SELECT storyId, submitted FROM stories WHERE accountId = ?;");
+            prepStmt.setInt(1, writer.getId());
             rs = prepStmt.executeQuery();
             while (rs.next()) {
                 Integer storyId = rs.getInt(1);
