@@ -29,11 +29,7 @@ public class StoryDao_Impl implements StoryDao_Interface{
     
     @Override
     public Story getStory(Integer storyId) {
-//        "SELECT S.storyId, S.title, S.blurb, I.image, S.content, S.accountId, S.likeCount, S.viewCount, S.rating, S.submitted, S.approved, S.commentsEnabled " +
-//                    "FROM stories as S " +
-//                    "INNER JOIN images as I " +
-//                    "ON S.storyId=I.storyId " +
-//                    "WHERE S.storyId = ?;"
+
         Story story = null;
         try {
             connection = DBManager.getConnection();
@@ -53,8 +49,12 @@ public class StoryDao_Impl implements StoryDao_Interface{
                 story.setIsApproved(rs.getString("approved").charAt(0)=='T');
                 story.setIsSubmitted(rs.getString("submitted").charAt(0)=='T');
                 story.setCommentsEnabled(rs.getString("commentsEnabled").charAt(0)=='T');
-                story.setImage("");
+                story.setImage(getImageById(storyId));
+                story.setImageName(getImageNameById(storyId));
+ 
             }
+
+                
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -84,6 +84,84 @@ public class StoryDao_Impl implements StoryDao_Interface{
         }
         return story;
     }
+    
+    private byte[] getImageById(int storyId) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        byte[] data = null;
+        try {
+            String query = "SELECT * FROM images WHERE id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, storyId);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                data = resultSet.getBytes("image");
+                return data;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return data;
+        } finally {
+            if (prepStmt != null) {
+                try {
+                    prepStmt.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            return data;
+        }
+
+    }
+    
+    
+    private String getImageNameById(int storyId) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String imageName = null;
+        try {
+            String query = "SELECT * FROM images WHERE id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, storyId);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                imageName = resultSet.getString("imageName");
+                return imageName;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return imageName;
+        } finally {
+            if (prepStmt != null) {
+                try {
+                    prepStmt.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            return imageName;
+        }
+
+    }
+    
 
     @Override
     public List<Story> getAllStories() {
@@ -105,7 +183,8 @@ public class StoryDao_Impl implements StoryDao_Interface{
                 story.setIsApproved(rs.getString("approved").charAt(0)=='T');
                 story.setIsSubmitted(rs.getString("submitted").charAt(0)=='T');
                 story.setCommentsEnabled(rs.getString("commentsEnabled").charAt(0)=='T');
-                story.setImage("");
+                story.setImage(getImageById(rs.getInt("storyId")));
+                story.setImageName(getImageNameById(rs.getInt("storyId")));
                 stories.add(story);
             }
         } catch (SQLException ex) {
@@ -196,7 +275,7 @@ public class StoryDao_Impl implements StoryDao_Interface{
             prepStmt.setInt(9, story.getLikeCount());
             prepStmt.setDouble(10, story.getRating());
             prepStmt.executeUpdate();
-            updateImageString(story.getId(), story.getImage());
+            updateImageAndImageName(story.getId(), story.getImage(), story.getImageName());
             updated = true;
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -274,7 +353,7 @@ public class StoryDao_Impl implements StoryDao_Interface{
             prepStmt.setInt(9, story.getLikeCount());
             prepStmt.setDouble(10, story.getRating());
             prepStmt.executeUpdate();
-            addImageString(story.getImage());
+            addImageData(story.getImage(),story.getImageName());
             added = true;
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -299,10 +378,14 @@ public class StoryDao_Impl implements StoryDao_Interface{
         return added;        
     }
     
-    private void addImageString(String image) {
+    
+         
+    private void addImageData(byte[] image, String imageName) {
+        String sql = "INSERT INTO images (image, imageName) VALUES (?, ?)";
         try {
-            prepStmt = connection.prepareStatement("INSERT IGNORE INTO `ripdb`.`images` (`image`) VALUES (?);");
-            prepStmt.setString(1, image);
+            prepStmt = connection.prepareStatement(sql);
+            prepStmt.setBytes(1, image);
+            prepStmt.setString(2, imageName);
             prepStmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -326,10 +409,15 @@ public class StoryDao_Impl implements StoryDao_Interface{
     }
     
     
-    private void updateImageString(Integer storyId, String image) {
+    
+    
+    
+    
+    private void updateImageAndImageName(Integer storyId, byte[] image, String imageName) {
         try {
-            prepStmt = connection.prepareStatement("UPDATE `ripdb`.`images` SET `image`=? WHERE storyId=?;");
-            prepStmt.setString(1, image);
+            String sql ="UPDATE `ripdb`.`images` SET `image` = ?, `imageName` = ? WHERE `storyId` = ?";
+            prepStmt = connection.prepareStatement(sql);
+            prepStmt.setBytes(1, image);
             prepStmt.setInt(2, storyId);
             prepStmt.executeUpdate();
         } catch (SQLException ex) {
@@ -379,4 +467,6 @@ public class StoryDao_Impl implements StoryDao_Interface{
             }
         }
     }
+    
+    
 }
