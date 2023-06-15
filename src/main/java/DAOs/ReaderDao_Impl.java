@@ -126,6 +126,10 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
             ps.setString(7, reader.getUserType());
             ps.executeUpdate();
             ps.close();
+            reader.setId(getReader(reader.getEmail()).getId());
+            for (Integer genreId:reader.getFavouriteGenreIds()) {
+                addAFavouriteGenreOfAReader(reader, genreId);
+            }
         } catch (SQLException e) {
             Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
             return false;
@@ -231,7 +235,7 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
 
     @Override
     public Boolean addAFavouriteGenreOfAReader(Reader reader, Integer genreID) {
-        String sql = "INSERT IGNORE INTO genres_readers VALUES(?,?)";
+        String sql = "INSERT INTO genres_readers VALUES(?,?)";
         try {
             connection = DBManager.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql);

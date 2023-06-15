@@ -29,6 +29,7 @@ public class DBManager {
         dataSource.setMinIdle(10);
         dataSource.setMaxIdle(10);
         dataSource.setMaxOpenPreparedStatements(100);
+        dataSource.setMaxTotal(15);
     }
 
     public static Connection getConnection() throws SQLException {
