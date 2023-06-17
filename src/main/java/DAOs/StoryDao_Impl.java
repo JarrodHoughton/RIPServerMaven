@@ -157,9 +157,8 @@ public class StoryDao_Impl implements StoryDao_Interface{
                     Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            return imageName;
         }
-
+        return imageName;
     }
     
 
@@ -418,7 +417,8 @@ public class StoryDao_Impl implements StoryDao_Interface{
             String sql ="UPDATE `ripdb`.`images` SET `image` = ?, `imageName` = ? WHERE `storyId` = ?";
             prepStmt = connection.prepareStatement(sql);
             prepStmt.setBytes(1, image);
-            prepStmt.setInt(2, storyId);
+            prepStmt.setString(2, imageName);
+            prepStmt.setInt(3, storyId);
             prepStmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);

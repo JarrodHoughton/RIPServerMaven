@@ -1,6 +1,7 @@
 package DAOs;
 
 import Utils.DBManager;
+import Utils.PasswordEncryptor;
 import Models.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -113,7 +114,7 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
     @Override
     public Boolean addReader(Reader reader) {
         System.out.println(reader);
-        String sql = "INSERT INTO accounts (accountName, accountSurname, accountEmail, accountPasswordHash, accountSalt, accountPhoneNumber, accountType) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO accounts (accountName, accountSurname, accountEmail, accountPasswordHash, accountSalt, accountPhoneNumber, accountType, verifyToken) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             connection = DBManager.getConnection();
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -124,6 +125,7 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
             ps.setString(5, reader.getSalt());
             ps.setString(6, reader.getPhoneNumber());
             ps.setString(7, reader.getUserType());
+            ps.setString(8, PasswordEncryptor.hashPassword(String.valueOf(Math.random()*10000), reader.getSalt()));
             ps.executeUpdate();
             ps.close();
             reader.setId(getReader(reader.getEmail()).getId());
