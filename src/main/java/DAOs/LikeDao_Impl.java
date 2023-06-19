@@ -48,29 +48,8 @@ public class LikeDao_Impl implements LikeDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
-            
-            if(prepStmt!=null){
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+        }finally{            
+            closeConnections();
         }
         
         return likes;
@@ -98,28 +77,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
-            
-            if(prepStmt!=null){
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         
         return likes;
@@ -147,28 +105,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
-            
-            if(prepStmt!=null){
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         
         return likes;
@@ -180,7 +117,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
         
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT COUNT(storyId)  from likes WHERE likeDate between ? AND ? AND storyId = ? ");
+            prepStmt = connection.prepareStatement("SELECT COUNT(storyId) from likes WHERE likeDate between ? AND ? AND storyId = ? ");
             prepStmt.setTimestamp(1, startDate);
             prepStmt.setTimestamp(2, endDate);
             prepStmt.setInt(3, storyId);
@@ -189,36 +126,14 @@ public class LikeDao_Impl implements LikeDao_Interface {
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
-            
-            if(prepStmt!=null){
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         
         return integer;
     }
 
     @Override
-    public boolean addLike(Integer readerId, Integer storyId) {
-        
+    public boolean addLike(Integer readerId, Integer storyId) {        
         
         try {
             connection = DBManager.getConnection();
@@ -234,28 +149,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }finally{
-            
-            if(prepStmt!=null){
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         
         return true;
@@ -273,28 +167,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }finally{
-            
-            if(prepStmt!=null){
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         
         return true;
@@ -316,8 +189,44 @@ public class LikeDao_Impl implements LikeDao_Interface {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }finally{
-            
-            if(prepStmt!=null){
+            closeConnections();
+        }
+        
+        return false;
+    }
+
+    @Override
+    public List<Integer> getMostLikedBooks(Timestamp startDate, Timestamp endDate, Integer numberOfBooks) {
+        List<Integer> mostLikedBooks = new ArrayList<>();
+        
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT storyId, COUNT(*) AS likeCount" +
+                "FROM likes" +
+                "WHERE likeDate >= ? AND likeDate <= ? " +
+                "GROUP BY storyId" +
+                "HAVING COUNT(*) >= 1" +
+                "ORDER BY likeCount DESC" +
+                "LIMIT ?;");
+            prepStmt.setTimestamp(1, startDate);
+            prepStmt.setTimestamp(2, endDate);
+            prepStmt.setInt(3, numberOfBooks);
+            rs = prepStmt.executeQuery();
+            if(rs.next()){
+                mostLikedBooks.add(rs.getInt(1));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }finally{
+            closeConnections();
+        }
+        
+        return mostLikedBooks;
+    }
+    
+    private void closeConnections(){
+        if(prepStmt!=null){
                 try {
                     prepStmt.close();
                 } catch (SQLException ex) {
@@ -338,9 +247,6 @@ public class LikeDao_Impl implements LikeDao_Interface {
                     Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
-        
-        return false;
     }
     
 }

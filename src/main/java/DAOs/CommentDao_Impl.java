@@ -50,32 +50,56 @@ public class CommentDao_Impl implements CommentDao_Interface{
         } catch (SQLException ex) {
             Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
-            
-            if(prepStmt!=null){
+            closeConnections();
+        }
+        
+        return comments;
+    }
+    
+    @Override
+    public Boolean addComment(String message, Integer accountId, Integer storyId) {
+        
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("INSERT INTO comments(commentMessage, accountId, storyId) VALUES(?,?,?);");
+            prepStmt.setString(1, message);
+            prepStmt.setInt(2, accountId);
+            prepStmt.setInt(3, storyId);
+            prepStmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }finally{
+            closeConnections();
+        }
+        
+        return true;
+    }
+    
+    private void closeConnections(){
+        if(prepStmt!=null){
                 try {
                     prepStmt.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if(connection!=null){
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if(rs!=null){
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
-        
-        return comments;
-    }
+    }  
+
     
     
 }

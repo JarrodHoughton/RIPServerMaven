@@ -12,5 +12,7 @@ import java.util.List;
  * @author 27713
  */
 public interface CommentDao_Interface {
+    
     public List<Comment> getAllCommentForStory(Integer storyId);
+    public Boolean addComment(String message, Integer accoundId, Integer storyId);
 }

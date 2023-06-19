@@ -20,5 +20,6 @@ public interface LikeDao_Interface {
     public List<Like> getLikesByReaderId(Integer accountId);
     public List<Like> getLikesByStory(Integer storyId);
     public Integer getStoryLikesByDate(Integer storyId, Timestamp startDate, Timestamp endDate);
+    public List<Integer> getMostLikedBooks(Timestamp startDate, Timestamp endDate, Integer numberOfBooks);
     
 }

@@ -9,6 +9,9 @@ import Models.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -67,6 +70,15 @@ public class ViewDao_Impl implements ViewDao_Interface {
             }
         }
     }
+
+    @Override
+    public List<Integer> get10MostViewed(LocalDateTime startDate, LocalDateTime endDate) {
+        List<Integer> books = new ArrayList<>();
+        
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    
 }
 
 
