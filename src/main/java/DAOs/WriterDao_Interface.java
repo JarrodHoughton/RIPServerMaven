@@ -5,6 +5,7 @@
 package DAOs;
 
 import Models.Writer;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -18,4 +19,6 @@ public interface WriterDao_Interface {
     public Boolean addWriter(Integer readerId);
     public Boolean deleteWriter(Integer writerId);
     public Boolean updateWriter(Writer writer);
+    public List<Integer> getTopWriters(Integer numberOfWriters);
+    public List<Integer> getTopWritersByDate(Integer numberOfWriters, Timestamp startDate, Timestamp endDate);
 }

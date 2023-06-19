@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -234,6 +235,52 @@ public class WriterDao_Impl implements WriterDao_Interface {
         return updated;
     }
     
+    @Override
+    public List<Integer> getTopWriters(Integer numberOfWriters) {
+        List<Integer> topWriters = new ArrayList<>();        
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT accountId, SUM(viewCount) AS totalViews" +
+                    "FROM stories GROUP BY accountId ORDER BY totalViews DESC LIMIT ?;");
+            prepStmt.setInt(1, numberOfWriters);
+            rs = prepStmt.executeQuery();
+            while(rs.next()){
+                topWriters.add(rs.getInt(1));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }finally{
+            closeConnections();
+        }
+        return topWriters;
+    }
+
+    @Override
+    public List<Integer> getTopWritersByDate(Integer numberOfWriters, Timestamp startDate, Timestamp endDate) {
+        List<Integer> topWriters = new ArrayList<>();        
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT v.accountId, COUNT(*) AS viewCount" +
+                    "FROM views AS v INNER JOIN stories AS s ON v.storyId = s.storyId" +
+                    "WHERE v.viewDate >= ? AND v.viewDate <= ? " +
+                    "GROUP BY v.accountId ORDER BY viewCount DESC LIMIT ?;" );
+            prepStmt.setTimestamp(1, startDate);
+            prepStmt.setTimestamp(2, endDate);
+            prepStmt.setInt(3, numberOfWriters);
+            rs = prepStmt.executeQuery();
+            while(rs.next()){
+                topWriters.add(rs.getInt(1));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }finally{
+            closeConnections();
+        }
+        return topWriters;
+    }
+    
     private void closeConnections(){
         if(prepStmt!=null){
                 try {
@@ -257,4 +304,6 @@ public class WriterDao_Impl implements WriterDao_Interface {
                 }
             }
     }
+
+    
 }
