@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  *
@@ -70,18 +71,18 @@ public class StoryDao_Impl implements StoryDao_Interface{
         return story;
     }
     
-    private byte[] getImageById(int storyId) {
+    private Byte[] getImageById(int storyId) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        byte[] data = null;
+        Byte[] data = null;
         try {
             String query = "SELECT * FROM images WHERE id = ?";
             statement = connection.prepareStatement(query);
             statement.setInt(1, storyId);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                data = resultSet.getBytes("image");
+                data = ArrayUtils.toObject(resultSet.getBytes("image"));
                 return data;
             }
         } catch (SQLException ex) {
@@ -239,7 +240,15 @@ public class StoryDao_Impl implements StoryDao_Interface{
             prepStmt.setInt(9, story.getLikeCount());
             prepStmt.setDouble(10, story.getRating());
             prepStmt.executeUpdate();
-            addImageData(story.getImage(),story.getImageName());
+            
+            prepStmt = connection.prepareStatement("select storyId from stories where title = ? and blurb = ?;");
+            prepStmt.setString(1, story.getTitle());
+            prepStmt.setString(2, story.getBlurb());
+            rs = prepStmt.executeQuery();
+            if (rs.next()) {
+                story.setId(rs.getInt(1));
+            }
+            addImageData(story);
             added = addStoryGenres(story);
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -253,7 +262,8 @@ public class StoryDao_Impl implements StoryDao_Interface{
     private Boolean addStoryGenre(Integer storyId, Integer genreId) {
         Boolean added = false;
         try {
-            prepStmt = connection.prepareStatement("INSERT INTO stories_genres(storyId, genreId) VALUES(?, ?)");
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("INSERT INTO stories_genres(storyId, genreId) VALUES(?, ?);");
             prepStmt.setInt(1, storyId);
             prepStmt.setInt(2, genreId);
             prepStmt.executeUpdate();
@@ -280,7 +290,8 @@ public class StoryDao_Impl implements StoryDao_Interface{
     private Boolean deleteStoryGenres(Integer storyId) {
         Boolean deleted = false;
         try {
-            prepStmt = connection.prepareStatement("DELETE FROM stories_genres WHERE storyId=?");
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("DELETE FROM stories_genres WHERE storyId=?;");
             prepStmt.setInt(1, storyId);
             prepStmt.executeUpdate();
             deleted = true;
@@ -296,6 +307,7 @@ public class StoryDao_Impl implements StoryDao_Interface{
     private List<Integer> getStoryGenres(Integer storyId) {
         List<Integer> genreIds = new ArrayList<>();
         try {
+            connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT genreId FROM stories_genres WHERE storyId=?;");
             prepStmt.setInt(1, storyId);
             rs = prepStmt.executeQuery();
@@ -311,12 +323,13 @@ public class StoryDao_Impl implements StoryDao_Interface{
         return genreIds;
     }
     
-    private void addImageData(byte[] image, String imageName) {
-        String sql = "INSERT INTO images (image, imageName) VALUES (?, ?)";
+    private void addImageData(Story story) {
+        String sql = "INSERT INTO images (storyId, imageData, imageName) VALUES (?, ?, ?);";
         try {
             prepStmt = connection.prepareStatement(sql);
-            prepStmt.setBytes(1, image);
-            prepStmt.setString(2, imageName);
+            prepStmt.setInt(1, story.getId());
+            prepStmt.setBytes(2, ArrayUtils.toPrimitive(story.getImage()));
+            prepStmt.setString(3, story.getImageName());
             prepStmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -330,11 +343,11 @@ public class StoryDao_Impl implements StoryDao_Interface{
     
     
     
-    private void updateImageAndImageName(Integer storyId, byte[] image, String imageName) {
+    private void updateImageAndImageName(Integer storyId, Byte[] image, String imageName) {
         try {
-            String sql ="UPDATE `ripdb`.`images` SET `image` = ?, `imageName` = ? WHERE `storyId` = ?";
+            String sql ="UPDATE `ripdb`.`images` SET `imageData` = ?, `imageName` = ? WHERE `storyId` = ?;";
             prepStmt = connection.prepareStatement(sql);
-            prepStmt.setBytes(1, image);
+            prepStmt.setBytes(1, ArrayUtils.toPrimitive(image));
             prepStmt.setString(2, imageName);
             prepStmt.setInt(3, storyId);
             prepStmt.executeUpdate();
