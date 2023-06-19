@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author jarro
+ * @author 27713
  */
 public interface GenreDao_Interface {
     public Genre getGenre(Integer id);

@@ -89,29 +89,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
             Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return writer;
     }
@@ -178,29 +156,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
             Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return writer;
     }
@@ -221,29 +177,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
             Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return writers;
     }
@@ -260,29 +194,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
             Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return added;
     }
@@ -317,30 +229,32 @@ public class WriterDao_Impl implements WriterDao_Interface {
             Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         } finally {
-            if (prepStmt != null) {
+            closeConnections();
+        }
+        return updated;
+    }
+    
+    private void closeConnections(){
+        if(prepStmt!=null){
                 try {
                     prepStmt.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
-            if (connection != null) {
+            if(connection!=null){
                 try {
                     connection.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
-            if (rs != null) {
+            if(rs!=null){
                 try {
                     rs.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
-        return updated;
     }
 }

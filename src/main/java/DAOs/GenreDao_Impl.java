@@ -31,9 +31,8 @@ public class GenreDao_Impl implements GenreDao_Interface {
     @Override
     public Genre getGenre(Integer id) {
         Genre genre = null;
-        try {
-            
-            
+        
+        try {           
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT * FROM genres WHERE genreId=?");
             prepStmt.setInt(1, id);
@@ -49,28 +48,7 @@ public class GenreDao_Impl implements GenreDao_Interface {
         } catch (SQLException ex) {
             Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
-            
-            if(prepStmt!=null){
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         
         return genre;
@@ -96,28 +74,7 @@ public class GenreDao_Impl implements GenreDao_Interface {
         } catch (SQLException ex) {
             Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
-            
-            if(prepStmt!=null){
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         
         return genres;
@@ -143,28 +100,7 @@ public class GenreDao_Impl implements GenreDao_Interface {
             Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }finally{
-            
-            if(prepStmt!=null){
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         
         return true;
@@ -183,8 +119,14 @@ public class GenreDao_Impl implements GenreDao_Interface {
             Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }finally{
-            
-            if(prepStmt!=null){
+            closeConnections();
+        }        
+        
+        return true;
+    }
+    
+    private void closeConnections(){
+        if(prepStmt!=null){
                 try {
                     prepStmt.close();
                 } catch (SQLException ex) {
@@ -205,9 +147,6 @@ public class GenreDao_Impl implements GenreDao_Interface {
                     Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }        
-        
-        return true;
     }
     
 }

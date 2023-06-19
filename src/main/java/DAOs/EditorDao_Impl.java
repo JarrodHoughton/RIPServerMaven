@@ -57,29 +57,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return editor;
     }
@@ -113,29 +91,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return editor;
     }
@@ -167,29 +123,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return editors;
     }
@@ -217,21 +151,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return updated;
     }
@@ -252,21 +172,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return deleted;
     }
@@ -297,30 +203,32 @@ public class EditorDao_Impl implements EditorDao_Interface {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         } finally {
-            if (prepStmt != null) {
+            closeConnections();
+        }
+        return added;
+    }
+    
+    private void closeConnections(){
+        if(prepStmt!=null){
                 try {
                     prepStmt.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
-            if (connection != null) {
+            if(connection!=null){
                 try {
                     connection.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
-            if (rs != null) {
+            if(rs!=null){
                 try {
                     rs.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
-        return added;
     }
 }

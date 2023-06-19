@@ -81,21 +81,21 @@ public class CommentDao_Impl implements CommentDao_Interface{
                 try {
                     prepStmt.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if(connection!=null){
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if(rs!=null){
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
     }  
