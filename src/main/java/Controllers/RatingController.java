@@ -8,6 +8,6 @@ package Controllers;
  *
  * @author jarro
  */
-public class StoryStatisticsController {
+public class RatingController {
     
 }
