@@ -125,7 +125,7 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
             ps.setString(5, reader.getSalt());
             ps.setString(6, reader.getPhoneNumber());
             ps.setString(7, reader.getUserType());
-            ps.setString(8, PasswordEncryptor.hashPassword(String.valueOf(Math.random()*10000), reader.getSalt()));
+            ps.setString(8, PasswordEncryptor.hashPassword(reader.getName()+reader.getSurname(), reader.getSalt()));
             ps.executeUpdate();
             ps.close();
             reader.setId(getReader(reader.getEmail()).getId());
