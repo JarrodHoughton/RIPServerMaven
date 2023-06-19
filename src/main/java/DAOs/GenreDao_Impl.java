@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -41,8 +42,8 @@ public class GenreDao_Impl implements GenreDao_Interface {
             if(rs.next()){
                 genre = new Genre(
                         rs.getInt(1),
-                        rs.getString(2),
-                        rs.getInt(3)
+                        rs.getString(2)
+  
                 );
             }
         } catch (SQLException ex) {
@@ -66,8 +67,7 @@ public class GenreDao_Impl implements GenreDao_Interface {
             while (rs.next()){
                 genre = new Genre(
                         rs.getInt(1),
-                        rs.getString(2),
-                        rs.getInt(3)
+                        rs.getString(2)
                 );
                 genres.add(genre);
             }
@@ -147,6 +147,51 @@ public class GenreDao_Impl implements GenreDao_Interface {
                     Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+    }
+
+    @Override
+    public List<Genre> getTopGenres(Timestamp startDate, Timestamp endDate, Integer numberOfEntries){
+        
+        List<Genre> genres = new ArrayList<>();
+
+        
+        try {
+            
+            
+            connection = DBManager.getConnection();
+                    
+            String query = "SELECT g.genreId, g.genreName, COUNT(*) AS viewCount " +
+                "FROM ripdb.views v " +
+                "JOIN ripdb.stories s ON v.storyId = s.storyId " +
+                "JOIN ripdb.stories_genres sg ON s.storyId = sg.storyId " +
+                "JOIN ripdb.genres g ON sg.genreId = g.genreId " +
+                "WHERE v.viewDate >= ? AND v.viewDate <= ? " +
+                "GROUP BY g.genreId, g.genreName " +
+                "ORDER BY viewCount DESC " +
+                "LIMIT ?";
+
+        prepStmt = connection.prepareStatement(query);
+        prepStmt.setTimestamp(1, startDate);
+        prepStmt.setTimestamp(2, endDate);
+        prepStmt.setInt(3, numberOfEntries);
+
+        rs = prepStmt.executeQuery();
+
+
+        while (rs.next()) {
+            int genreId = rs.getInt("genreId");
+            String genreName = rs.getString("genreName");
+
+            Genre genre = new Genre(genreId, genreName);
+            genres.add(genre);
+        }
+        
+        } catch (Exception ex) {
+            Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+        }
+
+        return genres;
     }
     
 }
