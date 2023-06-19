@@ -29,19 +29,19 @@ public class GenreController {
     }
     
     @Path("/getGenre/{genreId}")
-    @POST
+    @GET
     public Response getGenre(@PathParam("genreId") Integer id) {
         return Response.ok().entity(genreService.getGenre(id)).build();
     }
     
     @Path("/getAllGenres")
-    @POST
+    @GET
     public Response getAllGenres(){
         return Response.ok().entity(genreService.getAllGenres()).build();
     }
     
     @Path("/deleteGenre/{genreId}")
-    @POST
+    @GET
     public Response deleteGenre(Integer id) {
         return Response.ok().entity(genreService.getGenre(id)).build();
     }
