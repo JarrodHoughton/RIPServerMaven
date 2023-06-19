@@ -15,7 +15,7 @@ public class Story {
     private String title;
     private Integer authorId;
     private String blurb;    
-    private byte[] image;
+    private Byte[] image;
     private String imageName;
     private String content;
     private Integer likeCount;
@@ -32,9 +32,11 @@ public class Story {
         this.rating = 0.0;
         this.isSubmitted = false;
         this.isApproved = false;
+        this.commentsEnabled = false;
+        this.imageName = "jpeg";
     }
 
-    public Story(Integer id, String title, Integer authorId, String blurb, byte[] image, String imageName, String content, Integer likeCount, Integer viewCount, Double rating, Boolean isSubmitted, Boolean isApproved, Boolean commentsEnabled, List<Integer> genreIds) {
+    public Story(Integer id, String title, Integer authorId, String blurb, Byte[] image, String imageName, String content, Integer likeCount, Integer viewCount, Double rating, Boolean isSubmitted, Boolean isApproved, Boolean commentsEnabled, List<Integer> genreIds) {
         this.id = id;
         this.title = title;
         this.authorId = authorId;
@@ -93,11 +95,11 @@ public class Story {
         this.blurb = blurb;
     }
 
-    public byte[] getImage() {
+    public Byte[] getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(Byte[] image) {
         this.image = image;
     }
 
@@ -171,4 +173,7 @@ public class Story {
     public void setGenreIds(List<Integer> genreIds) {
         this.genreIds = genreIds;
     }
+
+    
+    
 }
