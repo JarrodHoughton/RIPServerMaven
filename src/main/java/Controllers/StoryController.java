@@ -7,9 +7,11 @@ package Controllers;
 import Models.Story;
 import ServiceLayers.StoryService_Impl;
 import ServiceLayers.StoryService_Interface;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 /**
@@ -40,5 +42,12 @@ public class StoryController {
     @POST
     public Response getStoriesInGenre(@PathParam("genreId") Integer genreId) {
         return Response.ok().entity(storyService.getStoriesInGenre(genreId)).build();
+    }
+    
+    @Path("/addStory")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addStory(Story story) {
+        return Response.ok().entity(storyService.addStory(story)).build();
     }
 }
