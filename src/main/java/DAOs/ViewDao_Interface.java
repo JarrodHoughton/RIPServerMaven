@@ -5,6 +5,7 @@
 package DAOs;
 
 import Models.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,6 +16,6 @@ import java.util.List;
 public interface ViewDao_Interface {
     
     public Boolean addView(View view);
-    public List<Integer> get10MostViewed(LocalDateTime startDate, LocalDateTime endDate);
-    
+    public List<Integer> getMostViewedStoriesInATimePeriod(Timestamp startDate, Timestamp endDate, Integer numberOfEntries);
+    public List<View> getTheViewsOnAStoryInATimePeriod(Integer storyId, Timestamp startDate, Timestamp endDate);
 }
