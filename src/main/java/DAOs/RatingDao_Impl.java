@@ -115,7 +115,7 @@ public class RatingDao_Impl implements RatingDao_Interface {
     }
 
     @Override
-    public boolean addRating(Integer accountId, Integer storyId, Integer ratingValue) {
+    public Boolean addRating(Integer accountId, Integer storyId, Integer ratingValue) {
         
         try {
             connection = DBManager.getConnection();

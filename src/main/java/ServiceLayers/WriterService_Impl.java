@@ -7,6 +7,7 @@ package ServiceLayers;
 import DAOs.WriterDao_Impl;
 import DAOs.WriterDao_Interface;
 import Models.Writer;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ import java.util.List;
  * @author jarro
  */
 public class WriterService_Impl implements WriterService_Interface{
-    private WriterDao_Interface writerDao;
+    private final WriterDao_Interface writerDao;
 
     public WriterService_Impl() {
         writerDao = new WriterDao_Impl();
@@ -60,6 +61,16 @@ public class WriterService_Impl implements WriterService_Interface{
         } else {
             return "System failed to update Writer's account.";
         }
+    }
+
+    @Override
+    public List<Integer> getTopWriters(Integer numberOfWriters) {
+        return writerDao.getTopWriters(numberOfWriters);
+    }
+
+    @Override
+    public List<Integer> getTopWritersByDate(Integer numberOfWriters, Timestamp startDate, Timestamp endDate) {
+        return writerDao.getTopWritersByDate(numberOfWriters, startDate, endDate);
     }
     
 }

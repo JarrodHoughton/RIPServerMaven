@@ -17,7 +17,7 @@ public interface RatingDao_Interface {
     public List<Rating> getAllRatings();
     public List<Rating> getRatingsByReaderId(Integer accountId);
     public List<Rating> getRatingsByStory(Integer storyId);
-    public boolean addRating(Integer accountId, Integer storyId, Integer ratingValue);
+    public Boolean addRating(Integer accountId, Integer storyId, Integer ratingValue);
     public Integer getRatingValue(Integer storyId);
     public List<Integer> getTopHighestRatedStoriesInTimePeriod(Timestamp startDate, Timestamp endDate, Integer numberOfEntries);
     

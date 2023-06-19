@@ -133,7 +133,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
     }
 
     @Override
-    public boolean addLike(Integer readerId, Integer storyId) {        
+    public Boolean addLike(Integer readerId, Integer storyId) {        
         
         try {
             connection = DBManager.getConnection();
@@ -156,7 +156,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
     }
 
     @Override
-    public boolean deleteLike(Integer likeId) {
+    public Boolean deleteLike(Integer likeId) {
         
         try {
             connection = DBManager.getConnection();
@@ -173,7 +173,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
         return true;
     }
     
-    public boolean searchForLike(Integer readerId, Integer storyId){        
+    public Boolean searchForLike(Integer readerId, Integer storyId){        
         
         try {
             connection = DBManager.getConnection();
@@ -196,23 +196,19 @@ public class LikeDao_Impl implements LikeDao_Interface {
     }
 
     @Override
-    public List<Integer> getMostLikedBooks(Timestamp startDate, Timestamp endDate, Integer numberOfBooks) {
+    public List<Integer> getMostLikedBooks(Integer numberOfBooks, Timestamp startDate, Timestamp endDate) {
         List<Integer> mostLikedBooks = new ArrayList<>();
         
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT storyId, COUNT(*) AS likeCount" +
-                "FROM likes" +
-                "WHERE likeDate >= ? AND likeDate <= ? " +
-                "GROUP BY storyId" +
-                "HAVING COUNT(*) >= 1" +
-                "ORDER BY likeCount DESC" +
-                "LIMIT ?;");
+                "FROM likes WHERE likeDate >= ? AND likeDate <= ? GROUP BY storyId" +
+                "HAVING COUNT(*) >= 1 ORDER BY likeCount DESC LIMIT ?;");
             prepStmt.setTimestamp(1, startDate);
             prepStmt.setTimestamp(2, endDate);
             prepStmt.setInt(3, numberOfBooks);
             rs = prepStmt.executeQuery();
-            if(rs.next()){
+            while(rs.next()){
                 mostLikedBooks.add(rs.getInt(1));
             }
         } catch (SQLException ex) {

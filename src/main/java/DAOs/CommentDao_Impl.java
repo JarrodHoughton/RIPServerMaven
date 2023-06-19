@@ -34,7 +34,7 @@ public class CommentDao_Impl implements CommentDao_Interface{
         
         try { 
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT * FROM comments WHERE storyId = ?");
+            prepStmt = connection.prepareStatement("SELECT * FROM comments WHERE storyId = ?;");
             prepStmt.setInt(1, storyId);
             rs = prepStmt.executeQuery();
             if(rs.next()){
@@ -55,17 +55,66 @@ public class CommentDao_Impl implements CommentDao_Interface{
         
         return comments;
     }
-    
+
     @Override
-    public Boolean addComment(String message, Integer accountId, Integer storyId) {
+    public Comment getCommentById(Integer commentId) {
+        Comment comment = null;
         
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("INSERT INTO comments(commentMessage, accountId, storyId) VALUES(?,?,?);");
-            prepStmt.setString(1, message);
-            prepStmt.setInt(2, accountId);
-            prepStmt.setInt(3, storyId);
+            prepStmt = connection.prepareStatement("SELECT * FROM comments WHERE commentId = ?;");
+            prepStmt.setInt(1, commentId);
+            rs = prepStmt.executeQuery();
+            if(rs.first()){
+                comment = new Comment(rs.getString(3));
+                comment.setId(rs.getInt(1));
+                comment.setDate(rs.getTimestamp(2).toLocalDateTime());
+                comment.setReaderId(rs.getInt(4));
+                comment.setStoryId(rs.getInt(5));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }finally{
+            closeConnections();
+        }
+        
+        return comment;
+    }
+
+    @Override
+    public String getCommentMessage(Integer commentId) {
+        Comment comment = null;        
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT * FROM comments WHERE commentId = ?;");
+            prepStmt.setInt(1, commentId);
+            rs = prepStmt.executeQuery();
+            
+            if(rs.first()){
+                comment = new Comment(rs.getString(3));                
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }finally{
+            closeConnections();
+        }
+        
+        return comment.getMessage();
+    }
+
+    @Override
+    public Boolean addComment(Comment comment) {        
+        boolean added = false;        
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("INSERT IGNORE INTO comments (commentMessage, accountId, storyId) VALUES(?,?,?);");
+            prepStmt.setString(1, comment.getMessage());
+            prepStmt.setInt(2, comment.getReaderId());
+            prepStmt.setInt(3, comment.getStoryId());
             prepStmt.executeUpdate();
+            added = true;
         } catch (SQLException ex) {
             Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -73,7 +122,7 @@ public class CommentDao_Impl implements CommentDao_Interface{
             closeConnections();
         }
         
-        return true;
+        return added;    
     }
     
     private void closeConnections(){
@@ -98,8 +147,7 @@ public class CommentDao_Impl implements CommentDao_Interface{
                     Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-    }  
-
-    
+    }      
     
 }
+

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package DAOs;
+package ServiceLayers;
 
 import Models.Comment;
 import java.util.List;
@@ -11,10 +11,10 @@ import java.util.List;
  *
  * @author 27713
  */
-public interface CommentDao_Interface {
+public interface CommentService_Interface {
     
     public List<Comment> getAllCommentForStory(Integer storyId);
     public Comment getCommentById(Integer commentId);
     public String getCommentMessage(Integer commentId);
-    public Boolean addComment(Comment comment);
+    public String addComment(Comment comment);
 }
