@@ -11,15 +11,14 @@ package Models;
 public class Genre {
     private Integer id;
     private String name;
-    private Integer viewCount;
+
 
     public Genre() {
     }
 
-    public Genre(Integer id, String name, Integer viewCount) {
+    public Genre(Integer id, String name) {
         this.id = id;
         this.name = name;
-        this.viewCount = viewCount;
     }
 
     public Integer getId() {
@@ -38,16 +37,10 @@ public class Genre {
         this.name = name;
     }
 
-    public Integer getViewCount() {
-        return viewCount;
-    }
-
-    public void setViewCount(Integer viewCount) {
-        this.viewCount = viewCount;
-    }
-
     @Override
     public String toString() {
-        return "Genre{" + "id=" + id + ", name=" + name + ", viewCount=" + viewCount + '}';
+        return "Genre{" + "id=" + id + ", name=" + name + '}';
     }
+
+
 }

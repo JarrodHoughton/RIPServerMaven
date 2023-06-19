@@ -5,6 +5,7 @@
 package DAOs;
 
 import Models.Genre;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -16,4 +17,5 @@ public interface GenreDao_Interface {
     public List<Genre> getAllGenres();
     public Boolean deleteGenre(Integer id);
     public Boolean addGenre(Genre genre);
+    public List<Genre> getTopGenres(Timestamp startDate, Timestamp endDate);
 }
