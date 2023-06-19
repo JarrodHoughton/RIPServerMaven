@@ -4,6 +4,8 @@
  */
 package Models;
 
+import java.util.List;
+
 /**
  *
  * @author 27713
@@ -22,11 +24,17 @@ public class Story {
     private Boolean isSubmitted;
     private Boolean isApproved;
     private Boolean commentsEnabled;
+    private List<Integer> genreIds;
 
     public Story() {
+        this.likeCount = 0;
+        this.viewCount = 0;
+        this.rating = 0.0;
+        this.isSubmitted = false;
+        this.isApproved = false;
     }
 
-    public Story(Integer id, String title, Integer authorId, String blurb, byte[] image, String imageName, String content, Integer likeCount, Integer viewCount, Double rating, Boolean isSubmitted, Boolean isApproved, Boolean commentsEnabled) {
+    public Story(Integer id, String title, Integer authorId, String blurb, byte[] image, String imageName, String content, Integer likeCount, Integer viewCount, Double rating, Boolean isSubmitted, Boolean isApproved, Boolean commentsEnabled, List<Integer> genreIds) {
         this.id = id;
         this.title = title;
         this.authorId = authorId;
@@ -40,9 +48,10 @@ public class Story {
         this.isSubmitted = isSubmitted;
         this.isApproved = isApproved;
         this.commentsEnabled = commentsEnabled;
+        this.genreIds = genreIds;
     }
 
-
+    
 
     public String getImageName() {
         return imageName;
@@ -155,6 +164,11 @@ public class Story {
         return "Story{" + "id=" + id + ", title=" + title + ", authorId=" + authorId + ", blurb=" + blurb + ", imageName=" + image + ", content=" + content + ", likeCount=" + likeCount + ", viewCount=" + viewCount + ", rating=" + rating + ", isSubmitted=" + isSubmitted + ", isApproved=" + isApproved + ", commentsEnabled=" + commentsEnabled + '}';
     }
 
-    
-    
+    public List<Integer> getGenreIds() {
+        return genreIds;
+    }
+
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = genreIds;
+    }
 }

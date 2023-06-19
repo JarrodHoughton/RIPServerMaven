@@ -32,12 +32,12 @@ public class StoryDao_Impl implements StoryDao_Interface{
 
         Story story = null;
         try {
+            story = new Story();
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT * FROM stories WHERE storyId=?;");
             prepStmt.setInt(1, storyId);
             rs = prepStmt.executeQuery();
             if (rs.next()) {
-                story = new Story();
                 story.setId(rs.getInt("storyId"));
                 story.setTitle(rs.getString("title"));
                 story.setBlurb(rs.getString("blurb"));
@@ -51,36 +51,21 @@ public class StoryDao_Impl implements StoryDao_Interface{
                 story.setCommentsEnabled(rs.getString("commentsEnabled").charAt(0)=='T');
                 story.setImage(getImageById(storyId));
                 story.setImageName(getImageNameById(storyId));
- 
-            }
-
-                
-        } catch (SQLException ex) {
-            Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
             }
             
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            List<Integer> genreIds = new ArrayList<>();
+            prepStmt = connection.prepareStatement("SELECT genreId FROM stories_genres WHERE storyId=?;");
+            prepStmt.setInt(1, storyId);
+            rs = prepStmt.executeQuery();
+            while (rs.next()) {
+                genreIds.add(rs.getInt(1));
             }
+            story.setGenreIds(genreIds);
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } finally {
+            closeConnections();
         }
         return story;
     }
@@ -103,24 +88,9 @@ public class StoryDao_Impl implements StoryDao_Interface{
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return data;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            return data;
+            closeConnections();
         }
-
+        return data;
     }
     
     
@@ -142,21 +112,7 @@ public class StoryDao_Impl implements StoryDao_Interface{
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return imageName;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return imageName;
     }
@@ -166,11 +122,11 @@ public class StoryDao_Impl implements StoryDao_Interface{
     public List<Story> getAllStories() {
         List<Story> stories = new ArrayList<>();
         try {
+            Story story = new Story();
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT * FROM stories;");
             rs = prepStmt.executeQuery();
             while (rs.next()) {
-                Story story = new Story();
                 story.setId(rs.getInt("storyId"));
                 story.setTitle(rs.getString("title"));
                 story.setBlurb(rs.getString("blurb"));
@@ -186,32 +142,12 @@ public class StoryDao_Impl implements StoryDao_Interface{
                 story.setImageName(getImageNameById(rs.getInt("storyId")));
                 stories.add(story);
             }
+            story.setGenreIds(getStoryGenres(story.getId()));
         } catch (SQLException ex) {
-            Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return stories;
     }
@@ -228,31 +164,10 @@ public class StoryDao_Impl implements StoryDao_Interface{
                 stories.add(getStory(rs.getInt(1)));
             }
         } catch (SQLException ex) {
-            Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return stories;
     }
@@ -275,26 +190,12 @@ public class StoryDao_Impl implements StoryDao_Interface{
             prepStmt.setDouble(10, story.getRating());
             prepStmt.executeUpdate();
             updateImageAndImageName(story.getId(), story.getImage(), story.getImageName());
-            updated = true;
+            updated = deleteStoryGenres(story.getId()) && addStoryGenres(story);
         } catch (SQLException ex) {
-            Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return updated;        
     }
@@ -308,26 +209,12 @@ public class StoryDao_Impl implements StoryDao_Interface{
             prepStmt.setInt(1, storyId);
             prepStmt.executeUpdate();
             deleteImage(storyId);
-            deleted = true;
+            deleted = deleteStoryGenres(storyId);
         } catch (SQLException ex) {
-            Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return deleted;
     }
@@ -353,32 +240,77 @@ public class StoryDao_Impl implements StoryDao_Interface{
             prepStmt.setDouble(10, story.getRating());
             prepStmt.executeUpdate();
             addImageData(story.getImage(),story.getImageName());
-            added = true;
+            added = addStoryGenres(story);
         } catch (SQLException ex) {
-            Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return added;        
     }
     
+    private Boolean addStoryGenre(Integer storyId, Integer genreId) {
+        Boolean added = false;
+        try {
+            prepStmt = connection.prepareStatement("INSERT INTO stories_genres(storyId, genreId) VALUES(?, ?)");
+            prepStmt.setInt(1, storyId);
+            prepStmt.setInt(2, genreId);
+            prepStmt.executeUpdate();
+            added = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeConnections();
+        }
+        return added;
+    }
     
-         
+    private Boolean addStoryGenres(Story story) {
+        Boolean added = true;
+        for (Integer genreId:story.getGenreIds()) {
+            if (!addStoryGenre(story.getId(), genreId)) {
+                added = false;
+            }
+        }
+        return added;
+    }
+    
+    private Boolean deleteStoryGenres(Integer storyId) {
+        Boolean deleted = false;
+        try {
+            prepStmt = connection.prepareStatement("DELETE FROM stories_genres WHERE storyId=?");
+            prepStmt.setInt(1, storyId);
+            prepStmt.executeUpdate();
+            deleted = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeConnections();
+        }
+        return deleted;
+    }
+    
+    private List<Integer> getStoryGenres(Integer storyId) {
+        List<Integer> genreIds = new ArrayList<>();
+        try {
+            prepStmt = connection.prepareStatement("SELECT genreId FROM stories_genres WHERE storyId=?;");
+            prepStmt.setInt(1, storyId);
+            rs = prepStmt.executeQuery();
+            while (rs.next()) {
+                genreIds.add(rs.getInt(1));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } finally {
+            closeConnections();
+        }
+        return genreIds;
+    }
+    
     private void addImageData(byte[] image, String imageName) {
         String sql = "INSERT INTO images (image, imageName) VALUES (?, ?)";
         try {
@@ -389,21 +321,7 @@ public class StoryDao_Impl implements StoryDao_Interface{
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
     }
     
@@ -423,21 +341,7 @@ public class StoryDao_Impl implements StoryDao_Interface{
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
     }
     
@@ -448,13 +352,18 @@ public class StoryDao_Impl implements StoryDao_Interface{
             prepStmt.setInt(1, storyId);
             prepStmt.executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (prepStmt != null) {
+            closeConnections();
+        }
+    }
+    
+    private void closeConnections() {
+        if (prepStmt != null) {
                 try {
                     prepStmt.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -462,11 +371,16 @@ public class StoryDao_Impl implements StoryDao_Interface{
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
+            
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
     }
-    
-    
 }
