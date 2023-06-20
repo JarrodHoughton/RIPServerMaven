@@ -6,11 +6,14 @@ package DAOs;
 
 import Models.Genre;
 import Models.Story;
+import ServiceLayers.LikeService_Impl;
 import Utils.DBManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,8 +29,10 @@ public class StoryDao_Impl implements StoryDao_Interface {
     private Connection connection;
     private PreparedStatement prepStmt;
     private ResultSet rs;
+    private LikeDao_Interface likeDao;
 
     public StoryDao_Impl() {
+        this.likeDao = new LikeDao_Impl();
     }
 
     @Override
@@ -57,6 +62,8 @@ public class StoryDao_Impl implements StoryDao_Interface {
             story.setImageName(getImageNameById(storyId));
 
             List<Integer> genreIds = new ArrayList<>();
+            
+            connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT genreId FROM stories_genres WHERE storyId=?;");
             prepStmt.setInt(1, storyId);
             rs = prepStmt.executeQuery();
@@ -115,8 +122,9 @@ public class StoryDao_Impl implements StoryDao_Interface {
 
     @Override
     public List<Story> getAllStories() {
-        List<Story> stories = new ArrayList<>();
+        List<Story> stories = null;
         try {
+            stories = new ArrayList<>();
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT * FROM stories;");
             rs = prepStmt.executeQuery();
@@ -149,13 +157,98 @@ public class StoryDao_Impl implements StoryDao_Interface {
         }
         return stories;
     }
+    
+    @Override
+    public List<Story> getRecommendations(List<Integer> genreIds) {
+        List<Story> recommendations = null;
+        try {
+            String genres = "";
+            for (int i = 0; i < genreIds.size()-1; i++) {
+                genres += "'"+genreIds.get(i)+"',";
+            }
+            genres += "'"+genreIds.get(genreIds.size()-1)+"'";
+            recommendations = new ArrayList<>();
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT s.storyId\n"
+                    + "FROM stories s\n"
+                    + "JOIN genres g ON s.storyId = g.storyId\n"
+                    + "WHERE g.genreName IN ("+genres+") AND s.approved='T' AND s.submitted='T'\n"
+                    + "GROUP BY s.storyId\n"
+                    + "ORDER BY SUM(s.likeCount) DESC\n"
+                    + "LIMIT 10;");
+            rs = prepStmt.executeQuery();
+            while (rs.next()) {
+                recommendations.add(getStory(rs.getInt("storyId")));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } finally {
+            closeConnections();
+        }
+        return recommendations;
+    }
+
+    @Override
+    public List<Story> getTopPicks() {
+        List<Story> topStories = new ArrayList<>();
+        List<Integer> storyIds = likeDao.getMostLikedBooks(10, Timestamp.valueOf(LocalDateTime.now().minusWeeks(1)), Timestamp.valueOf(LocalDateTime.now()));
+        if (storyIds.isEmpty()) {
+            return null;
+        }
+        for (Integer storyId:storyIds) {
+            Story story = getStory(storyId);
+            if (story.getIsSubmitted()&&story.getIsApproved()) {
+                topStories.add(story);
+            }
+        }
+        return topStories;
+    }
+
+    @Override
+    public List<Story> getSubmittedStories() {
+        List<Story> submittedStories = null;
+        try {
+            submittedStories = new ArrayList<>();
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT * FROM stories WHERE approved='F' AND submitted='T';");
+            rs = prepStmt.executeQuery();
+            while (rs.next()) {
+                Story story = new Story();
+                story.setId(rs.getInt("storyId"));
+                story.setTitle(rs.getString("title"));
+                story.setBlurb(rs.getString("blurb"));
+                story.setContent(rs.getString("content"));
+                story.setAuthorId(rs.getInt("accountId"));
+                story.setLikeCount(rs.getInt("likeCount"));
+                story.setViewCount(rs.getInt("viewCount"));
+                story.setRating(rs.getDouble("rating"));
+                story.setIsApproved(rs.getString("approved").charAt(0) == 'T');
+                story.setIsSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setCommentsEnabled(rs.getString("commentsEnabled").charAt(0) == 'T');
+                submittedStories.add(story);
+            }
+
+            for (Story story : submittedStories) {
+                story.setImage(getImageById(story.getId()));
+                story.setImageName(getImageNameById(story.getId()));
+                story.setGenreIds(getStoryGenres(story.getId()));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } finally {
+            closeConnections();
+        }
+        return submittedStories;
+    }
 
     @Override
     public List<Story> getStoriesInGenre(Integer genreId) {
         List<Story> stories = new ArrayList<>();
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT storyId FROM stories_genres WHERE genreId=?;");
+            prepStmt = connection.prepareStatement("SELECT storyId FROM stories_genres WHERE genreId=? AND approved='T' AND submitted='T';");
             prepStmt.setInt(1, genreId);
             rs = prepStmt.executeQuery();
             while (rs.next()) {
@@ -389,36 +482,5 @@ public class StoryDao_Impl implements StoryDao_Interface {
                 Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }
-
-    @Override
-    public List<Story> getRecommendations(List<Integer> genreIds) {
-        List<Story> recommendations = null;
-        try {
-            String genres = "";
-            for (int i = 0; i < genreIds.size()-1; i++) {
-                genres += "'"+genreIds.get(i)+"',";
-            }
-            genres += "'"+genreIds.get(genreIds.size()-1)+"'";
-            recommendations = new ArrayList<>();
-            connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT s.storyId\n"
-                    + "FROM stories s\n"
-                    + "JOIN genres g ON s.storyId = g.storyId\n"
-                    + "WHERE g.genreName IN ("+genres+")\n"
-                    + "GROUP BY s.storyId\n"
-                    + "ORDER BY SUM(s.likeCount) DESC\n"
-                    + "LIMIT 10;");
-            rs = prepStmt.executeQuery();
-            while (rs.next()) {
-                recommendations.add(getStory(rs.getInt(0)));
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        } finally {
-            closeConnections();
-        }
-        return recommendations;
     }
 }

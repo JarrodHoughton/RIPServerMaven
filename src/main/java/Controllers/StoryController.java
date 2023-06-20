@@ -73,12 +73,13 @@ public class StoryController {
     @Path("/getTopPicks")
     @GET
     public Response getTopPicks() {
-        List<Story> stories = new ArrayList<>();
-        List<Integer> storyIds = new LikeService_Impl().getMostLikedBooks(10, Timestamp.valueOf(LocalDateTime.now().minusWeeks(1)), Timestamp.valueOf(LocalDateTime.now()));
-        for (Integer storyId:storyIds) {
-            stories.add(storyService.getStory(storyId));
-        }
-        return Response.ok().entity(stories).build();
+        return Response.ok().entity(storyService.getTopPicks()).build();
+    }
+    
+    @Path("/getSubmittedStories")
+    @GET
+    public Response getSubmittedStories() {
+        return Response.ok().entity(storyService.getSubmittedStories()).build();
     }
     
     @Path("/getRecommendations")

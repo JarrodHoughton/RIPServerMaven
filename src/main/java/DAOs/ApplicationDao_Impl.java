@@ -24,21 +24,23 @@ public class ApplicationDao_Impl implements ApplicationDao_Interface {
 
     @Override
     public List<Application> getApplications() {
-        List<Application> applications = new ArrayList<>();
+        List<Application> applications = null;
         try {
+            applications = new ArrayList<>();
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("Select accountId, motivation FROM `ripdb`.`applications`;");
-            prepStmt.executeQuery();
+            prepStmt = connection.prepareStatement("Select * FROM applications;");
+            rs = prepStmt.executeQuery();
             while (rs.next()) {
                 applications.add(
                         new Application(
-                                rs.getInt(1),
-                                rs.getString(2)
+                                rs.getInt("accountId"),
+                                rs.getString("motivation")
                         )
                 );
             }
         } catch (SQLException ex) {
             Logger.getLogger(ApplicationDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }

@@ -68,5 +68,15 @@ public class StoryService_Impl implements StoryService_Interface{
     public List<Story> getRecommendations(List<Integer> genreIds) {
         return storyDao.getRecommendations(genreIds);
     }
+
+    @Override
+    public List<Story> getTopPicks() {
+        return storyDao.getTopPicks();
+    }
+
+    @Override
+    public List<Story> getSubmittedStories() {
+        return storyDao.getSubmittedStories();
+    }
     
 }
