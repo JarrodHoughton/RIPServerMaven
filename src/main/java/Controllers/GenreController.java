@@ -42,8 +42,8 @@ public class GenreController {
     
     @Path("/deleteGenre/{genreId}")
     @GET
-    public Response deleteGenre(Integer id) {
-        return Response.ok().entity(genreService.getGenre(id)).build();
+    public Response deleteGenre(@PathParam("genreId") Integer id) {
+        return Response.ok().entity(genreService.deleteGenre(id)).build();
     }
     
     @Path("/addGenre")
