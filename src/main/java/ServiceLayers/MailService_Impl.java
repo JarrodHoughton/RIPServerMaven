@@ -4,6 +4,7 @@
  */
 package ServiceLayers;
 
+import Models.Reader;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -115,6 +116,12 @@ public class MailService_Impl implements MailService_Interface {
             return "Email failed to send.";
         }
         return message;
+    }
+
+    @Override
+    public String sendVerficationEmail(Reader reader) {
+        String verificationLink = "Test Send Verification Message";
+        return verificationLink;
     }
 
 }

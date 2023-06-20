@@ -4,6 +4,7 @@
  */
 package Controllers;
 
+import Models.Reader;
 import ServiceLayers.MailService_Impl;
 import ServiceLayers.MailService_Interface;
 import jakarta.ws.rs.Consumes;
@@ -43,5 +44,12 @@ public class MailController {
     public Response sendMail(HashMap<String, String> emailDetails) {
         return Response.ok().entity(
                 mailService.sendMail(emailDetails.get("recipient"), emailDetails.get("content"), emailDetails.get("subject"))).build();
+    }
+    
+    @Path("/sendVerificationEmail")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response sendVerificationEmail(Reader reader) {
+        return Response.ok().entity(mailService.sendVerficationEmail(reader)).build();
     }
 }
