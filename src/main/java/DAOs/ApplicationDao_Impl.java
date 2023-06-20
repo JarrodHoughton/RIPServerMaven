@@ -72,7 +72,7 @@ public class ApplicationDao_Impl implements ApplicationDao_Interface{
     }
 
     @Override
-    public boolean addApplication(Application application) {
+    public Boolean addApplication(Application application) {
         Boolean added = false;
         try {
             connection = DBManager.getConnection();
@@ -105,7 +105,7 @@ public class ApplicationDao_Impl implements ApplicationDao_Interface{
     }
 
     @Override
-    public boolean deleteApplication(Integer accountId) {
+    public Boolean deleteApplication(Integer accountId) {
         Boolean deleted = false;
         try {
             connection = DBManager.getConnection();
