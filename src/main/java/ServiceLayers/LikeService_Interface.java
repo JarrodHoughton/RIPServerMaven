@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface LikeService_Interface {
     
-    public String addLike(Integer readerId, Integer storyId); //parameter Like
+    public String addLike(Like like);
     public String deleteLike(Integer likeId);
     public List<Like> getAllLikes();
     public List<Like> getLikesByReaderId(Integer accountId);

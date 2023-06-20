@@ -133,17 +133,17 @@ public class LikeDao_Impl implements LikeDao_Interface {
     }
 
     @Override
-    public Boolean addLike(Integer readerId, Integer storyId) {        
+    public Boolean addLike(Like like) {        
         
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("INSERT IGNORE INTO likes (accountId, storyId) VALUES (?,?)");
-            prepStmt.setInt(1, readerId);
-            prepStmt.setInt(2, storyId);
+            prepStmt.setInt(1, like.getReaderId());
+            prepStmt.setInt(2, like.getStoryId());
             prepStmt.executeUpdate();
             
             prepStmt = connection.prepareStatement("UPDATE stories set likeCount = likeCount + 1 WHERE storyId = ?");
-            prepStmt.setInt(1, storyId);
+            prepStmt.setInt(1, like.getStoryId());
             prepStmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);

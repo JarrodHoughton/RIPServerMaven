@@ -14,7 +14,7 @@ import Models.Like;
  */
 public interface LikeDao_Interface {
     
-    public Boolean addLike(Integer readerId, Integer storyId);
+    public Boolean addLike(Like like);
     public Boolean deleteLike(Integer likeId);
     public List<Like> getAllLikes();
     public List<Like> getLikesByReaderId(Integer accountId);

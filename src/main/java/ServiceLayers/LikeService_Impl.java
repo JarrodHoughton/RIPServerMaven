@@ -22,8 +22,8 @@ public class LikeService_Impl implements LikeService_Interface {
     }
 
     @Override
-    public String addLike(Integer readerId, Integer storyId) {
-        if(likeDao.addLike(readerId, storyId)){
+    public String addLike(Like like) {
+        if(likeDao.addLike(like)){
             return "Like added";
         }else{
             return "System failed to add like";
