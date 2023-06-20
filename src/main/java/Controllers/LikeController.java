@@ -4,10 +4,87 @@
  */
 package Controllers;
 
+import Models.Like;
+import ServiceLayers.LikeService_Impl;
+import ServiceLayers.LikeService_Interface;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
- * @author jarro
+ * @author 27713
  */
+@Path("/like")
 public class LikeController {
+    private final LikeService_Interface likeService;
+
+    public LikeController(LikeService_Interface likeService) {
+        this.likeService = new LikeService_Impl();
+    }
     
+    @Path("/addLike")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addLike(Like like){
+        return Response.ok().entity(likeService.addLike(like)).build();
+    }
+    
+    @Path("/deleteLike/{likeId}")
+    @GET
+    public Response deleteLike(@PathParam("likeId")Integer likeId){
+        return Response.ok().entity(likeService.deleteLike(likeId)).build();
+    }
+    
+    @Path("/getLikesByReaderId/{accountId}")
+    @GET
+    public Response getLikesByReaderId(@PathParam("accountId")Integer accountId){
+        List<Like> readerLikes = new ArrayList<>();        
+        for(Like like : likeService.getLikesByReaderId(accountId)){
+            readerLikes.add(like);
+        }
+        return Response.ok().entity(readerLikes).build();
+    }
+    
+    @Path("/getLikesByStory/{storyId}")
+    @GET    
+    public Response getLikesByStory(@PathParam("storyId")Integer storyId){
+        List<Like> storyLikes = new ArrayList<>();
+        for(Like like : likeService.getLikesByStory(storyId)){
+            storyLikes.add(like);
+        }
+        return Response.ok().entity(storyLikes).build();
+    }
+    
+    @Path("/getStoryLikesByDate/{storyId}/{startDate}/{endDate}")
+    @GET
+    public Response getStoryLikesByDate(@PathParam("storyId")Integer storyId,
+                                        @PathParam("startDate")String startDate,
+                                        @PathParam("endDate")String endDate){        
+        Timestamp start = Timestamp.valueOf(LocalDateTime.parse(startDate));
+        Timestamp end = Timestamp.valueOf(LocalDateTime.parse(endDate));        
+        return Response.ok().entity(likeService.getStoryLikesByDate(storyId, start, end)).build();
+    }
+    
+    @Path("/getMostLikedBooks/{numberOfBooks}/{startDate}/{endDate}")
+    @GET
+    public Response getMostLikedBooks(@PathParam("numberOfBooks")Integer numberOFBooks,
+                                        @PathParam("startDate")String startDate,
+                                        @PathParam("endDate")String endDate){
+        List<Integer> bookIds = new ArrayList<>();
+        Timestamp start = Timestamp.valueOf(LocalDateTime.parse(startDate));
+        Timestamp end = Timestamp.valueOf(LocalDateTime.parse(endDate)); 
+        for(Integer storyId : likeService.getMostLikedBooks(numberOFBooks, start, end)){
+            bookIds.add(storyId);
+        }
+        return Response.ok().entity(bookIds).build();
+    }
 }
