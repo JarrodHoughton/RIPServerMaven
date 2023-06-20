@@ -13,6 +13,9 @@ import java.time.LocalDateTime;
 public class Comment extends StoryStatistic {
     private String message;
 
+    public Comment() {
+    }
+    
     public Comment(String message) {
         this.message = message;
     }

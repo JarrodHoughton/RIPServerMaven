@@ -107,7 +107,7 @@ public class CommentDao_Impl implements CommentDao_Interface{
 
     @Override
     public Boolean addComment(Comment comment) {        
-        boolean added = false;        
+        Boolean added = false;        
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("INSERT IGNORE INTO comments (commentMessage, accountId, storyId) VALUES(?,?,?);");
@@ -126,29 +126,31 @@ public class CommentDao_Impl implements CommentDao_Interface{
         return added;    
     }
     
-    private void closeConnections(){
+   private void closeConnections(){
+         if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         if(prepStmt!=null){
                 try {
                     prepStmt.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if(connection!=null){
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-    }      
-    
+
+    }
 }
+    
+
 

@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package DAOs;
 
 import Utils.DBManager;
@@ -78,6 +75,7 @@ public class RatingDao_Impl implements RatingDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }
@@ -107,6 +105,7 @@ public class RatingDao_Impl implements RatingDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }
@@ -150,6 +149,7 @@ public class RatingDao_Impl implements RatingDao_Interface {
             
         } catch (SQLException ex) {
             Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }
@@ -213,7 +213,7 @@ public class RatingDao_Impl implements RatingDao_Interface {
             return storyIds;
         } catch (SQLException ex) {
             Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            return storyIds;
+            return null;
         } finally {
             closeConnections();
         }
