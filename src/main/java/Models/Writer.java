@@ -14,8 +14,8 @@ public class Writer extends Reader{
     private List<Integer> submittedStoryIds;
     private List<Integer> draftedStoryIds;
 
-    public Writer(Integer id, String name, String surname, String email, String passwordHash, String salt, String phoneNumber, String userType, List<Integer> favouriteGenreIds, List<Integer> favouriteStoryIds, List<Integer> submittedStoryIds, List<Integer> draftedStoryIds) {
-        super(id, name, surname, email, passwordHash, salt, phoneNumber, userType, favouriteGenreIds, favouriteStoryIds);
+    public Writer(Integer id, String name, String surname, String email, String passwordHash, String salt, String phoneNumber, String userType, List<Integer> favouriteGenreIds, List<Integer> favouriteStoryIds, List<Integer> submittedStoryIds, Boolean verified,List<Integer> draftedStoryIds) {
+        super(id, name, surname, email, passwordHash, salt, phoneNumber, userType, favouriteGenreIds, favouriteStoryIds, verified);
         this.draftedStoryIds = draftedStoryIds;
         this.submittedStoryIds = submittedStoryIds;
     }

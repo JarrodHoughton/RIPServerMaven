@@ -8,6 +8,7 @@ import DAOs.StoryDao_Impl;
 import DAOs.StoryDao_Interface;
 import Models.Genre;
 import Models.Story;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,6 +62,11 @@ public class StoryService_Impl implements StoryService_Interface{
         } else {
             return "System failed to add the story.";
         }
+    }
+
+    @Override
+    public List<Story> getRecommendations(List<Integer> genreIds) {
+        return storyDao.getRecommendations(genreIds);
     }
     
 }

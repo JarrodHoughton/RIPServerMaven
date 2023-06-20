@@ -13,18 +13,20 @@ import java.util.List;
 public class Reader extends Account{
     private List<Integer> favouriteGenreIds;
     private List<Integer> favouriteStoryIds;
+    private Boolean verified;
 
-    public Reader(Integer id, String name, String surname, String email, String passwordHash, String salt, String phoneNumber, String userType, List<Integer> favouriteGenreIds, List<Integer> favouriteStoryIds) {
+    public Reader(Integer id, String name, String surname, String email, String passwordHash, String salt, String phoneNumber, String userType, List<Integer> favouriteGenreIds, List<Integer> favouriteStoryIds, Boolean verified) {
         super(id, name, surname, email, passwordHash, salt, phoneNumber, userType);
         this.favouriteGenreIds = favouriteGenreIds;
         this.favouriteStoryIds = favouriteStoryIds;
+        this.verified = verified;
     }
     
     public Reader(){
         super();
         super.setUserType("R");
     }
-
+    
     public List<Integer> getFavouriteGenreIds() {
         return favouriteGenreIds;
     }
@@ -40,9 +42,17 @@ public class Reader extends Account{
     public void setFavouriteStoryIds(List<Integer> favouriteStoryIds) {
         this.favouriteStoryIds = favouriteStoryIds;
     }
+    
+    public Boolean getVerified() {
+        return verified;
+    }
 
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
+    }
+    
     @Override
     public String toString() {
-        return "Reader{" + super.toString() +"favouriteGenreIds=" + favouriteGenreIds + ", favouriteStoryIds=" + favouriteStoryIds + '}';
+        return "Reader{" + super.toString() +"favouriteGenreIds=" + favouriteGenreIds + ", favouriteStoryIds=" + favouriteStoryIds + ", verified=" + verified + '}';
     }
 }

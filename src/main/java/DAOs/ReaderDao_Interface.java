@@ -16,6 +16,7 @@ public interface ReaderDao_Interface {
     public List<Reader> getAllReaders(); 
     public Boolean addReader(Reader reader);
     public Boolean updateReaderDetails(Reader reader);
+    public Boolean setVerified(Integer readerId);
     public Boolean userExists(String accountEmail);
     public Boolean updateFavouriteGenresOfAReader(Reader reader);
     public Boolean deleteAFavouriteGenreOfAReader(Reader reader, Integer genreID);

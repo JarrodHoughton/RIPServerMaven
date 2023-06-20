@@ -36,8 +36,9 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
                 reader.setSalt(rs.getString("accountSalt"));
                 reader.setPhoneNumber(rs.getString("accountPhoneNumber"));
                 reader.setUserType(rs.getString("accountType"));
-                reader.setFavouriteGenreIds(getFavouriteGenresOfUser(rs.getInt("accountId")));
-                reader.setFavouriteStoryIds(getFavouriteStoriesOfUser(rs.getInt("accountId")));
+                reader.setVerified(rs.getString("verified").equals("F") ? Boolean.FALSE : Boolean.TRUE);
+                reader.setFavouriteGenreIds(getFavouriteGenresOfUser(reader.getId()));
+                reader.setFavouriteStoryIds(getFavouriteStoriesOfUser(reader.getId()));
             }
         } catch (SQLException e) {
             Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
@@ -256,6 +257,24 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
     @Override
     public Boolean deleteReader(Reader reader) {
         return false;
+    }
+    
+    @Override
+    public Boolean setVerified(Integer readerId) {
+        Boolean verified = false;
+        String sql = "UPDATE accounts SET verified = 'T' WHERE accountId = ?";
+        try {
+            connection = DBManager.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, readerId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
+            return false;
+        } finally {
+            closeConnections();
+        }
+        return verified;
     }
 
     /**

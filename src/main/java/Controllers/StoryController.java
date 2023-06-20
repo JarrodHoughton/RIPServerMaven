@@ -80,4 +80,11 @@ public class StoryController {
         }
         return Response.ok().entity(stories).build();
     }
+    
+    @Path("/getRecommendations")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getRecommendations(List<Integer> genreIds) {
+        return Response.ok().entity(storyService.getRecommendations(genreIds)).build();
+    }
 }

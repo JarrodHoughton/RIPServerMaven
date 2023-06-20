@@ -25,7 +25,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(
-                    "SELECT accountId, accountName, accountSurname, accountEmail, accountPasswordHash, accountSalt, accountPhoneNumber, accountType FROM accounts WHERE accountId = ?;");
+                    "SELECT * FROM accounts WHERE accountId = ?;");
             prepStmt.setInt(1, writerId);
             rs = prepStmt.executeQuery();
             if (rs.next()) {
@@ -93,7 +93,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(
-                    "SELECT accountId, accountName, accountSurname, accountEmail, accountPasswordHash, accountSalt, accountPhoneNumber, accountType FROM accounts WHERE accountEmail = ?;");
+                    "SELECT * FROM accounts WHERE accountEmail = ?;");
             prepStmt.setString(1, email);
             rs = prepStmt.executeQuery();
             if (rs.next()) {
@@ -105,7 +105,8 @@ public class WriterDao_Impl implements WriterDao_Interface {
                 writer.setPasswordHash(rs.getString("accountPasswordHash")); 
                 writer.setSalt(rs.getString("accountSalt"));
                 writer.setPhoneNumber(rs.getString("accountPhoneNumber")); 
-                writer.setUserType(rs.getString("accountType")); 
+                writer.setUserType(rs.getString("accountType"));
+                writer.setVerified(rs.getString("verified").equals("F") ? Boolean.FALSE : Boolean.TRUE);
             }
             
             //getting all the writer's favourite story Ids

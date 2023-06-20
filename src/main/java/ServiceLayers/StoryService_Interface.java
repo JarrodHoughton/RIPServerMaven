@@ -19,4 +19,5 @@ public interface StoryService_Interface {
     public String updateStory(Story story);
     public String deleteStory(Integer storyId);
     public String addStory(Story story);
+    public List<Story> getRecommendations(List<Integer> genreIds);
 }
