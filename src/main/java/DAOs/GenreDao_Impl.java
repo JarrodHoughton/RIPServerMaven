@@ -39,6 +39,7 @@ public class GenreDao_Impl implements GenreDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }
@@ -64,6 +65,7 @@ public class GenreDao_Impl implements GenreDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }
@@ -117,6 +119,15 @@ public class GenreDao_Impl implements GenreDao_Interface {
     }
 
     private void closeConnections() {
+        
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
         if (prepStmt != null) {
             try {
                 prepStmt.close();
@@ -131,13 +142,7 @@ public class GenreDao_Impl implements GenreDao_Interface {
                 Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        
     }
 
     @Override
@@ -175,6 +180,7 @@ public class GenreDao_Impl implements GenreDao_Interface {
 
         } catch (SQLException ex) {
             Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }

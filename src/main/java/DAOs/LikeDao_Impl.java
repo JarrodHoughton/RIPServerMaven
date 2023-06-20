@@ -41,6 +41,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }
@@ -69,6 +70,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }
@@ -97,6 +99,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }
@@ -121,6 +124,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }
@@ -206,6 +210,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }
@@ -214,6 +219,13 @@ public class LikeDao_Impl implements LikeDao_Interface {
     }
 
     private void closeConnections() {
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         if (prepStmt != null) {
             try {
                 prepStmt.close();
@@ -228,13 +240,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
                 Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+
     }
 
     @Override
@@ -257,6 +263,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }

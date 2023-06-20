@@ -94,6 +94,8 @@ public class CommentDao_Impl implements CommentDao_Interface{
             if(rs.first()){
                 comment = new Comment(rs.getString(3));                
             }
+            
+            return comment.getMessage();
         } catch (SQLException ex) {
             Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -101,7 +103,6 @@ public class CommentDao_Impl implements CommentDao_Interface{
             closeConnections();
         }
         
-        return comment.getMessage();
     }
 
     @Override

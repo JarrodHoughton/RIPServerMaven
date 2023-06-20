@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DAOs;
 
 import Utils.DBManager;
@@ -88,7 +84,7 @@ public class ViewDao_Impl implements ViewDao_Interface {
             return storyIds;
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error occurred while retrieving most viewed stories", ex);
-            return storyIds;
+            return null;
         } finally {
             closeStatements();
         }
@@ -116,11 +112,11 @@ public class ViewDao_Impl implements ViewDao_Interface {
                   views.add(view);
              }
               
-              return views;
+              return null;
               
          } catch (SQLException ex) {
              logger.log(Level.SEVERE, "Error occurred while retrieving views", ex);
-             return views;
+             return null;
          } finally {
              closeStatements();
          }
@@ -129,6 +125,11 @@ public class ViewDao_Impl implements ViewDao_Interface {
     
     private void closeStatements() {
         try {
+            
+            if (resultSet != null && !resultSet.isClosed()) {
+                resultSet.close();
+            }
+          
             if (insertStatement != null && !insertStatement.isClosed()) {
                 insertStatement.close();
             }
@@ -138,9 +139,7 @@ public class ViewDao_Impl implements ViewDao_Interface {
             if (queryStatement != null && !queryStatement.isClosed()) {
                 queryStatement.close();
             }
-            if (resultSet != null && !resultSet.isClosed()) {
-                resultSet.close();
-            }
+
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Failed to close statements", e);
         }

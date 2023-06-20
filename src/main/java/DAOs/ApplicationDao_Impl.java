@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DAOs;
 
 import Models.Application;
@@ -16,16 +12,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * 
  * @author jarro
  */
-public class ApplicationDao_Impl implements ApplicationDao_Interface{
+public class ApplicationDao_Impl implements ApplicationDao_Interface {
     private Connection connection;
     private PreparedStatement prepStmt;
     private ResultSet rs;
 
     public ApplicationDao_Impl() {}
-    
+
     @Override
     public List<Application> getApplications() {
         List<Application> applications = new ArrayList<>();
@@ -44,29 +40,7 @@ public class ApplicationDao_Impl implements ApplicationDao_Interface{
         } catch (SQLException ex) {
             Logger.getLogger(ApplicationDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ApplicationDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ApplicationDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ApplicationDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return applications;
     }
@@ -85,21 +59,7 @@ public class ApplicationDao_Impl implements ApplicationDao_Interface{
             Logger.getLogger(ApplicationDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ApplicationDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ApplicationDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return added;
     }
@@ -117,23 +77,38 @@ public class ApplicationDao_Impl implements ApplicationDao_Interface{
             Logger.getLogger(ApplicationDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         } finally {
-            if (prepStmt != null) {
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ApplicationDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ApplicationDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            closeConnections();
         }
         return deleted;
     }
     
+    private void closeConnections() {
+        
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ApplicationDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        if (prepStmt != null) {
+            try {
+                prepStmt.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ApplicationDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ApplicationDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+
+    }
 }
+

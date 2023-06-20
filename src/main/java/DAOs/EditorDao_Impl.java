@@ -209,6 +209,13 @@ public class EditorDao_Impl implements EditorDao_Interface {
     }
     
     private void closeConnections(){
+         if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         if(prepStmt!=null){
                 try {
                     prepStmt.close();
@@ -223,12 +230,6 @@ public class EditorDao_Impl implements EditorDao_Interface {
                     Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+
     }
 }
