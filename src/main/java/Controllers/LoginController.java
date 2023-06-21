@@ -28,6 +28,7 @@ import java.util.HashMap;
  */
 @Path("/login")
 public class LoginController {
+
     private ReaderService_Interface readerService;
     private WriterService_Interface writerService;
     private EditorService_Interface editorService;
@@ -79,16 +80,18 @@ public class LoginController {
                     return Response.ok().entity(writerService.getWriterByEmail(user.getEmail())).build();
                 case "E":
                     return Response.ok().entity(editorService.getEditorByEmail(user.getEmail())).build();
+                case "A":
+                    return Response.ok().entity(editorService.getEditorByEmail(user.getEmail())).build();
                 default:
                     return Response.ok().entity(null).build();
             }
         }
     }
-    
+
     @Path("/register")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response register(Reader reader){
+    public Response register(Reader reader) {
         return Response.ok().entity(readerService.addReader(reader)).build();
     }
 }
