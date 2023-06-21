@@ -124,7 +124,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+            return 0;
         } finally {
             closeConnections();
         }
@@ -269,6 +269,28 @@ public class LikeDao_Impl implements LikeDao_Interface {
         }
 
         return storyIds;
+    }
+    
+    @Override
+    public Boolean checkIfLikeExists(Integer readerId, Integer storyId) {
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT COUNT(*) AS likeCount FROM likes WHERE accountId = ? AND storyId = ?");
+            prepStmt.setInt(1, readerId);
+            prepStmt.setInt(2, storyId);
+            rs = prepStmt.executeQuery();
+
+            if (rs.next()) {
+                int likeCount = rs.getInt("likeCount");
+                return likeCount > 0;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeConnections();
+        }
+
+        return false;
     }
 }
 
