@@ -1,11 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package ServiceLayers;
 
 import DAOs.RatingDao_Impl;
 import DAOs.RatingDao_Interface;
+import DAOs.ViewDao_Impl;
 import Models.Rating;
 import java.sql.Timestamp;
 import java.util.List;
@@ -38,6 +35,11 @@ public class RatingService_Impl implements RatingService_Interface {
 
     @Override
     public String addRating(Rating rating) {
+        
+        if (ratingDao.checkRatingExists(rating.getReaderId(), rating.getStoryId())) {
+            return "Rating already exists";
+        }
+        
         if(ratingDao.addRating(rating)){
             return "Rating has been added";
         }else{
@@ -54,5 +56,21 @@ public class RatingService_Impl implements RatingService_Interface {
     public List<Integer> getTopHighestRatedStoriesInTimePeriod(Timestamp startDate, Timestamp endDate, Integer numberOfEntries) {
         return ratingDao.getTopHighestRatedStoriesInTimePeriod(startDate, endDate, numberOfEntries);
     }
+
+    @Override
+    public Boolean checkRatingExists(int accountId, int storyId) {
+        return ratingDao.checkRatingExists(accountId, storyId);
+    }
+
+    @Override
+    public String editRatingValue(Integer ratingId, Integer newValue) {
+        if (ratingDao.editRatingValue(ratingId, newValue)) {
+            return "rating successfully updated";
+        } else {
+          return "rating not updated";  
+        }
+    }
+    
+    
     
 }

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DAOs;
 
 import java.util.List;
@@ -20,5 +16,6 @@ public interface RatingDao_Interface {
     public Boolean addRating(Rating rating);
     public Integer getRatingValue(Integer storyId);
     public List<Integer> getTopHighestRatedStoriesInTimePeriod(Timestamp startDate, Timestamp endDate, Integer numberOfEntries);
-    
+    public Boolean checkRatingExists(int accountId, int storyId);
+    public Boolean editRatingValue(Integer ratingId, Integer newValue);
 }

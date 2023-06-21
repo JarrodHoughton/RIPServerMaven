@@ -57,7 +57,7 @@ public class ViewDao_Impl implements ViewDao_Interface {
                 Logger.getLogger(ViewDao_Impl.class.getName()).log(Level.SEVERE, null, ex1);
             }
             return false;
-        }  finally {
+        } finally {
             closeStatements();
         }
     }
@@ -90,42 +90,65 @@ public class ViewDao_Impl implements ViewDao_Interface {
         }
     }
     
-     @Override
+    @Override
     public List<View> getTheViewsOnAStoryInATimePeriod(Integer storyId, Timestamp startDate, Timestamp endDate) {
         List<View> views = new ArrayList<>();
         
-         try {
-              String query = "SELECT viewId, viewDate, accountId, storyId FROM views WHERE storyId = ? AND viewDate BETWEEN ? AND ?";
-              connection = DBManager.getConnection();
-              queryStatement = connection.prepareStatement(query);
-              queryStatement.setInt(1, storyId);
-              queryStatement.setTimestamp(2, startDate);
-              queryStatement.setTimestamp(3, endDate);
-              
-              resultSet = queryStatement.executeQuery();
-              while (resultSet.next()) {                 
-                  Integer viewId = resultSet.getInt("viewId");
-                  Timestamp viewDate = resultSet.getTimestamp("viewDate");
-                  Integer accountId = resultSet.getInt("accountId");
-                  Integer theStoryId = resultSet.getInt("storyId");
-                  View view = new View(viewId, viewDate.toLocalDateTime(), accountId, theStoryId);
-                  views.add(view);
-             }
-              
-              return null;
-              
-         } catch (SQLException ex) {
-             logger.log(Level.SEVERE, "Error occurred while retrieving views", ex);
-             return null;
-         } finally {
-             closeStatements();
-         }
-        
+        try {
+            String query = "SELECT viewId, viewDate, accountId, storyId FROM views WHERE storyId = ? AND viewDate BETWEEN ? AND ?";
+            connection = DBManager.getConnection();
+            queryStatement = connection.prepareStatement(query);
+            queryStatement.setInt(1, storyId);
+            queryStatement.setTimestamp(2, startDate);
+            queryStatement.setTimestamp(3, endDate);
+            
+            resultSet = queryStatement.executeQuery();
+            while (resultSet.next()) {                 
+                Integer viewId = resultSet.getInt("viewId");
+                Timestamp viewDate = resultSet.getTimestamp("viewDate");
+                Integer accountId = resultSet.getInt("accountId");
+                Integer theStoryId = resultSet.getInt("storyId");
+                View view = new View(viewId, viewDate.toLocalDateTime(), accountId, theStoryId);
+                views.add(view);
+            }
+            
+            return views;
+            
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error occurred while retrieving views", ex);
+            return null;
+        } finally {
+            closeStatements();
+        }
+    }
+    
+    @Override
+    public Boolean isViewAlreadyAdded(int accountId, int storyId) {
+        try {
+            String query = "SELECT COUNT(*) AS count FROM views WHERE accountId = ? AND storyId = ?";
+            connection = DBManager.getConnection();
+            queryStatement = connection.prepareStatement(query);
+            queryStatement.setInt(1, accountId);
+            queryStatement.setInt(2, storyId);
+            
+            resultSet = queryStatement.executeQuery();
+            if (resultSet.next()) {
+                int count = resultSet.getInt("count");
+                return count > 0;
+            }
+            
+            return false;
+            
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error occurred while checking if the view is already added", ex);
+            return false;
+        } finally {
+            closeStatements();
+        }
     }
     
     private void closeStatements() {
         try {
-            
             if (resultSet != null && !resultSet.isClosed()) {
                 resultSet.close();
             }
@@ -139,14 +162,12 @@ public class ViewDao_Impl implements ViewDao_Interface {
             if (queryStatement != null && !queryStatement.isClosed()) {
                 queryStatement.close();
             }
-
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Failed to close statements", e);
         }
     }
-
-   
 }
+
 
 
 

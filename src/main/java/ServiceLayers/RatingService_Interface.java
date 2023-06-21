@@ -20,4 +20,6 @@ public interface RatingService_Interface {
     public String addRating(Rating rating);
     public Integer getRatingValue(Integer storyId);
     public List<Integer> getTopHighestRatedStoriesInTimePeriod(Timestamp startDate, Timestamp endDate, Integer numberOfEntries);
+    public Boolean checkRatingExists(int accountId, int storyId);
+    public String editRatingValue(Integer ratingId, Integer newValue);
 }

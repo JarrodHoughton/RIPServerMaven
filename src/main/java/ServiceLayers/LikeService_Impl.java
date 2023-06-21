@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package ServiceLayers;
 
 import DAOs.LikeDao_Impl;
@@ -23,6 +19,11 @@ public class LikeService_Impl implements LikeService_Interface {
 
     @Override
     public String addLike(Like like) {
+        
+        if (likeDao.checkIfLikeExists(like.getReaderId(), like.getStoryId())) {
+            return "Like already exists";
+        }
+        
         if(likeDao.addLike(like)){
             return "Like added";
         }else{
@@ -63,4 +64,12 @@ public class LikeService_Impl implements LikeService_Interface {
     public List<Integer> getMostLikedBooks(Integer numberOfBooks, Timestamp startDate, Timestamp endDate) {
         return likeDao.getMostLikedBooks(numberOfBooks, startDate, endDate);
     }
+
+    @Override
+    public Boolean checkIfLikeExists(Integer readerId, Integer storyId) {
+        return likeDao.checkIfLikeExists(readerId, storyId);
+    }
+    
+    
+    
 }

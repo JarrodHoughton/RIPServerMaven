@@ -218,5 +218,47 @@ public class RatingDao_Impl implements RatingDao_Interface {
             closeConnections();
         }
     }
+    
+    @Override
+    public Boolean checkRatingExists(int accountId, int storyId) {
+    try {
+        connection = DBManager.getConnection();
+        prepStmt = connection.prepareStatement("SELECT COUNT(*) FROM ratings WHERE accountId = ? AND storyId = ?");
+        prepStmt.setInt(1, accountId);
+        prepStmt.setInt(2, storyId);
+        rs = prepStmt.executeQuery();
+        
+        if (rs.next()) {
+            int count = rs.getInt(1);
+            return count > 0;
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+    } finally {
+        closeConnections();
+    }
+    
+    return false;
+}
+    
+    @Override
+    public Boolean editRatingValue(Integer ratingId, Integer newValue) {
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("UPDATE ratings SET ratingValue = ? WHERE ratingId = ?");
+            prepStmt.setInt(1, newValue);
+            prepStmt.setInt(2, ratingId);
+            prepStmt.executeUpdate();
+            updateRatingValueForStories();
+        } catch (SQLException ex) {
+            Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, "Failed to edit rating", ex);
+            return false;
+        } finally {
+            closeConnections();
+        }
+        return true;
+    }
+
+
 }
 

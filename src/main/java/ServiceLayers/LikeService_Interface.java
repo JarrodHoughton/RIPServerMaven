@@ -21,4 +21,5 @@ public interface LikeService_Interface {
     public List<Like> getLikesByStory(Integer storyId);
     public Integer getStoryLikesByDate(Integer storyId, Timestamp startDate, Timestamp endDate);    
     public List<Integer> getMostLikedBooks(Integer numberOfBooks, Timestamp startDate, Timestamp endDate);
+    public Boolean checkIfLikeExists(Integer readerId, Integer storyId);
 }

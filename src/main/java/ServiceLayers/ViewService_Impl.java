@@ -22,13 +22,17 @@ public class ViewService_Impl implements ViewService_Interface {
 
     @Override
     public String addView(View view) {
-        if (viewDao.addView(view)) {
-            return "View succesfully added";
-        } else {
-            return "System failed to add view";
+        if (viewDao.isViewAlreadyAdded(view.getReaderId(), view.getStoryId())) {
+            return "View already exists";
         }
-        
+
+        if (viewDao.addView(view)) {
+            return "View successfully added";
+        }
+
+        return "System failed to add view";
     }
+
 
     @Override
     public List<Integer> getMostViewedStoriesInATimePeriod(Integer numberOfEntries, Timestamp startDate, Timestamp endDate) {
@@ -43,6 +47,11 @@ public class ViewService_Impl implements ViewService_Interface {
         } else {
             return 0;
         }
+    }
+
+    @Override
+    public Boolean isViewAlreadyAdded(int accountId, int storyId) {
+        return viewDao.isViewAlreadyAdded(accountId, storyId);
     }
     
 }
