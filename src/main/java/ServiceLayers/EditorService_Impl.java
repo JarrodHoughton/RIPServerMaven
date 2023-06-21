@@ -61,5 +61,10 @@ public class EditorService_Impl implements EditorService_Interface{
             return "system failed to add new Editor account.";
         }    
     }
+
+    @Override
+    public List<Integer> getTopEditors(Integer numberOfEditors) {
+        return editorDao.getTopEditors(numberOfEditors);
+            }
     
 }

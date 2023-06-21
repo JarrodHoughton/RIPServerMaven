@@ -18,4 +18,5 @@ public interface EditorService_Interface {
     public String updateEditor(Editor editor);
     public String deleteEditor(Integer id);
     public String addEditor(Editor editor);
+    public List<Integer> getTopEditors(Integer numberOfEditors);
 }
