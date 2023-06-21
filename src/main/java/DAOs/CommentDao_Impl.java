@@ -38,13 +38,13 @@ public class CommentDao_Impl implements CommentDao_Interface{
             prepStmt = connection.prepareStatement("SELECT * FROM comments WHERE storyId = ?;");
             prepStmt.setInt(1, storyId);
             rs = prepStmt.executeQuery();
-            if(rs.next()){
+            while (rs.next()){
                 com = new Comment();
                 com.setId(rs.getInt("commentId"));
-                com.setDate(rs.getTimestamp("commentDate").toLocalDateTime());
+                com.setDate(rs.getTimestamp("commentDate").toLocalDateTime().toString());
                 com.setReaderId(rs.getInt("accountId"));
                 com.setStoryId(rs.getInt("storyId"));
-                com.setMessage("commentMessage");
+                com.setMessage(rs.getString("commentMessage"));
                 comments.add(com);
             }
         } catch (SQLException ex) {
@@ -52,7 +52,6 @@ public class CommentDao_Impl implements CommentDao_Interface{
         }finally{
             closeConnections();
         }
-        
         return comments;
     }
 
@@ -68,7 +67,7 @@ public class CommentDao_Impl implements CommentDao_Interface{
             if(rs.next()){
                 comment = new Comment();
                 comment.setId(rs.getInt("commentId"));
-                comment.setDate(rs.getTimestamp("commentDate").toLocalDateTime());
+                comment.setDate(rs.getTimestamp("commentDate").toLocalDateTime().toString());
                 comment.setReaderId(rs.getInt("accountId"));
                 comment.setStoryId(rs.getInt("storyId"));
                 comment.setMessage("commentMessage");

@@ -32,11 +32,7 @@ public class CommentController {
     @Path("/getAllComments/{storyId}")
     @GET
     public Response getAllCommentForStory(@PathParam("storyId")Integer storyId){
-        List<Comment> allComments = new ArrayList<>();
-        for(Comment comments : commentService.getAllCommentForStory(storyId)){
-            allComments.add(comments);
-        }
-        return Response.ok().entity(allComments).build();
+        return Response.ok().entity(commentService.getAllCommentForStory(storyId)).build();
     }
     
     @Path("/addComment")
