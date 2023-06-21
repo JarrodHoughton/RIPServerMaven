@@ -5,6 +5,7 @@
 package DAOs;
 
 import Models.Editor;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -18,4 +19,6 @@ public interface EditorDao_Interface {
     public Boolean updateEditor(Editor editor);
     public Boolean deleteEditor(Integer id);
     public Boolean addEditor(Editor editor);
+    public List<Integer> getTopEditors(Integer numberOfEditors);
+    
 }

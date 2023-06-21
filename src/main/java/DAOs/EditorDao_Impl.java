@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -232,4 +233,26 @@ public class EditorDao_Impl implements EditorDao_Interface {
             }
 
     }
+
+    @Override
+    public List<Integer> getTopEditors(Integer numberOfEditors) {
+        List<Integer> topEditors = new ArrayList<>();        
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT accountId, approvalCount FROM editorsapprovals ORDER BY approvalCoun DESC LIMIT ?;");
+            prepStmt.setInt(1, numberOfEditors);
+            rs = prepStmt.executeQuery();
+            while (rs.next()) {
+                topEditors.add(rs.getInt("accountId")); 
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } finally {
+            closeConnections();
+        }
+        return topEditors;
+    }
+
+
 }
