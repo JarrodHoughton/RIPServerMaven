@@ -510,7 +510,7 @@ public class MailService_Impl implements MailService_Interface {
                 + "<p><a href=\"" + verificationLink + "\">"
                 + "<button style=\"background-color: #4CAF50; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;\">Verify Account</button>"
                 + "</a></p>"
-                + "<p>Kindest Regards,<br>Readers Are Innovators Team!</p>"
+                + "<p>Kindest Regards,<br>Readers Are Innovators Team</p>"
                 + "</body></html>";
         String subject = "Readers Are Innovators: Verify Your Account!";
 
@@ -546,6 +546,24 @@ public class MailService_Impl implements MailService_Interface {
             return false;
         }
         return emailSent;
+    }
+
+    @Override
+    public String sendRefferalEmail(String recipientEmail) {
+        String subject = "Readers Are Innovators";
+        String emailContent = "<html><body>"
+                + "<h2>Dear reader,</h2>"
+                + "<p>A friend has shared us with you!</p>"
+                + "<p><a href=\"http://localhost:8080/RIPClientMaven/index.jsp\">"
+                + "<button style=\"background-color: #778899; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;\">Home Page</button>"
+                + "</a></p>"
+                + "<p>Kindest Regards,<br>Readers Are Innovators Team</p>"
+                + "</body></html>";
+        if (sendMailWithHTML(recipientEmail, emailContent, subject)) {
+            return "A verification email has been sent to you. Please verify your account before logging into Readers Are Innovators again.";
+        } else {
+            return "Something went wrong... Please make sure you have registered with a valid email address.";
+        }
     }
 
 }

@@ -14,4 +14,5 @@ public interface MailService_Interface {
     public String sendMail(String recipientEmail, String emailContent, String subject);
     public String sendVerficationEmail(Reader reader);
     public String sendVerificationEmailWithHTML(Reader reader);
+    public String sendRefferalEmail(String recipientEmail);
 }

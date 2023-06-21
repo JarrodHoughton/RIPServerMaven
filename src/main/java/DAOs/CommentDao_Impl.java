@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Models.Comment;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -38,13 +39,12 @@ public class CommentDao_Impl implements CommentDao_Interface{
             prepStmt.setInt(1, storyId);
             rs = prepStmt.executeQuery();
             if(rs.next()){
-                com = new Comment(
-                        rs.getInt(1),
-                        rs.getTimestamp(2).toLocalDateTime(),
-                        rs.getInt(3),
-                        rs.getInt(4),
-                        rs.getString(5)
-                );
+                com = new Comment();
+                com.setId(rs.getInt("commentId"));
+                com.setDate(rs.getTimestamp("commentDate").toLocalDateTime());
+                com.setReaderId(rs.getInt("accountId"));
+                com.setStoryId(rs.getInt("storyId"));
+                com.setMessage("commentMessage");
                 comments.add(com);
             }
         } catch (SQLException ex) {
@@ -65,12 +65,13 @@ public class CommentDao_Impl implements CommentDao_Interface{
             prepStmt = connection.prepareStatement("SELECT * FROM comments WHERE commentId = ?;");
             prepStmt.setInt(1, commentId);
             rs = prepStmt.executeQuery();
-            if(rs.first()){
-                comment = new Comment(rs.getString(3));
-                comment.setId(rs.getInt(1));
-                comment.setDate(rs.getTimestamp(2).toLocalDateTime());
-                comment.setReaderId(rs.getInt(4));
-                comment.setStoryId(rs.getInt(5));
+            if(rs.next()){
+                comment = new Comment();
+                comment.setId(rs.getInt("commentId"));
+                comment.setDate(rs.getTimestamp("commentDate").toLocalDateTime());
+                comment.setReaderId(rs.getInt("accountId"));
+                comment.setStoryId(rs.getInt("storyId"));
+                comment.setMessage("commentMessage");
             }
         } catch (SQLException ex) {
             Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -87,12 +88,12 @@ public class CommentDao_Impl implements CommentDao_Interface{
         Comment comment = null;        
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT * FROM comments WHERE commentId = ?;");
+            prepStmt = connection.prepareStatement("SELECT commentMessage FROM comments WHERE commentId = ?;");
             prepStmt.setInt(1, commentId);
             rs = prepStmt.executeQuery();
             
             if(rs.first()){
-                comment = new Comment(rs.getString(3));                
+                comment = new Comment(rs.getString("commentMessage"));                
             }
             
             return comment.getMessage();
