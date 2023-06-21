@@ -31,14 +31,18 @@ public class ViewService_Impl implements ViewService_Interface {
     }
 
     @Override
-    public List<Integer> getMostViewedStoriesInATimePeriod(Timestamp startDate, Timestamp endDate, Integer numberOfEntries) {
+    public List<Integer> getMostViewedStoriesInATimePeriod(Integer numberOfEntries, Timestamp startDate, Timestamp endDate) {
         return viewDao.getMostViewedStoriesInATimePeriod(startDate, endDate, numberOfEntries);
               
     }
 
     @Override
-    public List<View> getTheViewsOnAStoryInATimePeriod(Integer storyId, Timestamp startDate, Timestamp endDate) {
-        return viewDao.getTheViewsOnAStoryInATimePeriod(storyId, startDate, endDate);
+    public Integer getTheViewsOnAStoryInATimePeriod(Integer storyId, Timestamp startDate, Timestamp endDate) {
+        if (viewDao.getTheViewsOnAStoryInATimePeriod(storyId, startDate, endDate)!=null) {
+            return viewDao.getTheViewsOnAStoryInATimePeriod(storyId, startDate, endDate).size();
+        } else {
+            return 0;
+        }
     }
     
 }
