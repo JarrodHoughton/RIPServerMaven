@@ -16,6 +16,6 @@ public interface RatingDao_Interface {
     public Boolean addRating(Rating rating);
     public Integer getRatingValue(Integer storyId);
     public List<Integer> getTopHighestRatedStoriesInTimePeriod(Timestamp startDate, Timestamp endDate, Integer numberOfEntries);
-    public Boolean checkRatingExists(int accountId, int storyId);
+    public Boolean checkRatingExists(Rating rating);
     public Boolean editRatingValue(Integer ratingId, Integer newValue);
 }

@@ -272,12 +272,12 @@ public class LikeDao_Impl implements LikeDao_Interface {
     }
     
     @Override
-    public Boolean checkIfLikeExists(Integer readerId, Integer storyId) {
+    public Boolean checkIfLikeExists(Like like) {
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT COUNT(*) AS likeCount FROM likes WHERE accountId = ? AND storyId = ?");
-            prepStmt.setInt(1, readerId);
-            prepStmt.setInt(2, storyId);
+            prepStmt.setInt(1, like.getReaderId());
+            prepStmt.setInt(2, like.getStoryId());
             rs = prepStmt.executeQuery();
 
             if (rs.next()) {

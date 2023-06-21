@@ -123,13 +123,13 @@ public class ViewDao_Impl implements ViewDao_Interface {
     }
     
     @Override
-    public Boolean isViewAlreadyAdded(int accountId, int storyId) {
+    public Boolean isViewAlreadyAdded(View view) {
         try {
             String query = "SELECT COUNT(*) AS count FROM views WHERE accountId = ? AND storyId = ?";
             connection = DBManager.getConnection();
             queryStatement = connection.prepareStatement(query);
-            queryStatement.setInt(1, accountId);
-            queryStatement.setInt(2, storyId);
+            queryStatement.setInt(1, view.getReaderId());
+            queryStatement.setInt(2, view.getStoryId());
             
             resultSet = queryStatement.executeQuery();
             if (resultSet.next()) {

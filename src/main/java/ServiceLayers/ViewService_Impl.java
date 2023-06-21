@@ -22,7 +22,7 @@ public class ViewService_Impl implements ViewService_Interface {
 
     @Override
     public String addView(View view) {
-        if (viewDao.isViewAlreadyAdded(view.getReaderId(), view.getStoryId())) {
+        if (viewDao.isViewAlreadyAdded(view)) {
             return "View already exists";
         }
 
@@ -50,8 +50,8 @@ public class ViewService_Impl implements ViewService_Interface {
     }
 
     @Override
-    public Boolean isViewAlreadyAdded(int accountId, int storyId) {
-        return viewDao.isViewAlreadyAdded(accountId, storyId);
+    public Boolean isViewAlreadyAdded(View view) {
+        return viewDao.isViewAlreadyAdded(view);
     }
     
 }

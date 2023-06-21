@@ -18,5 +18,5 @@ public interface ViewDao_Interface {
     public Boolean addView(View view);
     public List<Integer> getMostViewedStoriesInATimePeriod(Timestamp startDate, Timestamp endDate, Integer numberOfEntries);
     public List<View> getTheViewsOnAStoryInATimePeriod(Integer storyId, Timestamp startDate, Timestamp endDate);
-    public Boolean isViewAlreadyAdded(int accountId, int storyId);
+    public Boolean isViewAlreadyAdded(View view);
 }

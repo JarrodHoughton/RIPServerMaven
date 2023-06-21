@@ -220,12 +220,12 @@ public class RatingDao_Impl implements RatingDao_Interface {
     }
     
     @Override
-    public Boolean checkRatingExists(int accountId, int storyId) {
+    public Boolean checkRatingExists(Rating rating) {
     try {
         connection = DBManager.getConnection();
         prepStmt = connection.prepareStatement("SELECT COUNT(*) FROM ratings WHERE accountId = ? AND storyId = ?");
-        prepStmt.setInt(1, accountId);
-        prepStmt.setInt(2, storyId);
+        prepStmt.setInt(1, rating.getReaderId());
+        prepStmt.setInt(2, rating.getStoryId());
         rs = prepStmt.executeQuery();
         
         if (rs.next()) {

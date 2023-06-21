@@ -36,7 +36,7 @@ public class RatingService_Impl implements RatingService_Interface {
     @Override
     public String addRating(Rating rating) {
         
-        if (ratingDao.checkRatingExists(rating.getReaderId(), rating.getStoryId())) {
+        if (ratingDao.checkRatingExists(rating)) {
             return "Rating already exists";
         }
         
@@ -58,8 +58,8 @@ public class RatingService_Impl implements RatingService_Interface {
     }
 
     @Override
-    public Boolean checkRatingExists(int accountId, int storyId) {
-        return ratingDao.checkRatingExists(accountId, storyId);
+    public Boolean checkRatingExists(Rating rating) {
+        return ratingDao.checkRatingExists(rating);
     }
 
     @Override

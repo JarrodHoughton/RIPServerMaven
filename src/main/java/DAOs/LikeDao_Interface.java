@@ -22,5 +22,5 @@ public interface LikeDao_Interface {
     public Integer getStoryLikesByDate(Integer storyId, Timestamp startDate, Timestamp endDate);
     public List<Integer> getMostLikedBooks(Integer numberOfBooks, Timestamp startDate, Timestamp endDate);
     public List<Integer> getMostLikedStoriesByGenreAndTime(Integer genreId, Integer numberOfStories, String startDate, String endDate);
-    public Boolean checkIfLikeExists(Integer readerId, Integer storyId);
+    public Boolean checkIfLikeExists(Like like);
 }

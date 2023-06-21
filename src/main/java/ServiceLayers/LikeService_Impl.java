@@ -20,7 +20,7 @@ public class LikeService_Impl implements LikeService_Interface {
     @Override
     public String addLike(Like like) {
         
-        if (likeDao.checkIfLikeExists(like.getReaderId(), like.getStoryId())) {
+        if (likeDao.checkIfLikeExists(like)) {
             return "Like already exists";
         }
         
@@ -66,8 +66,8 @@ public class LikeService_Impl implements LikeService_Interface {
     }
 
     @Override
-    public Boolean checkIfLikeExists(Integer readerId, Integer storyId) {
-        return likeDao.checkIfLikeExists(readerId, storyId);
+    public Boolean checkIfLikeExists(Like like) {
+        return likeDao.checkIfLikeExists(like);
     }
     
     
