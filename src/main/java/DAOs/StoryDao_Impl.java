@@ -199,7 +199,7 @@ public class StoryDao_Impl implements StoryDao_Interface {
         List<Story> topStories = new ArrayList<>();
         List<Integer> storyIds = likeDao.getMostLikedBooks(10, Timestamp.valueOf(LocalDateTime.now().minusWeeks(1)), Timestamp.valueOf(LocalDateTime.now()));
         if (storyIds.isEmpty()) {
-            return null;
+            return getApprovedStories(10);
         }
         for (Integer storyId:storyIds) {
             Story story = getStory(storyId);
@@ -208,6 +208,44 @@ public class StoryDao_Impl implements StoryDao_Interface {
             }
         }
         return topStories;
+    }
+    
+    public List<Story> getApprovedStories(Integer numberOfStories) {
+        List<Story> stories = null;
+        try {
+            stories = new ArrayList<>();
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT * FROM stories WHERE approved='T' LIMIT ?;");
+            prepStmt.setInt(1, numberOfStories);
+            rs = prepStmt.executeQuery();
+            while (rs.next()) {
+                Story story = new Story();
+                story.setId(rs.getInt("storyId"));
+                story.setTitle(rs.getString("title"));
+                story.setBlurb(rs.getString("blurb"));
+                story.setContent(rs.getString("content"));
+                story.setAuthorId(rs.getInt("accountId"));
+                story.setLikeCount(rs.getInt("likeCount"));
+                story.setViewCount(rs.getInt("viewCount"));
+                story.setRating(rs.getDouble("rating"));
+                story.setIsApproved(rs.getString("approved").charAt(0) == 'T');
+                story.setIsSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setCommentsEnabled(rs.getString("commentsEnabled").charAt(0) == 'T');
+                stories.add(story);
+            }
+
+            for (Story story : stories) {
+                story.setImage(getImageById(story.getId()));
+                story.setImageName(getImageNameById(story.getId()));
+                story.setGenreIds(getStoryGenres(story.getId()));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } finally {
+            closeConnections();
+        }
+        return stories;
     }
 
     @Override

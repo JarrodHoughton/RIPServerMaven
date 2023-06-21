@@ -45,16 +45,19 @@ public class LoginController {
         String userFound = "false";
         String salt = "";
         String userType = "";
+        String userVerified = "";
         HashMap<String, String> userDetails = new HashMap<>();
         if (readerService.userExists(email)) {
             Reader user = readerService.getReader(email);
             userFound = "true";
             salt = user.getSalt();
             userType = user.getUserType();
+            userVerified = String.valueOf(user.getVerified());
         }
         userDetails.put("salt", salt);
         userDetails.put("userFound", userFound);
         userDetails.put("userType", userType);
+        userDetails.put("userVerified", userVerified);
         return Response.ok().entity(userDetails).build();
     }
 
