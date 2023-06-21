@@ -114,14 +114,14 @@ public class RatingDao_Impl implements RatingDao_Interface {
     }
 
     @Override
-    public Boolean addRating(Integer accountId, Integer storyId, Integer ratingValue) {
+    public Boolean addRating(Rating rating) {
         
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("INSERT into ratings (accountId, storyId, ratingValue) values (?,?,?)");
-            prepStmt.setInt(1, accountId);
-            prepStmt.setInt(2, storyId);
-            prepStmt.setInt(3, ratingValue);
+            prepStmt.setInt(1, rating.getReaderId());
+            prepStmt.setInt(2, rating.getStoryId());
+            prepStmt.setInt(3, rating.getValue());
             prepStmt.executeUpdate();
             updateRatingValueForStories();
         } catch (SQLException ex) {

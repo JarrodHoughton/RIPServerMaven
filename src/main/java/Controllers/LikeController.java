@@ -27,7 +27,7 @@ import java.util.List;
 public class LikeController {
     private final LikeService_Interface likeService;
 
-    public LikeController(LikeService_Interface likeService) {
+    public LikeController() {
         this.likeService = new LikeService_Impl();
     }
     
