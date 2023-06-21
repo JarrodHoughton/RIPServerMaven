@@ -35,7 +35,9 @@ public class CommentDao_Impl implements CommentDao_Interface{
         
         try { 
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT * FROM comments WHERE storyId = ?;");
+            prepStmt = connection.prepareStatement(
+                    "SELECT C.commentId, C.commentDate, C.commentMessage, C.accountId, C.storyId, A.accountName, A.accountSurname FROM comments as C \n" +
+                    "INNER JOIN accounts as A on A.accountId=C.accountId WHERE C.storyId=?;");
             prepStmt.setInt(1, storyId);
             rs = prepStmt.executeQuery();
             while (rs.next()){
@@ -61,7 +63,8 @@ public class CommentDao_Impl implements CommentDao_Interface{
         
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT * FROM comments WHERE commentId = ?;");
+            prepStmt = connection.prepareStatement("SELECT C.commentId, C.commentDate, C.commentMessage, C.accountId, C.storyId, A.accountName, A.accountSurname FROM comments as C \n" +
+                    "INNER JOIN accounts as A on A.accountId=C.accountId WHERE C.commentId=?;");
             prepStmt.setInt(1, commentId);
             rs = prepStmt.executeQuery();
             if(rs.next()){
