@@ -50,6 +50,6 @@ public class MailController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response sendVerificationEmail(Reader reader) {
-        return Response.ok().entity(mailService.sendVerficationEmail(reader)).build();
+        return Response.ok().entity(mailService.sendVerificationEmailWithHTML(reader)).build();
     }
 }

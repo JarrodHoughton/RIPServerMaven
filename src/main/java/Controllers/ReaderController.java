@@ -28,4 +28,16 @@ public class ReaderController {
     public Response userExists(@PathParam("email") String email) {
         return Response.ok().entity(readerService.userExists(email)).build();
     }
+    
+    @Path("/setVerified/{readerId}")
+    @GET
+    public Response userExists(@PathParam("readerId") Integer readerId) {
+        return Response.ok().entity(readerService.setVerified(readerId)).build();
+    }
+    
+    @Path("/getVerifyToken/{readerId}")
+    @GET
+    public Response getVerifyToken(@PathParam("readerId") Integer readerId) {
+        return Response.ok().entity(readerService.getVerifyToken(readerId)).build();
+    }
 }

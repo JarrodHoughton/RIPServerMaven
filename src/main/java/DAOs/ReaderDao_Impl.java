@@ -3,6 +3,7 @@ package DAOs;
 import Utils.DBManager;
 import Utils.PasswordEncryptor;
 import Models.*;
+import Utils.VerificationTokenGenerator;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -124,7 +125,7 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
             ps.setString(5, reader.getSalt());
             ps.setString(6, reader.getPhoneNumber());
             ps.setString(7, reader.getUserType());
-            ps.setString(8, PasswordEncryptor.hashPassword(reader.getName() + reader.getSurname(), reader.getSalt()));
+            ps.setString(8, VerificationTokenGenerator.generateToken());
             ps.executeUpdate();
             reader.setId(getReader(reader.getEmail()).getId());
             for (Integer genreId : reader.getFavouriteGenreIds()) {
@@ -268,6 +269,7 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
             ps = connection.prepareStatement(sql);
             ps.setInt(1, readerId);
             ps.executeUpdate();
+            verified = true;
         } catch (SQLException e) {
             Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
             return false;
@@ -275,6 +277,27 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
             closeConnections();
         }
         return verified;
+    }
+    
+    @Override
+    public String getVerifyToken(Integer readerId) {
+        String verifyToken = null;
+        String sql = "SELECT verifyToken FROM accounts WHERE accountId = ?";
+        try {
+            connection = DBManager.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, readerId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                verifyToken = rs.getString("verifyToken");
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        } finally {
+            closeConnections();
+        }
+        return verifyToken;
     }
 
     /**

@@ -188,6 +188,32 @@ public class GenreDao_Impl implements GenreDao_Interface {
         return genres;
     }
 
+    @Override
+    public List<Genre> searchForGenres(String searchValue) {
+        List<Genre> genres = new ArrayList<>();
+        Genre genre;
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT * FROM genres WHERE genreName LIKE ?");
+            prepStmt.setString(1, "%"+searchValue+"%");
+            rs = prepStmt.executeQuery();
+            while (rs.next()) {
+                genre = new Genre(
+                        rs.getInt(1),
+                        rs.getString(2)
+                );
+                genres.add(genre);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } finally {
+            closeConnections();
+        }
+
+        return genres;
+    }
+
 }
 
 

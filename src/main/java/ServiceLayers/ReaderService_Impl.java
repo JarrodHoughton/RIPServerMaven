@@ -97,5 +97,19 @@ public class ReaderService_Impl implements ReaderService_Interface{
             return "System failed to deleted the reader's account.";
         }
     }
+
+    @Override
+    public String setVerified(Integer readerId) {
+        if (readerDao.setVerified(readerId)) {
+            return "You have been verified!";
+        } else {
+            return "Something went wrong verifying your account.";
+        }
+    }
+
+    @Override
+    public String getVerifyToken(Integer readerId) {
+        return readerDao.getVerifyToken(readerId);
+    }
     
 }

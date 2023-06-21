@@ -14,6 +14,7 @@ import java.util.List;
 public interface GenreService_Interface {
     public Genre getGenre(Integer id);
     public List<Genre> getAllGenres();
+    public List<Genre> searchForGenres(String searchValue);
     public String deleteGenre(Integer id);
     public String addGenre(Genre genre);
 }

@@ -47,6 +47,11 @@ public class GenreService_Impl implements GenreService_Interface {
             return "System failed to add genre.";
         }
     }
+
+    @Override
+    public List<Genre> searchForGenres(String searchValue) {
+        return genreDao.searchForGenres(searchValue);
+    }
     
     
 }

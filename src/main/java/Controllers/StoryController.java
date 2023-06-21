@@ -88,4 +88,10 @@ public class StoryController {
     public Response getRecommendations(List<Integer> genreIds) {
         return Response.ok().entity(storyService.getRecommendations(genreIds)).build();
     }
+    
+    @Path("/searchForStories/{searchValue}")
+    @GET
+    public Response searchForStories(@PathParam("searchValue") String searchValue) {
+        return Response.ok().entity(storyService.searchForStories(searchValue)).build();
+    }
 }

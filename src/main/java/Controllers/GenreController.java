@@ -52,4 +52,10 @@ public class GenreController {
     public Response addGenre(Genre genre) {
         return Response.ok().entity(genreService.addGenre(genre)).build();
     }
+    
+    @Path("/searchForGenres/{searchValue}")
+    @GET
+    public Response searchForGenres(@PathParam("searchValue") String searchValue) {
+        return Response.ok().entity(genreService.searchForGenres(searchValue)).build();
+    }
 }

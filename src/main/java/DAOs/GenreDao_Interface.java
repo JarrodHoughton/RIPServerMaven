@@ -15,6 +15,7 @@ import java.util.List;
 public interface GenreDao_Interface {
     public Genre getGenre(Integer id);
     public List<Genre> getAllGenres();
+    public List<Genre> searchForGenres(String searchValue);
     public Boolean deleteGenre(Integer id);
     public Boolean addGenre(Genre genre);
     public List<Genre> getTopGenres(Timestamp startDate, Timestamp endDate, Integer numberOfEntries);

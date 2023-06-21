@@ -22,4 +22,6 @@ public interface ReaderService_Interface {
     public String addAFavouriteGenreOfAReader(Reader reader, Integer genreID);
     public String deleteReader(Reader reader);
     public void updateFavouriteStoriesOfAReader(Reader reader);
+    public String setVerified(Integer readerId);
+    public String getVerifyToken(Integer readerId);
 }

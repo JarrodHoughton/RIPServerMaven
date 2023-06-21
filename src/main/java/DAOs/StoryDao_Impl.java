@@ -168,6 +168,7 @@ public class StoryDao_Impl implements StoryDao_Interface {
             }
             genres += "'"+genreIds.get(genreIds.size()-1)+"'";
             recommendations = new ArrayList<>();
+            List<Integer> storyIds = new ArrayList<>();
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT s.storyId\n"
                     + "FROM stories s\n"
@@ -178,7 +179,11 @@ public class StoryDao_Impl implements StoryDao_Interface {
                     + "LIMIT 10;");
             rs = prepStmt.executeQuery();
             while (rs.next()) {
-                recommendations.add(getStory(rs.getInt("storyId")));
+                storyIds.add(rs.getInt("storyId"));
+            }
+            
+            for (Integer storyId : storyIds) {
+                recommendations.add(getStory(storyId));
             }
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -245,14 +250,20 @@ public class StoryDao_Impl implements StoryDao_Interface {
 
     @Override
     public List<Story> getStoriesInGenre(Integer genreId) {
-        List<Story> stories = new ArrayList<>();
+        List<Story> stories = null;
         try {
+            stories = new ArrayList<>();
+            List<Integer> storyIds = new ArrayList<>();
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT storyId FROM stories_genres WHERE genreId=? AND approved='T' AND submitted='T';");
+            prepStmt = connection.prepareStatement("SELECT storyId FROM stories_genres WHERE genreId=?;");
             prepStmt.setInt(1, genreId);
             rs = prepStmt.executeQuery();
             while (rs.next()) {
-                stories.add(getStory(rs.getInt(1)));
+                storyIds.add(rs.getInt(1));
+            }
+            
+            for (Integer storyId : storyIds) {
+                stories.add(getStory(storyId));
             }
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -458,6 +469,33 @@ public class StoryDao_Impl implements StoryDao_Interface {
         }
     }
 
+    @Override
+    public List<Story> searchForStories(String searchValue) {
+        List<Story> storySearchResults = null;
+        try {
+            storySearchResults = new ArrayList<>();
+            List<Integer> storyIds = new ArrayList<>();
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT storyId FROM stories WHERE title LIKE ? OR blurb LIKE ?;");
+            prepStmt.setString(1, "%"+searchValue+"%");
+            prepStmt.setString(2, "%"+searchValue+"%");
+            rs = prepStmt.executeQuery();
+            while (rs.next()) {
+                storyIds.add(rs.getInt("storyId"));
+            }
+            
+            for (Integer storyId : storyIds) {
+                storySearchResults.add(getStory(storyId));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } finally {
+            closeConnections();
+        }
+        return storySearchResults;
+    }
+    
     private void closeConnections() {
         if (rs != null) {
             try {
