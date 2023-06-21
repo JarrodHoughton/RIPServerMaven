@@ -77,8 +77,8 @@ public class LikeController {
     @Path("/getMostLikedBooks/{numberOfBooks}/{startDate}/{endDate}")
     @GET
     public Response getMostLikedBooks(@PathParam("numberOfBooks")Integer numberOFBooks,
-                                        @PathParam("startDate")String startDate,
-                                        @PathParam("endDate")String endDate){
+                                      @PathParam("startDate")String startDate,
+                                      @PathParam("endDate")String endDate){
         List<Integer> bookIds = new ArrayList<>();
         Timestamp start = Timestamp.valueOf(LocalDateTime.parse(startDate));
         Timestamp end = Timestamp.valueOf(LocalDateTime.parse(endDate)); 
