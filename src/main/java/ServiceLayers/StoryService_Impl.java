@@ -83,5 +83,15 @@ public class StoryService_Impl implements StoryService_Interface{
     public List<Story> searchForStories(String searchValue) {
         return storyDao.searchForStories(searchValue);
     }
+
+    @Override
+    public List<Story> getWritersSubmittedStories(List<Integer> storyIds, Integer writerId) {
+        return storyDao.getWritersSubmittedStories(storyIds, writerId);
+    }
+
+    @Override
+    public List<Story> getWritersDraftedStories(List<Integer> storyIds, Integer writerId) {
+        return storyDao.getWritersDraftedStories(storyIds, writerId);
+    }
     
 }

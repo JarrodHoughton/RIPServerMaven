@@ -4,8 +4,8 @@
  */
 package Controllers;
 
+import Models.StoriesHolder;
 import Models.Story;
-import ServiceLayers.LikeService_Impl;
 import ServiceLayers.StoryService_Impl;
 import ServiceLayers.StoryService_Interface;
 import jakarta.ws.rs.Consumes;
@@ -15,9 +15,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -86,12 +83,30 @@ public class StoryController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getRecommendations(List<Integer> genreIds) {
-        return Response.ok().entity(storyService.getRecommendations(genreIds)).build();
+        StoriesHolder storiesHolder = new StoriesHolder();
+        storiesHolder.setStories(storyService.getRecommendations(genreIds));
+        return Response.ok().entity(storiesHolder).build();
     }
     
     @Path("/searchForStories/{searchValue}")
     @GET
     public Response searchForStories(@PathParam("searchValue") String searchValue) {
         return Response.ok().entity(storyService.searchForStories(searchValue)).build();
+    }
+    
+    @Path("/getWritersSubmittedStories")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getWritersSubmittedStories(StoriesHolder storiesHolder) {
+        storiesHolder.setStories(storyService.getWritersSubmittedStories(storiesHolder.getStoryIds(), storiesHolder.getId()));
+        return Response.ok().entity(storiesHolder).build();
+    }
+
+    @Path("/getWritersDraftedStories")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getWritersDraftedStories(StoriesHolder storiesHolder) {
+        storiesHolder.setStories(storyService.getWritersDraftedStories(storiesHolder.getStoryIds(), storiesHolder.getId()));
+        return Response.ok().entity(storiesHolder).build();
     }
 }

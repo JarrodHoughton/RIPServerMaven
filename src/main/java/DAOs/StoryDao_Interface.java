@@ -17,6 +17,8 @@ public interface StoryDao_Interface {
     public List<Story> getSubmittedStories();
     public List<Story> getStoriesInGenre(Integer genreId);
     public List<Story> getRecommendations(List<Integer>  genreIds);
+    public List<Story> getWritersSubmittedStories(List<Integer> storyIds, Integer writerId);
+    public List<Story> getWritersDraftedStories(List<Integer> storyIds, Integer writerId);
     public List<Story> searchForStories(String searchValue);
     public List<Story> getTopPicks();
     public Boolean updateStory(Story story);

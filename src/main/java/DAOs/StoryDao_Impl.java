@@ -534,6 +534,84 @@ public class StoryDao_Impl implements StoryDao_Interface {
         return storySearchResults;
     }
     
+    @Override
+    public List<Story> getWritersSubmittedStories(List<Integer> storyIds, Integer writerId) {
+        List<Story> submittedStories = null;
+        try {
+            submittedStories = new ArrayList<>();
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT * FROM stories WHERE submitted='T' AND accountId=?;");
+            prepStmt.setInt(1, writerId);
+            rs = prepStmt.executeQuery();
+            while (rs.next()) {
+                Story story = new Story();
+                story.setId(rs.getInt("storyId"));
+                story.setTitle(rs.getString("title"));
+                story.setBlurb(rs.getString("blurb"));
+                story.setContent(rs.getString("content"));
+                story.setAuthorId(rs.getInt("accountId"));
+                story.setLikeCount(rs.getInt("likeCount"));
+                story.setViewCount(rs.getInt("viewCount"));
+                story.setRating(rs.getDouble("rating"));
+                story.setIsApproved(rs.getString("approved").charAt(0) == 'T');
+                story.setIsSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setCommentsEnabled(rs.getString("commentsEnabled").charAt(0) == 'T');
+                submittedStories.add(story);
+            }
+
+            for (Story story : submittedStories) {
+                story.setImage(getImageById(story.getId()));
+                story.setImageName(getImageNameById(story.getId()));
+                story.setGenreIds(getStoryGenres(story.getId()));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } finally {
+            closeConnections();
+        }
+        return submittedStories;
+    }
+
+    @Override
+    public List<Story> getWritersDraftedStories(List<Integer> storyIds, Integer writerId) {
+        List<Story> draftedStories = null;
+        try {
+            draftedStories = new ArrayList<>();
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT * FROM stories WHERE submitted='F' AND accountId=?;");
+            prepStmt.setInt(1, writerId);
+            rs = prepStmt.executeQuery();
+            while (rs.next()) {
+                Story story = new Story();
+                story.setId(rs.getInt("storyId"));
+                story.setTitle(rs.getString("title"));
+                story.setBlurb(rs.getString("blurb"));
+                story.setContent(rs.getString("content"));
+                story.setAuthorId(rs.getInt("accountId"));
+                story.setLikeCount(rs.getInt("likeCount"));
+                story.setViewCount(rs.getInt("viewCount"));
+                story.setRating(rs.getDouble("rating"));
+                story.setIsApproved(rs.getString("approved").charAt(0) == 'T');
+                story.setIsSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setCommentsEnabled(rs.getString("commentsEnabled").charAt(0) == 'T');
+                draftedStories.add(story);
+            }
+
+            for (Story story : draftedStories) {
+                story.setImage(getImageById(story.getId()));
+                story.setImageName(getImageNameById(story.getId()));
+                story.setGenreIds(getStoryGenres(story.getId()));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } finally {
+            closeConnections();
+        }
+        return draftedStories;
+    }
+    
     private void closeConnections() {
         if (rs != null) {
             try {
