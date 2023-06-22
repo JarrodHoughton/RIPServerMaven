@@ -5,6 +5,7 @@
 package ServiceLayers;
 
 import Models.Genre;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -17,4 +18,5 @@ public interface GenreService_Interface {
     public List<Genre> searchForGenres(String searchValue);
     public String deleteGenre(Integer id);
     public String addGenre(Genre genre);
+    public List<Genre> getTopGenres(Timestamp startDate, Timestamp endDate, Integer numberOfEntries);
 }

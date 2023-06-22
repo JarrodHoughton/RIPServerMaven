@@ -7,6 +7,7 @@ package ServiceLayers;
 import DAOs.GenreDao_Impl;
 import DAOs.GenreDao_Interface;
 import Models.Genre;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -51,6 +52,11 @@ public class GenreService_Impl implements GenreService_Interface {
     @Override
     public List<Genre> searchForGenres(String searchValue) {
         return genreDao.searchForGenres(searchValue);
+    }
+
+    @Override
+    public List<Genre> getTopGenres(Timestamp startDate, Timestamp endDate, Integer numberOfEntries) {
+        return genreDao.getTopGenres(startDate, endDate, numberOfEntries);
     }
     
     
