@@ -47,11 +47,10 @@ public class EditorController {
         return Response.ok().entity(editorService.updateEditor(editor)).build();
     }
     
-    @Path("/deleteEditor")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteEditor(Editor editor) {
-        return Response.ok().entity(editorService.deleteEditor(editor.getId())).build();
+    @Path("/deleteEditor/{editorId}")
+    @GET
+    public Response addApplication(@PathParam("/{editorId") Integer editorId) {
+        return Response.ok().entity(editorService.deleteEditor(editorId)).build();
     }
     
     
