@@ -35,6 +35,12 @@ public class ReaderController {
         return Response.ok().entity(readerService.setVerified(readerId)).build();
     }
     
+    @Path("/isVerified/{readerId}")
+    @GET
+    public Response isVerified(@PathParam("readerId") Integer readerId) {
+        return Response.ok().entity(readerService.isVerified(readerId)).build();
+    }
+    
     @Path("/getVerifyToken/{readerId}")
     @GET
     public Response getVerifyToken(@PathParam("readerId") Integer readerId) {

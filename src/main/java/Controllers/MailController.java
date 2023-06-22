@@ -11,6 +11,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.io.IOException;
@@ -51,5 +52,11 @@ public class MailController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response sendVerificationEmail(Reader reader) {
         return Response.ok().entity(mailService.sendVerificationEmailWithHTML(reader)).build();
+    }
+    
+    @Path("/sendReferralEmail/{recipientEmail}/{recipientName}")
+    @GET
+    public Response sendReferralEmail(@PathParam("recipientEmail") String recipientEmail, @PathParam("recipientName") String recipientName) {
+        return Response.ok().entity(mailService.sendReferralEmail(recipientEmail, recipientName)).build();
     }
 }

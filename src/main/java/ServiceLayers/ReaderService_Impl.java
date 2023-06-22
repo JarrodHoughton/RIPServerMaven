@@ -111,5 +111,10 @@ public class ReaderService_Impl implements ReaderService_Interface{
     public String getVerifyToken(Integer readerId) {
         return readerDao.getVerifyToken(readerId);
     }
+
+    @Override
+    public Boolean isVerified(Integer readerId) {
+        return readerDao.isVerified(readerId);
+    }
     
 }

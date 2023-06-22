@@ -23,5 +23,6 @@ public interface ReaderService_Interface {
     public String deleteReader(Reader reader);
     public void updateFavouriteStoriesOfAReader(Reader reader);
     public String setVerified(Integer readerId);
+    public Boolean isVerified(Integer readerId);
     public String getVerifyToken(Integer readerId);
 }

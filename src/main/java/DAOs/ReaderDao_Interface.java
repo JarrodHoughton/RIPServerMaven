@@ -17,6 +17,7 @@ public interface ReaderDao_Interface {
     public Boolean addReader(Reader reader);
     public Boolean updateReaderDetails(Reader reader);
     public Boolean setVerified(Integer readerId);
+    public Boolean isVerified(Integer readerId);
     public String getVerifyToken(Integer readerId);
     public Boolean userExists(String accountEmail);
     public Boolean updateFavouriteGenresOfAReader(Reader reader);

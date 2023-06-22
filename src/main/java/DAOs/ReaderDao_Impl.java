@@ -280,6 +280,28 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
     }
     
     @Override
+    public Boolean isVerified(Integer readerId) {
+        Boolean verified = false;
+        String sql = "SELECT verified FROM accounts WHERE accountId = ?";
+        try {
+            connection = DBManager.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, readerId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                verified = rs.getString("verified").equals("T") ? Boolean.TRUE : Boolean.FALSE;
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
+            return false;
+        } finally {
+            closeConnections();
+        }
+        return verified;
+
+    }
+    
+    @Override
     public String getVerifyToken(Integer readerId) {
         String verifyToken = null;
         String sql = "SELECT verifyToken FROM accounts WHERE accountId = ?";
