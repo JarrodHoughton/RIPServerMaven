@@ -54,8 +54,9 @@ public class StoryDao_Impl implements StoryDao_Interface {
                 story.setLikeCount(rs.getInt("likeCount"));
                 story.setViewCount(rs.getInt("viewCount"));
                 story.setRating(rs.getDouble("rating"));
-                story.setIsApproved(rs.getString("approved").charAt(0) == 'T');
-                story.setIsSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setApproved(rs.getString("approved").charAt(0) == 'T');
+                story.setSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setRejected(rs.getString("rejected").charAt(0) == 'T');
                 story.setCommentsEnabled(rs.getString("commentsEnabled").charAt(0) == 'T');
             }
             story.setImage(getImageById(storyId));
@@ -138,8 +139,9 @@ public class StoryDao_Impl implements StoryDao_Interface {
                 story.setLikeCount(rs.getInt("likeCount"));
                 story.setViewCount(rs.getInt("viewCount"));
                 story.setRating(rs.getDouble("rating"));
-                story.setIsApproved(rs.getString("approved").charAt(0) == 'T');
-                story.setIsSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setApproved(rs.getString("approved").charAt(0) == 'T');
+                story.setSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setRejected(rs.getString("rejected").charAt(0) == 'T');
                 story.setCommentsEnabled(rs.getString("commentsEnabled").charAt(0) == 'T');
                 stories.add(story);
             }
@@ -203,7 +205,7 @@ public class StoryDao_Impl implements StoryDao_Interface {
         }
         for (Integer storyId:storyIds) {
             Story story = getStory(storyId);
-            if (story.getIsSubmitted()&&story.getIsApproved()) {
+            if (story.getSubmitted()&&story.getApproved()) {
                 topStories.add(story);
             }
         }
@@ -228,8 +230,9 @@ public class StoryDao_Impl implements StoryDao_Interface {
                 story.setLikeCount(rs.getInt("likeCount"));
                 story.setViewCount(rs.getInt("viewCount"));
                 story.setRating(rs.getDouble("rating"));
-                story.setIsApproved(rs.getString("approved").charAt(0) == 'T');
-                story.setIsSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setApproved(rs.getString("approved").charAt(0) == 'T');
+                story.setSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setRejected(rs.getString("rejected").charAt(0) == 'T');
                 story.setCommentsEnabled(rs.getString("commentsEnabled").charAt(0) == 'T');
                 stories.add(story);
             }
@@ -266,8 +269,9 @@ public class StoryDao_Impl implements StoryDao_Interface {
                 story.setLikeCount(rs.getInt("likeCount"));
                 story.setViewCount(rs.getInt("viewCount"));
                 story.setRating(rs.getDouble("rating"));
-                story.setIsApproved(rs.getString("approved").charAt(0) == 'T');
-                story.setIsSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setApproved(rs.getString("approved").charAt(0) == 'T');
+                story.setSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setRejected(rs.getString("rejected").charAt(0) == 'T');
                 story.setCommentsEnabled(rs.getString("commentsEnabled").charAt(0) == 'T');
                 submittedStories.add(story);
             }
@@ -317,17 +321,18 @@ public class StoryDao_Impl implements StoryDao_Interface {
         Boolean updated = false;
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("UPDATE `ripdb`.`accounts` SET `title`=?, `blurb`=?, `approved`=?, `submitted`=?, `commentsEnabled`=?, `content`=? `accountId`=? `viewCount`=? `rating`=? `likeCount`=? storyId`=?;");
+            prepStmt = connection.prepareStatement("UPDATE `ripdb`.`accounts` SET `title`=?, `blurb`=?, `approved`=?, `submitted`=?, `rejected`=?,`commentsEnabled`=?, `content`=? `accountId`=? `viewCount`=? `rating`=? `likeCount`=? storyId`=?;");
             prepStmt.setString(1, story.getTitle());
             prepStmt.setString(2, story.getBlurb());
-            prepStmt.setString(3, story.getIsApproved() ? "T" : "F");
-            prepStmt.setString(4, story.getIsSubmitted() ? "T" : "F");
-            prepStmt.setString(5, story.getCommentsEnabled() ? "T" : "F");
-            prepStmt.setString(6, story.getContent());
-            prepStmt.setInt(7, story.getAuthorId());
-            prepStmt.setInt(8, story.getViewCount());
-            prepStmt.setInt(9, story.getLikeCount());
-            prepStmt.setDouble(10, story.getRating());
+            prepStmt.setString(3, story.getApproved() ? "T" : "F");
+            prepStmt.setString(4, story.getSubmitted() ? "T" : "F");
+            prepStmt.setString(5, story.getRejected()? "T" : "F");
+            prepStmt.setString(6, story.getCommentsEnabled() ? "T" : "F");
+            prepStmt.setString(7, story.getContent());
+            prepStmt.setInt(8, story.getAuthorId());
+            prepStmt.setInt(9, story.getViewCount());
+            prepStmt.setInt(10, story.getLikeCount());
+            prepStmt.setDouble(11, story.getRating());
             prepStmt.executeUpdate();
             updateImageAndImageName(story.getId(), story.getImage(), story.getImageName());
             updated = deleteStoryGenres(story.getId()) && addStoryGenres(story);
@@ -365,19 +370,20 @@ public class StoryDao_Impl implements StoryDao_Interface {
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(
-                    "INSERT IGNORE INTO `ripdb`.`stories` (`title`, `blurb`, `approved`, `submitted`, `commentsEnabled`, `content`, `accountId`, `viewCount`, `likeCount`, `rating`) "
-                    + "VALUES (?,?,?,?,?,?,?,?,?,?);"
+                    "INSERT IGNORE INTO `ripdb`.`stories` (`title`, `blurb`, `approved`, `rejected`, `submitted`, `commentsEnabled`, `content`, `accountId`, `viewCount`, `likeCount`, `rating`) "
+                    + "VALUES (?,?,?,?,?,?,?,?,?,?,?);"
             );
             prepStmt.setString(1, story.getTitle());
             prepStmt.setString(2, story.getBlurb());
-            prepStmt.setString(3, story.getIsApproved() ? "T" : "F");
-            prepStmt.setString(4, story.getIsSubmitted() ? "T" : "F");
-            prepStmt.setString(5, story.getCommentsEnabled() ? "T" : "F");
-            prepStmt.setString(6, story.getContent());
-            prepStmt.setInt(7, story.getAuthorId());
-            prepStmt.setInt(8, story.getViewCount());
-            prepStmt.setInt(9, story.getLikeCount());
-            prepStmt.setDouble(10, story.getRating());
+            prepStmt.setString(3, story.getApproved() ? "T" : "F");
+            prepStmt.setString(4, story.getRejected() ? "T" : "F");
+            prepStmt.setString(5, story.getSubmitted() ? "T" : "F");
+            prepStmt.setString(6, story.getCommentsEnabled() ? "T" : "F");
+            prepStmt.setString(7, story.getContent());
+            prepStmt.setInt(8, story.getAuthorId());
+            prepStmt.setInt(9, story.getViewCount());
+            prepStmt.setInt(10, story.getLikeCount());
+            prepStmt.setDouble(11, story.getRating());
             prepStmt.executeUpdate();
 
             prepStmt = connection.prepareStatement("select storyId from stories where title = ? and blurb = ?;");
@@ -553,8 +559,9 @@ public class StoryDao_Impl implements StoryDao_Interface {
                 story.setLikeCount(rs.getInt("likeCount"));
                 story.setViewCount(rs.getInt("viewCount"));
                 story.setRating(rs.getDouble("rating"));
-                story.setIsApproved(rs.getString("approved").charAt(0) == 'T');
-                story.setIsSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setApproved(rs.getString("approved").charAt(0) == 'T');
+                story.setSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setRejected(rs.getString("rejected").charAt(0) == 'T');
                 story.setCommentsEnabled(rs.getString("commentsEnabled").charAt(0) == 'T');
                 submittedStories.add(story);
             }
@@ -592,8 +599,9 @@ public class StoryDao_Impl implements StoryDao_Interface {
                 story.setLikeCount(rs.getInt("likeCount"));
                 story.setViewCount(rs.getInt("viewCount"));
                 story.setRating(rs.getDouble("rating"));
-                story.setIsApproved(rs.getString("approved").charAt(0) == 'T');
-                story.setIsSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setApproved(rs.getString("approved").charAt(0) == 'T');
+                story.setSubmitted(rs.getString("submitted").charAt(0) == 'T');
+                story.setRejected(rs.getString("rejected").charAt(0) == 'T');
                 story.setCommentsEnabled(rs.getString("commentsEnabled").charAt(0) == 'T');
                 draftedStories.add(story);
             }

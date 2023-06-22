@@ -21,8 +21,9 @@ public class Story {
     private Integer likeCount;
     private Integer viewCount;
     private Double rating;    
-    private Boolean isSubmitted;
-    private Boolean isApproved;
+    private Boolean submitted;
+    private Boolean approved;
+    private Boolean rejected;
     private Boolean commentsEnabled;
     private List<Integer> genreIds;
 
@@ -30,13 +31,14 @@ public class Story {
         this.likeCount = 0;
         this.viewCount = 0;
         this.rating = 0.0;
-        this.isSubmitted = false;
-        this.isApproved = false;
+        this.submitted = false;
+        this.approved = false;
+        this.rejected = false;
         this.commentsEnabled = false;
         this.imageName = "jpeg";
     }
 
-    public Story(Integer id, String title, Integer authorId, String blurb, Byte[] image, String imageName, String content, Integer likeCount, Integer viewCount, Double rating, Boolean isSubmitted, Boolean isApproved, Boolean commentsEnabled, List<Integer> genreIds) {
+    public Story(Integer id, String title, Integer authorId, String blurb, Byte[] image, String imageName, String content, Integer likeCount, Integer viewCount, Double rating, Boolean submitted, Boolean approved, Boolean rejected, Boolean commentsEnabled, List<Integer> genreIds) {
         this.id = id;
         this.title = title;
         this.authorId = authorId;
@@ -47,8 +49,9 @@ public class Story {
         this.likeCount = likeCount;
         this.viewCount = viewCount;
         this.rating = rating;
-        this.isSubmitted = isSubmitted;
-        this.isApproved = isApproved;
+        this.submitted = submitted;
+        this.approved = approved;
+        this.rejected = rejected;
         this.commentsEnabled = commentsEnabled;
         this.genreIds = genreIds;
     }
@@ -136,21 +139,29 @@ public class Story {
     public void setRating(Double rating) {
         this.rating = rating;
     }
-
-    public Boolean getIsSubmitted() {
-        return isSubmitted;
+    
+    public Boolean getSubmitted() {
+        return submitted;
     }
 
-    public void setIsSubmitted(Boolean isSubmitted) {
-        this.isSubmitted = isSubmitted;
+    public void setSubmitted(Boolean submitted) {
+        this.submitted = submitted;
     }
 
-    public Boolean getIsApproved() {
-        return isApproved;
+    public Boolean getApproved() {
+        return approved;
     }
 
-    public void setIsApproved(Boolean isApproved) {
-        this.isApproved = isApproved;
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
+    }
+
+    public Boolean getRejected() {
+        return rejected;
+    }
+
+    public void setRejected(Boolean rejected) {
+        this.rejected = rejected;
     }
 
     public Boolean getCommentsEnabled() {
@@ -161,11 +172,6 @@ public class Story {
         this.commentsEnabled = commentsEnabled;
     }
 
-    @Override
-    public String toString() {
-        return "Story{" + "id=" + id + ", title=" + title + ", authorId=" + authorId + ", blurb=" + blurb + ", imageName=" + image + ", content=" + content + ", likeCount=" + likeCount + ", viewCount=" + viewCount + ", rating=" + rating + ", isSubmitted=" + isSubmitted + ", isApproved=" + isApproved + ", commentsEnabled=" + commentsEnabled + '}';
-    }
-
     public List<Integer> getGenreIds() {
         return genreIds;
     }
@@ -173,7 +179,9 @@ public class Story {
     public void setGenreIds(List<Integer> genreIds) {
         this.genreIds = genreIds;
     }
-
     
-    
+    @Override
+    public String toString() {
+        return "Story{" + "id=" + id + ", title=" + title + ", authorId=" + authorId + ", blurb=" + blurb + ", image=" + image + ", imageName=" + imageName + ", content=" + content + ", likeCount=" + likeCount + ", viewCount=" + viewCount + ", rating=" + rating + ", submitted=" + submitted + ", approved=" + approved + ", rejected=" + rejected + ", commentsEnabled=" + commentsEnabled + ", genreIds=" + genreIds + '}';
+    }
 }
