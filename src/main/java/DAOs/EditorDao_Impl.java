@@ -50,6 +50,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
                 editor.setEmail(rs.getString("accountEmail"));
                 editor.setSalt(rs.getString("accountSalt"));
                 editor.setPasswordHash(rs.getString("accountPasswordHash"));
+                editor.setUserType(rs.getString("accountType"));
                 editor.setPhoneNumber(rs.getString("accountPhoneNumber"));
                 editor.setApprovalCount(rs.getInt("approvalCount"));
             }
@@ -76,12 +77,13 @@ public class EditorDao_Impl implements EditorDao_Interface {
             rs = prepStmt.executeQuery();
             if (rs.next()) {
                 editor = new Editor();
-                editor.setId(rs.getInt("accountName"));
+                editor.setId(rs.getInt("accountId"));
                 editor.setName(rs.getString("accountName"));
                 editor.setSurname(rs.getString("accountSurname"));
                 editor.setEmail(rs.getString("accountEmail"));
                 editor.setSalt(rs.getString("accountSalt"));
                 editor.setPasswordHash(rs.getString("accountPasswordHash"));
+                editor.setUserType(rs.getString("accountType"));
                 editor.setPhoneNumber(rs.getString("accountPhoneNumber"));
                 editor.setApprovalCount(rs.getInt("approvalCount"));
             }
