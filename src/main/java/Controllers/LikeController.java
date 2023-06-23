@@ -38,10 +38,10 @@ public class LikeController {
         return Response.ok().entity(likeService.addLike(like)).build();
     }
     
-    @Path("/deleteLike/{likeId}")
-    @GET
-    public Response deleteLike(@PathParam("likeId")Integer likeId){
-        return Response.ok().entity(likeService.deleteLike(likeId)).build();
+    @Path("/deleteLike")
+    @POST
+    public Response deleteLike(Like like){
+        return Response.ok().entity(likeService.deleteLike(like)).build();
     }
     
     @Path("/getLikesByReaderId/{accountId}")

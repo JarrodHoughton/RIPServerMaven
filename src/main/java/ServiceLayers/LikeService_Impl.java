@@ -21,7 +21,7 @@ public class LikeService_Impl implements LikeService_Interface {
     public String addLike(Like like) {
         
         if (likeDao.checkIfLikeExists(like)) {
-            return "Like already exists";
+            return "You have already liked this story.";
         }
         
         if(likeDao.addLike(like)){
@@ -32,11 +32,11 @@ public class LikeService_Impl implements LikeService_Interface {
     }
 
     @Override
-    public String deleteLike(Integer likeId) {
-        if(likeDao.deleteLike(likeId)){
-            return "Like added";
+    public String deleteLike(Like like) {
+        if(likeDao.deleteLike(like)){
+            return "Like removed.";
         }else{
-            return "System failed to delete like";
+            return "System failed to remove like";
         }
     }
 

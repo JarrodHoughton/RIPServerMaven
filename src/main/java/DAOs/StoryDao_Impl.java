@@ -172,12 +172,12 @@ public class StoryDao_Impl implements StoryDao_Interface {
             recommendations = new ArrayList<>();
             List<Integer> storyIds = new ArrayList<>();
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT s.storyId\n"
-                    + "FROM stories s\n"
-                    + "JOIN genres g ON s.storyId = g.storyId\n"
-                    + "WHERE g.genreName IN ("+genres+") AND s.approved='T' AND s.submitted='T'\n"
-                    + "GROUP BY s.storyId\n"
-                    + "ORDER BY SUM(s.likeCount) DESC\n"
+            prepStmt = connection.prepareStatement("SELECT SG.storyId\n"
+                    + "FROM stories_genres AS SG\n"
+                    + "JOIN stories AS S ON SG.storyId = S.storyId\n"
+                    + "WHERE SG.genreId IN ("+genres+") AND S.approved='T' AND S.submitted='T'\n"
+                    + "GROUP BY S.storyId\n"
+                    + "ORDER BY SUM(S.likeCount) DESC\n"
                     + "LIMIT 10;");
             rs = prepStmt.executeQuery();
             while (rs.next()) {
@@ -212,12 +212,13 @@ public class StoryDao_Impl implements StoryDao_Interface {
         return topStories;
     }
     
+    @Override
     public List<Story> getApprovedStories(Integer numberOfStories) {
         List<Story> stories = null;
         try {
             stories = new ArrayList<>();
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT * FROM stories WHERE approved='T' LIMIT ?;");
+            prepStmt = connection.prepareStatement("SELECT * FROM stories WHERE approved='T' AND submitted='T' LIMIT ?;");
             prepStmt.setInt(1, numberOfStories);
             rs = prepStmt.executeQuery();
             while (rs.next()) {
@@ -297,7 +298,7 @@ public class StoryDao_Impl implements StoryDao_Interface {
             stories = new ArrayList<>();
             List<Integer> storyIds = new ArrayList<>();
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT storyId FROM stories_genres WHERE genreId=?;");
+            prepStmt = connection.prepareStatement("SELECT S.storyId FROM stories_genres AS SG INNER JOIN stories AS S ON S.storyId=SG.storyId WHERE SG.genreId=? AND S.submitted='T' AND S.approved='T';");
             prepStmt.setInt(1, genreId);
             rs = prepStmt.executeQuery();
             while (rs.next()) {
@@ -520,7 +521,7 @@ public class StoryDao_Impl implements StoryDao_Interface {
             storySearchResults = new ArrayList<>();
             List<Integer> storyIds = new ArrayList<>();
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT storyId FROM stories WHERE title LIKE ? OR blurb LIKE ?;");
+            prepStmt = connection.prepareStatement("SELECT storyId FROM stories WHERE (title LIKE ? OR blurb LIKE ?) AND submitted = 'T' AND approved = 'T';");
             prepStmt.setString(1, "%"+searchValue+"%");
             prepStmt.setString(2, "%"+searchValue+"%");
             rs = prepStmt.executeQuery();

@@ -118,12 +118,13 @@ public class RatingDao_Impl implements RatingDao_Interface {
         
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("INSERT into ratings (accountId, storyId, ratingValue) values (?,?,?)");
+            prepStmt = connection.prepareStatement("INSERT into ratings (accountId, storyId, ratingValue) values (?,?,?);");
             prepStmt.setInt(1, rating.getReaderId());
             prepStmt.setInt(2, rating.getStoryId());
             prepStmt.setInt(3, rating.getValue());
             prepStmt.executeUpdate();
-            updateRatingValueForStories();
+          
+            updateRatingValueForStory(rating.getStoryId());
         } catch (SQLException ex) {
             Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, "Failed to add rating", ex);
             return false;
@@ -139,7 +140,7 @@ public class RatingDao_Impl implements RatingDao_Interface {
         
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT AVG(ratingValue) as ratingAverage FROM ratings WHERE storyId = ?");
+            prepStmt = connection.prepareStatement("SELECT AVG(ratingValue) as ratingAverage FROM ratings WHERE storyId = ?;");
             prepStmt.setInt(1, storyId);
             rs = prepStmt.executeQuery();
             
@@ -157,11 +158,13 @@ public class RatingDao_Impl implements RatingDao_Interface {
         return integer;
     }
 
-    private void updateRatingValueForStories() {
-        String sql = "UPDATE stories SET rating = (SELECT AVG(ratingValue) FROM ratings WHERE storyId = stories.storyId)";
+    private void updateRatingValueForStory(Integer storyId) {
+        String sql = "UPDATE stories SET rating = (SELECT AVG(ratingValue) FROM ratings WHERE storyId = ?) WHERE storyId = ?;";
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(sql);
+            prepStmt.setInt(1, storyId);
+            prepStmt.setInt(2, storyId);
             prepStmt.executeUpdate();
            
         } catch (SQLException ex) {
@@ -199,7 +202,7 @@ public class RatingDao_Impl implements RatingDao_Interface {
     public List<Integer> getTopHighestRatedStoriesInTimePeriod(Timestamp startDate, Timestamp endDate, Integer numberOfEntries) {
         ArrayList<Integer> storyIds = new ArrayList<>();
         try {
-            String sql = "SELECT stroyId, AVG(ratingValue) AS average_rating FROM ratings WHERE ratingDate BETWEEN ? AND ? GROUP BY storyId ORDER BY average_rating DESC LIMIT ?";
+            String sql = "SELECT stroyId, AVG(ratingValue) AS average_rating FROM ratings WHERE ratingDate BETWEEN ? AND ? GROUP BY storyId ORDER BY average_rating DESC LIMIT ?;";
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(sql);             
             prepStmt.setTimestamp(1, startDate);
@@ -223,7 +226,7 @@ public class RatingDao_Impl implements RatingDao_Interface {
     public Boolean checkRatingExists(Rating rating) {
     try {
         connection = DBManager.getConnection();
-        prepStmt = connection.prepareStatement("SELECT COUNT(*) FROM ratings WHERE accountId = ? AND storyId = ?");
+        prepStmt = connection.prepareStatement("SELECT COUNT(*) FROM ratings WHERE accountId = ? AND storyId = ?;");
         prepStmt.setInt(1, rating.getReaderId());
         prepStmt.setInt(2, rating.getStoryId());
         rs = prepStmt.executeQuery();
@@ -242,14 +245,15 @@ public class RatingDao_Impl implements RatingDao_Interface {
 }
     
     @Override
-    public Boolean editRatingValue(Integer ratingId, Integer newValue) {
+    public Boolean updateRatingValue(Rating rating) {
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("UPDATE ratings SET ratingValue = ? WHERE ratingId = ?");
-            prepStmt.setInt(1, newValue);
-            prepStmt.setInt(2, ratingId);
+            prepStmt = connection.prepareStatement("UPDATE ratings SET ratingValue = ?, ratingDate = CURRENT_TIMESTAMP WHERE accountId = ? AND storyId = ?;");
+            prepStmt.setInt(1, rating.getValue());
+            prepStmt.setInt(2, rating.getReaderId());
+            prepStmt.setInt(3, rating.getStoryId());
             prepStmt.executeUpdate();
-            updateRatingValueForStories();
+            updateRatingValueForStory(rating.getStoryId());
         } catch (SQLException ex) {
             Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, "Failed to edit rating", ex);
             return false;
@@ -257,6 +261,34 @@ public class RatingDao_Impl implements RatingDao_Interface {
             closeConnections();
         }
         return true;
+    }
+
+    @Override
+    public Rating getRating(Integer accountId, Integer storyId) {
+        Rating rating = null;
+        
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT * FROM ratings WHERE storyId = ? AND accountId = ?;");
+            prepStmt.setInt(1, storyId);
+            prepStmt.setInt(2, accountId);
+            rs = prepStmt.executeQuery();
+            if (rs.next()) {
+                rating = new Rating();
+                rating.setId(rs.getInt("ratingId"));
+                rating.setDate(rs.getTimestamp("ratingDate").toLocalDateTime());
+                rating.setReaderId(rs.getInt("accountId"));
+                rating.setStoryId(rs.getInt("storyId"));
+                rating.setValue(rs.getInt("ratingValue"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } finally {
+            closeConnections();
+        }
+        
+        return rating;
     }
 
 

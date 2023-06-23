@@ -37,7 +37,7 @@ public class CommentDao_Impl implements CommentDao_Interface{
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(
                     "SELECT C.commentId, C.commentDate, C.commentMessage, C.accountId, C.storyId, A.accountName, A.accountSurname FROM comments as C \n" +
-                    "INNER JOIN accounts as A on A.accountId=C.accountId WHERE C.storyId=?;");
+                    "INNER JOIN accounts as A on A.accountId=C.accountId WHERE C.storyId=? ORDER BY C.commentDate DESC;");
             prepStmt.setInt(1, storyId);
             rs = prepStmt.executeQuery();
             while (rs.next()){
@@ -47,6 +47,8 @@ public class CommentDao_Impl implements CommentDao_Interface{
                 com.setReaderId(rs.getInt("accountId"));
                 com.setStoryId(rs.getInt("storyId"));
                 com.setMessage(rs.getString("commentMessage"));
+                com.setName(rs.getString("accountName"));
+                com.setSurname(rs.getString("accountSurname"));
                 comments.add(com);
             }
         } catch (SQLException ex) {
@@ -74,6 +76,8 @@ public class CommentDao_Impl implements CommentDao_Interface{
                 comment.setReaderId(rs.getInt("accountId"));
                 comment.setStoryId(rs.getInt("storyId"));
                 comment.setMessage("commentMessage");
+                comment.setName(rs.getString("accountName"));
+                comment.setSurname(rs.getString("accountSurname"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);

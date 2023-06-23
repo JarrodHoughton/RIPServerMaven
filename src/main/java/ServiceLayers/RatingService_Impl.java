@@ -63,12 +63,17 @@ public class RatingService_Impl implements RatingService_Interface {
     }
 
     @Override
-    public String editRatingValue(Integer ratingId, Integer newValue) {
-        if (ratingDao.editRatingValue(ratingId, newValue)) {
+    public String updateRatingValue(Rating rating) {
+        if (ratingDao.updateRatingValue(rating)) {
             return "rating successfully updated";
         } else {
           return "rating not updated";  
         }
+    }
+
+    @Override
+    public Rating getRating(Integer accountId, Integer storyId) {
+        return ratingDao.getRating(accountId, storyId);
     }
     
     

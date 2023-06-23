@@ -133,11 +133,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
     }
 
     @Override
-    public Boolean addLike(Like like) {        
-        if (searchForLike(like.getReaderId(), like.getStoryId())) {
-            return false; // Like already exists
-        }
-        
+    public Boolean addLike(Like like) {
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("INSERT INTO likes (accountId, storyId) VALUES (?, ?)");
@@ -159,12 +155,16 @@ public class LikeDao_Impl implements LikeDao_Interface {
     }
 
     @Override
-    public Boolean deleteLike(Integer likeId) {
-
+    public Boolean deleteLike(Like like) {
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("DELETE FROM likes WHERE likeId = ?");
-            prepStmt.setInt(1, likeId);
+            prepStmt = connection.prepareStatement("DELETE FROM likes WHERE accountId = ? AND storyId = ?");
+            prepStmt.setInt(1, like.getReaderId());
+            prepStmt.setInt(2, like.getStoryId());
+            prepStmt.executeUpdate();
+            
+            prepStmt = connection.prepareStatement("UPDATE stories SET likeCount = likeCount - 1 WHERE storyId = ?");
+            prepStmt.setInt(1, like.getStoryId());
             prepStmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);

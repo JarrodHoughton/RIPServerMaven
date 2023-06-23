@@ -46,4 +46,10 @@ public class ReaderController {
     public Response getVerifyToken(@PathParam("readerId") Integer readerId) {
         return Response.ok().entity(readerService.getVerifyToken(readerId)).build();
     }
+    
+    @Path("/getReader/{accountEmail}")
+    @GET
+    public Response getReader(@PathParam("accountEmail") String accountEmail) {
+        return Response.ok().entity(readerService.getReader(accountEmail)).build();
+    }
 }

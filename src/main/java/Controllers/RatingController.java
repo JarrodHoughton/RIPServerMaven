@@ -38,6 +38,26 @@ public class RatingController {
         return Response.ok().entity(ratingService.addRating(rating)).build();
     }
     
+    @Path("/updateRatingValue")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateRatingValue(Rating rating) {
+        return Response.ok().entity(ratingService.updateRatingValue(rating)).build();
+    }
+    
+    @Path("/checkRatingExists")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response checkRatingExists(Rating rating) {
+        return Response.ok().entity(ratingService.checkRatingExists(rating)).build();
+    }
+    
+    @Path("/getRating/{accountId}/{storyId}")
+    @GET
+    public Response getRatingValue(@PathParam("accountId")Integer accountId, @PathParam("storyId")Integer storyId){
+        return Response.ok().entity(ratingService.getRating(accountId, storyId)).build();
+    }
+    
     @Path("/getRatingValue/{storyId}")
     @GET
     public Response getRatingValue(@PathParam("storyId")Integer storyId){
