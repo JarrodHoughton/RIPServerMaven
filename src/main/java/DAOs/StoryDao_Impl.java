@@ -327,7 +327,7 @@ public class StoryDao_Impl implements StoryDao_Interface {
         Boolean updated = false;
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("UPDATE `ripdb`.`accounts` SET `title`=?, `blurb`=?, `approved`=?, `submitted`=?, `rejected`=?,`commentsEnabled`=?, `content`=? `accountId`=? `viewCount`=? `rating`=? `likeCount`=? storyId`=?;");
+            prepStmt = connection.prepareStatement("UPDATE stories SET title=?, blurb=?, approved=?, submitted=?, rejected=?,commentsEnabled=?, content=?, viewCount=?, rating=?, likeCount=? WHERE storyId=?;");
             prepStmt.setString(1, story.getTitle());
             prepStmt.setString(2, story.getBlurb());
             prepStmt.setString(3, story.getApproved() ? "T" : "F");
@@ -335,10 +335,10 @@ public class StoryDao_Impl implements StoryDao_Interface {
             prepStmt.setString(5, story.getRejected()? "T" : "F");
             prepStmt.setString(6, story.getCommentsEnabled() ? "T" : "F");
             prepStmt.setString(7, story.getContent());
-            prepStmt.setInt(8, story.getAuthorId());
-            prepStmt.setInt(9, story.getViewCount());
+            prepStmt.setInt(8, story.getViewCount());
+            prepStmt.setDouble(9, story.getRating());
             prepStmt.setInt(10, story.getLikeCount());
-            prepStmt.setDouble(11, story.getRating());
+            prepStmt.setInt(11, story.getId());
             prepStmt.executeUpdate();
             updateImageAndImageName(story.getId(), story.getImage(), story.getImageName());
             updated = deleteStoryGenres(story.getId()) && addStoryGenres(story);
