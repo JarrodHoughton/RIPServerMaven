@@ -35,10 +35,10 @@ public class EditorDao_Impl implements EditorDao_Interface {
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(
-                    "SELECT A.accountId, A.accountName, A.accountSurname, A.accountEmail, A.accountPasswordHash, A.accountSalt, A.accountPhoneNumber, A.accountType, E.approvalCount\n"
+                    "SELECT A.accountId, A.accountName, A.accountSurname, A.accountEmail, A.accountPasswordHash, A.accountSalt, A.accountPhoneNumber, A.accountType, E.approvalCount \n"
                     + "FROM accounts as A \n"
-                    + "INNER JOIN editorsapprovals as E\n"
-                    + "ON A.accountId=E.accountId"
+                    + "INNER JOIN editorsapprovals as E \n"
+                    + "ON A.accountId=E.accountId "
                             + "WHERE A.accountId = ?;");
             prepStmt.setInt(1, id);
             rs = prepStmt.executeQuery();
