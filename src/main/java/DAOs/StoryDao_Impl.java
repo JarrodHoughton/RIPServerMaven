@@ -162,6 +162,11 @@ public class StoryDao_Impl implements StoryDao_Interface {
     
     @Override
     public List<Story> getRecommendations(List<Integer> genreIds) {
+        if (genreIds!=null) {
+            return null;
+        } else if (genreIds.isEmpty()) {
+            return null;
+        }
         List<Story> recommendations = null;
         try {
             String genres = "";
