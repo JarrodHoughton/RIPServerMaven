@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author jarro
+ * @author Jarrod
  */
 public class EditorDao_Impl implements EditorDao_Interface {
 
@@ -43,17 +43,15 @@ public class EditorDao_Impl implements EditorDao_Interface {
             prepStmt.setInt(1, id);
             rs = prepStmt.executeQuery();
             if (rs.next()) {
-                editor = new Editor(
-                        rs.getInt(1),
-                        rs.getString(2),
-                        rs.getString(3),
-                        rs.getString(4),
-                        rs.getString(5),
-                        rs.getString(6),
-                        rs.getString(7),
-                        rs.getString(8),
-                        rs.getInt(9)
-                );
+                editor = new Editor();
+                editor.setId(rs.getInt("accountName"));
+                editor.setName(rs.getString("accountName"));
+                editor.setSurname(rs.getString("accountSurname"));
+                editor.setEmail(rs.getString("accountEmail"));
+                editor.setSalt(rs.getString("accountSalt"));
+                editor.setPasswordHash(rs.getString("accountPasswordHash"));
+                editor.setPhoneNumber(rs.getString("accountPhoneNumber"));
+                editor.setApprovalCount(rs.getInt("approvalCount"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -77,17 +75,15 @@ public class EditorDao_Impl implements EditorDao_Interface {
             prepStmt.setString(1, email);
             rs = prepStmt.executeQuery();
             if (rs.next()) {
-                editor = new Editor(
-                        rs.getInt(1),
-                        rs.getString(2),
-                        rs.getString(3),
-                        rs.getString(4),
-                        rs.getString(5),
-                        rs.getString(6),
-                        rs.getString(7),
-                        rs.getString(8),
-                        rs.getInt(9)
-                );
+                editor = new Editor();
+                editor.setId(rs.getInt("accountName"));
+                editor.setName(rs.getString("accountName"));
+                editor.setSurname(rs.getString("accountSurname"));
+                editor.setEmail(rs.getString("accountEmail"));
+                editor.setSalt(rs.getString("accountSalt"));
+                editor.setPasswordHash(rs.getString("accountPasswordHash"));
+                editor.setPhoneNumber(rs.getString("accountPhoneNumber"));
+                editor.setApprovalCount(rs.getInt("approvalCount"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -100,6 +96,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
     @Override
     public List<Editor> getAllEditors() {
         List<Editor> editors = new ArrayList<>();
+        Editor editor;
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(
@@ -109,17 +106,16 @@ public class EditorDao_Impl implements EditorDao_Interface {
                     + "ON A.accountId=E.accountId;");
             rs = prepStmt.executeQuery();
             while (rs.next()) {
-                editors.add( new Editor(
-                        rs.getInt(1),
-                        rs.getString(2),
-                        rs.getString(3),
-                        rs.getString(4),
-                        rs.getString(5),
-                        rs.getString(6),
-                        rs.getString(7),
-                        rs.getString(8),
-                        rs.getInt(9)
-                ));
+                editor = new Editor();
+                editor.setId(rs.getInt("accountName"));
+                editor.setName(rs.getString("accountName"));
+                editor.setSurname(rs.getString("accountSurname"));
+                editor.setEmail(rs.getString("accountEmail"));
+                editor.setSalt(rs.getString("accountSalt"));
+                editor.setPasswordHash(rs.getString("accountPasswordHash"));
+                editor.setPhoneNumber(rs.getString("accountPhoneNumber"));
+                editor.setApprovalCount(rs.getInt("approvalCount"));
+                editors.add(editor);
             }
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -183,18 +179,20 @@ public class EditorDao_Impl implements EditorDao_Interface {
         Boolean added = false;
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("INSERT IGNORE INTO `ripdb`.`accounts` (`accountName`, `accountSurname`, `accountEmail`, `accountPasswordHash`, `accountSalt`, `accountPhoneNumber`, `accountType`) VALUES (?, ?, ?, ?, ?, ?, ?);");
+            prepStmt = connection.prepareStatement("INSERT INTO accounts (accountName, accountSurname, accountEmail, accountPasswordHash, accountSalt, accountPhoneNumber, accountType, verifyToken) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
             prepStmt.setString(1, editor.getName());
             prepStmt.setString(2, editor.getSurname());
             prepStmt.setString(3, editor.getEmail());
             prepStmt.setString(4, editor.getPasswordHash());
             prepStmt.setString(5, editor.getSalt());
-            prepStmt.setString(6, editor.getUserType());
+            prepStmt.setString(6, editor.getPhoneNumber());
+            prepStmt.setString(7, editor.getUserType());
+            prepStmt.setString(8, "");
             prepStmt.executeUpdate();
             prepStmt = connection.prepareStatement("SELECT accountId FROM accounts WHERE accountEmail=?;");
             rs = prepStmt.executeQuery();
             if (rs.next()) {
-                prepStmt = connection.prepareStatement("INSERT IGNORE INTO `ripdb`.`editorsapprovals` (`accountId`, `approvalCount`) VALUES (?, ?);");
+                prepStmt = connection.prepareStatement("INSERT INTO `ripdb`.`editorsapprovals` (`accountId`, `approvalCount`) VALUES (?, ?);");
                 prepStmt.setInt(1, rs.getInt(1));
                 prepStmt.setInt(2, editor.getApprovalCount());
                 prepStmt.executeUpdate();

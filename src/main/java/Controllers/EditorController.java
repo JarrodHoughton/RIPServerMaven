@@ -19,16 +19,14 @@ import jakarta.ws.rs.core.Response;
 
 /**
  *
- * @author jarro
+ * @author Jarrod
  */
+@Path("/editor")
 public class EditorController {
-    
-
     private EditorService_Interface editorService;
 
 
     public EditorController() {
-
         this.editorService = new EditorService_Impl();
     }
     
@@ -53,8 +51,9 @@ public class EditorController {
         return Response.ok().entity(editorService.deleteEditor(editorId)).build();
     }
     
-    
-    
-    
-    
+    @Path("/getAllEditors")
+    @GET
+    public Response getAllEditors() {
+        return Response.ok().entity(editorService.getAllEditors()).build();
+    }
 }
