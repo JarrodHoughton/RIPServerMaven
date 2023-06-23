@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Models.Comment;
-import java.time.LocalDateTime;
 
 /**
  *
@@ -52,7 +51,7 @@ public class CommentDao_Impl implements CommentDao_Interface{
                 comments.add(com);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, "Failed to get all comments for story", ex);
         }finally{
             closeConnections();
         }
@@ -80,7 +79,7 @@ public class CommentDao_Impl implements CommentDao_Interface{
                 comment.setSurname(rs.getString("accountSurname"));
             }
         } catch (SQLException ex) {
-            Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, "Failed to get comment by commentId", ex);
             return null;
         }finally{
             closeConnections();
@@ -104,7 +103,7 @@ public class CommentDao_Impl implements CommentDao_Interface{
             
             return comment.getMessage();
         } catch (SQLException ex) {
-            Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, "Failed to get comment message", ex);
             return null;
         }finally{
             closeConnections();
@@ -124,7 +123,7 @@ public class CommentDao_Impl implements CommentDao_Interface{
             prepStmt.executeUpdate();
             added = true;
         } catch (SQLException ex) {
-            Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, "Failed to add comment", ex);
             return false;
         }finally{
             closeConnections();

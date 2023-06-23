@@ -2,7 +2,6 @@ package DAOs;
 
 import Models.Genre;
 import Utils.DBManager;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 public class GenreDao_Impl implements GenreDao_Interface {
     private Connection connection;
@@ -27,7 +27,7 @@ public class GenreDao_Impl implements GenreDao_Interface {
 
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT * FROM genres WHERE genreId=?");
+            prepStmt = connection.prepareStatement("SELECT * FROM genres WHERE genreId=?;");
             prepStmt.setInt(1, id);
             rs = prepStmt.executeQuery();
 
@@ -54,7 +54,7 @@ public class GenreDao_Impl implements GenreDao_Interface {
 
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT * FROM genres");
+            prepStmt = connection.prepareStatement("SELECT * FROM genres;");
             rs = prepStmt.executeQuery();
             while (rs.next()) {
                 genre = new Genre(
@@ -78,12 +78,12 @@ public class GenreDao_Impl implements GenreDao_Interface {
 
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("DELETE FROM genres WHERE genreId = ?");
+            prepStmt = connection.prepareStatement("DELETE FROM genres WHERE genreId = ?;");
             prepStmt.setInt(1, id);
             prepStmt.executeUpdate();
 
             // Check to see if the genre was deleted
-            prepStmt = connection.prepareStatement("SELECT * FROM genres WHERE genreId = ?");
+            prepStmt = connection.prepareStatement("SELECT * FROM genres WHERE genreId = ?;");
             prepStmt.setInt(1, id);
             rs = prepStmt.executeQuery();
             if (rs != null) {
@@ -104,7 +104,7 @@ public class GenreDao_Impl implements GenreDao_Interface {
 
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("INSERT INTO genres (genreName) VALUES (?)");
+            prepStmt = connection.prepareStatement("INSERT INTO genres (genreName) VALUES (?);");
             prepStmt.setString(1, genre.getName());
             prepStmt.executeUpdate();
 

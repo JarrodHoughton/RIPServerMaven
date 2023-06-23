@@ -6,13 +6,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Models.Like;
 
+/**
+ *
+ * @author 27713
+ */
 public class LikeDao_Impl implements LikeDao_Interface {
     private Connection connection;
     private PreparedStatement prepStmt;
@@ -24,23 +27,22 @@ public class LikeDao_Impl implements LikeDao_Interface {
     @Override
     public List<Like> getAllLikes() {
         List<Like> likes = new ArrayList<>();
-
+        Like like = new Like();
+        
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT * FROM likes");
+            prepStmt = connection.prepareStatement("SELECT * FROM likes;");
             rs = prepStmt.executeQuery();
             
-            while (rs.next()) {
-                Like like = new Like(
-                        rs.getInt("likeId"),
-                        rs.getTimestamp("likeDate").toLocalDateTime(),
-                        rs.getInt("accountId"),
-                        rs.getInt("storyId")
-                );
+            while (rs.next()) {                
+                like.setId(rs.getInt("likeId"));
+                like.setDate(rs.getTimestamp("likeDate").toLocalDateTime());
+                like.setReaderId(rs.getInt("accountId"));
+                like.setStoryId(rs.getInt("storyId"));
                 likes.add(like);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, "Failed to get all likes", ex);
             return null;
         } finally {
             closeConnections();
@@ -52,24 +54,22 @@ public class LikeDao_Impl implements LikeDao_Interface {
     @Override
     public List<Like> getLikesByReaderId(Integer accountId) {
         List<Like> likes = new ArrayList<>();
-
+        Like like = new Like();
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT * FROM likes WHERE accountId = ?");
+            prepStmt = connection.prepareStatement("SELECT * FROM likes WHERE accountId = ?;");
             prepStmt.setInt(1, accountId);
             rs = prepStmt.executeQuery();
 
             while (rs.next()) {
-                Like like = new Like(
-                        rs.getInt("likeId"),
-                        rs.getTimestamp("likeDate").toLocalDateTime(),
-                        rs.getInt("accountId"),
-                        rs.getInt("storyId")
-                );
+                like.setId(rs.getInt("likeId"));
+                like.setDate(rs.getTimestamp("likeDate").toLocalDateTime());
+                like.setReaderId(rs.getInt("accountId"));
+                like.setStoryId(rs.getInt("storyId"));
                 likes.add(like);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, "Failed to get likes by readerId", ex);
             return null;
         } finally {
             closeConnections();
@@ -81,24 +81,22 @@ public class LikeDao_Impl implements LikeDao_Interface {
     @Override
     public List<Like> getLikesByStory(Integer storyId) {
         List<Like> likes = new ArrayList<>();
-
+        Like like = new Like();
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT * FROM likes WHERE storyId = ?");
+            prepStmt = connection.prepareStatement("SELECT * FROM likes WHERE storyId = ?;");
             prepStmt.setInt(1, storyId);
             rs = prepStmt.executeQuery();
 
             while (rs.next()) {
-                Like like = new Like(
-                        rs.getInt("likeId"),
-                        rs.getTimestamp("likeDate").toLocalDateTime(),
-                        rs.getInt("accountId"),
-                        rs.getInt("storyId")
-                );
+                like.setId(rs.getInt("likeId"));
+                like.setDate(rs.getTimestamp("likeDate").toLocalDateTime());
+                like.setReaderId(rs.getInt("accountId"));
+                like.setStoryId(rs.getInt("storyId"));
                 likes.add(like);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, "Failed to get likes by storyId", ex);
             return null;
         } finally {
             closeConnections();
@@ -113,7 +111,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
 
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT COUNT(storyId) AS likeCount FROM likes WHERE likeDate BETWEEN ? AND ? AND storyId = ?");
+            prepStmt = connection.prepareStatement("SELECT COUNT(storyId) AS likeCount FROM likes WHERE likeDate BETWEEN ? AND ? AND storyId = ?;");
             prepStmt.setTimestamp(1, startDate);
             prepStmt.setTimestamp(2, endDate);
             prepStmt.setInt(3, storyId);
@@ -123,7 +121,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
                 count = rs.getInt("likeCount");
             }
         } catch (SQLException ex) {
-            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, "Failed to get story likes by date", ex);
             return 0;
         } finally {
             closeConnections();
@@ -136,16 +134,16 @@ public class LikeDao_Impl implements LikeDao_Interface {
     public Boolean addLike(Like like) {
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("INSERT INTO likes (accountId, storyId) VALUES (?, ?)");
+            prepStmt = connection.prepareStatement("INSERT INTO likes (accountId, storyId) VALUES (?, ?);");
             prepStmt.setInt(1, like.getReaderId());
             prepStmt.setInt(2, like.getStoryId());
             prepStmt.executeUpdate();
             
-            prepStmt = connection.prepareStatement("UPDATE stories SET likeCount = likeCount + 1 WHERE storyId = ?");
+            prepStmt = connection.prepareStatement("UPDATE stories SET likeCount = likeCount + 1 WHERE storyId = ?;");
             prepStmt.setInt(1, like.getStoryId());
             prepStmt.executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, "Failed to add like", ex);
             return false;
         } finally {
             closeConnections();
@@ -158,16 +156,16 @@ public class LikeDao_Impl implements LikeDao_Interface {
     public Boolean deleteLike(Like like) {
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("DELETE FROM likes WHERE accountId = ? AND storyId = ?");
+            prepStmt = connection.prepareStatement("DELETE FROM likes WHERE accountId = ? AND storyId = ?;");
             prepStmt.setInt(1, like.getReaderId());
             prepStmt.setInt(2, like.getStoryId());
             prepStmt.executeUpdate();
             
-            prepStmt = connection.prepareStatement("UPDATE stories SET likeCount = likeCount - 1 WHERE storyId = ?");
+            prepStmt = connection.prepareStatement("UPDATE stories SET likeCount = likeCount - 1 WHERE storyId = ?;");
             prepStmt.setInt(1, like.getStoryId());
             prepStmt.executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, "Failed to delete like", ex);
             return false;
         } finally {
             closeConnections();
@@ -179,14 +177,14 @@ public class LikeDao_Impl implements LikeDao_Interface {
     private Boolean searchForLike(Integer readerId, Integer storyId) {
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT * FROM likes WHERE accountId = ? AND storyId = ?");
+            prepStmt = connection.prepareStatement("SELECT * FROM likes WHERE accountId = ? AND storyId = ?;");
             prepStmt.setInt(1, readerId);
             prepStmt.setInt(2, storyId);
             rs = prepStmt.executeQuery();
 
             return rs.next();
         } catch (SQLException ex) {
-            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, "Failed to search for like", ex);
             return false;
         } finally {
             closeConnections();
@@ -199,7 +197,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
 
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT storyId, COUNT(*) AS likeCount FROM likes WHERE likeDate >= ? AND likeDate <= ? GROUP BY storyId HAVING COUNT(*) >= 1 ORDER BY likeCount DESC LIMIT ?");
+            prepStmt = connection.prepareStatement("SELECT storyId, COUNT(*) AS likeCount FROM likes WHERE likeDate >= ? AND likeDate <= ? GROUP BY storyId HAVING COUNT(*) >= 1 ORDER BY likeCount DESC LIMIT ?;");
             prepStmt.setTimestamp(1, startDate);
             prepStmt.setTimestamp(2, endDate);
             prepStmt.setInt(3, numberOfBooks);
@@ -209,7 +207,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
                 mostLikedBooks.add(rs.getInt("storyId"));
             }
         } catch (SQLException ex) {
-            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, "Failed to get most liked books", ex);
             return null;
         } finally {
             closeConnections();
@@ -248,7 +246,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
         List<Integer> storyIds = new ArrayList<>();
 
         try {
-            String query = "SELECT s.storyId FROM ripdb.stories s JOIN ripdb.stories_genres sg ON s.storyId = sg.storyId WHERE sg.genreId = ? AND s.likeDate >= ? AND s.likeDate <= ? ORDER BY s.likeCount DESC LIMIT ?";
+            String query = "SELECT s.storyId FROM ripdb.stories s JOIN ripdb.stories_genres sg ON s.storyId = sg.storyId WHERE sg.genreId = ? AND s.likeDate >= ? AND s.likeDate <= ? ORDER BY s.likeCount DESC LIMIT ?;";
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(query);
             prepStmt.setInt(1, genreId);
@@ -275,7 +273,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
     public Boolean checkIfLikeExists(Like like) {
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT COUNT(*) AS likeCount FROM likes WHERE accountId = ? AND storyId = ?");
+            prepStmt = connection.prepareStatement("SELECT COUNT(*) AS likeCount FROM likes WHERE accountId = ? AND storyId = ?;");
             prepStmt.setInt(1, like.getReaderId());
             prepStmt.setInt(2, like.getStoryId());
             rs = prepStmt.executeQuery();

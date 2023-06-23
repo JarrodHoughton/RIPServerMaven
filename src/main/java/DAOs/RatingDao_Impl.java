@@ -28,24 +28,22 @@ public class RatingDao_Impl implements RatingDao_Interface {
     @Override
     public List<Rating> getAllRatings() {
         List<Rating> ratings = new ArrayList<>();
-        Rating rating;
+        Rating rating = new Rating();
         
         try {           
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT ratingId, ratingDate, accountId, storyId, ratingValue FROM ratings");
+            prepStmt = connection.prepareStatement("SELECT * FROM ratings;");
             rs = prepStmt.executeQuery();
-            if (rs.next()) {
-                rating = new Rating(
-                        rs.getInt(1),
-                        rs.getTimestamp(2).toLocalDateTime(),
-                        rs.getInt(3),
-                        rs.getInt(4),
-                        rs.getInt(5)
-                );
+            while (rs.next()) {                
+                rating.setId(rs.getInt("ratingId"));
+                rating.setDate(rs.getTimestamp("ratingDate").toLocalDateTime());
+                rating.setValue(rs.getInt("ratingValue"));
+                rating.setReaderId(rs.getInt("accountId"));
+                rating.setStoryId(rs.getInt("storyId"));
                 ratings.add(rating);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, "Failed to get all ratings", ex);
         } finally {
             closeConnections();
         }
@@ -56,25 +54,23 @@ public class RatingDao_Impl implements RatingDao_Interface {
     @Override
     public List<Rating> getRatingsByReaderId(Integer accountId) {
         List<Rating> ratings = new ArrayList<>();
-        Rating rating;
+        Rating rating = new Rating();
         
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT ratingId, ratingDate, accountId, storyId, ratingValue FROM ratings WHERE accountId = ?");
+            prepStmt = connection.prepareStatement("SELECT * FROM ratings WHERE accountId = ?;");
             prepStmt.setInt(1, accountId);
             rs = prepStmt.executeQuery();
             if (rs != null) {
-                rating = new Rating(
-                        rs.getInt(1),
-                        rs.getTimestamp(2).toLocalDateTime(),
-                        rs.getInt(3),
-                        rs.getInt(4),
-                        rs.getInt(5)
-                );
+                rating.setId(rs.getInt("ratingId"));
+                rating.setDate(rs.getTimestamp("ratingDate").toLocalDateTime());
+                rating.setValue(rs.getInt("ratingValue"));
+                rating.setReaderId(rs.getInt("accountId"));
+                rating.setStoryId(rs.getInt("storyId"));
                 ratings.add(rating);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, "Failed to get ratings by readerId", ex);
             return null;
         } finally {
             closeConnections();
@@ -86,25 +82,23 @@ public class RatingDao_Impl implements RatingDao_Interface {
     @Override
     public List<Rating> getRatingsByStory(Integer storyId) {
         List<Rating> ratings = new ArrayList<>();
-        Rating rating;
+        Rating rating = new Rating();
         
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT ratingId, ratingDate, accountId, storyId, ratingValue FROM ratings WHERE storyId = ?");
+            prepStmt = connection.prepareStatement("SELECT * FROM ratings WHERE storyId = ?;");
             prepStmt.setInt(1, storyId);
             rs = prepStmt.executeQuery();
             if (rs != null) {
-                rating = new Rating(
-                        rs.getInt(1),
-                        rs.getTimestamp(2).toLocalDateTime(),
-                        rs.getInt(3),
-                        rs.getInt(4),
-                        rs.getInt(5)
-                );
+                rating.setId(rs.getInt("ratingId"));
+                rating.setDate(rs.getTimestamp("ratingDate").toLocalDateTime());
+                rating.setValue(rs.getInt("ratingValue"));
+                rating.setReaderId(rs.getInt("accountId"));
+                rating.setStoryId(rs.getInt("storyId"));
                 ratings.add(rating);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, "Failed to get ratings by storyId", ex);
             return null;
         } finally {
             closeConnections();
@@ -149,7 +143,7 @@ public class RatingDao_Impl implements RatingDao_Interface {
             }
             
         } catch (SQLException ex) {
-            Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, "Failed to get rating value", ex);
             return null;
         } finally {
             closeConnections();
