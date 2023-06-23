@@ -242,7 +242,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
         List<Integer> topEditors = new ArrayList<>();        
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT accountId, approvalCount FROM editorsapprovals ORDER BY approvalCoun DESC LIMIT ?;");
+            prepStmt = connection.prepareStatement("SELECT accountId, approvalCount FROM editorsapprovals ORDER BY approvalCount DESC LIMIT ?;");
             prepStmt.setInt(1, numberOfEditors);
             rs = prepStmt.executeQuery();
             while (rs.next()) {
