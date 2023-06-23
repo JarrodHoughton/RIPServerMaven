@@ -15,6 +15,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -85,6 +86,9 @@ public class StoryController {
     public Response getRecommendations(List<Integer> genreIds) {
         StoriesHolder storiesHolder = new StoriesHolder();
         storiesHolder.setStories(storyService.getRecommendations(genreIds));
+        if (storiesHolder.getStories()!=null) {
+            storiesHolder.setStoryIds(new ArrayList<Integer>());
+        }
         return Response.ok().entity(storiesHolder).build();
     }
     
