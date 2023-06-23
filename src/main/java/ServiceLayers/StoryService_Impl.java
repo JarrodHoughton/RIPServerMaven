@@ -67,7 +67,7 @@ public class StoryService_Impl implements StoryService_Interface{
     @Override
     public List<Story> getRecommendations(List<Integer> genreIds) {
         List<Story> recommendedStories = storyDao.getRecommendations(genreIds);
-        if (recommendedStories.isEmpty()) {
+        if (recommendedStories != null && recommendedStories.isEmpty()) {
             return recommendedStories;
         } else {
             return storyDao.getApprovedStories(10);
