@@ -41,6 +41,7 @@ public class LikeController {
     
     @Path("/deleteLike")
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteLike(Like like){
         return Response.ok().entity(likeService.deleteLike(like)).build();
     }
@@ -94,7 +95,7 @@ public class LikeController {
             Timestamp end = Timestamp.valueOf(LocalDateTime.parse(endDate));
             
             for(Integer storyId : likeService.getMostLikedBooks(numberOFBooks, start, end)){
-            bookIds.add(storyId);
+                bookIds.add(storyId);
             }            
             return Response.ok().entity(bookIds).build();
             
@@ -102,7 +103,13 @@ public class LikeController {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Invalid date format. Please provide valid dates in the format yyyy-MM-dd HH:mm:ss")
                     .build();
-        }        
-        
+        }       
+    }
+    
+    @Path("/checkIfLikeExists")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response checkIfLikeExists(Like like){
+        return Response.ok().entity(likeService.checkIfLikeExists(like)).build();
     }
 }

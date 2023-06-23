@@ -55,7 +55,7 @@ public class RatingController {
     
     @Path("/getRating/{accountId}/{storyId}")
     @GET
-    public Response getRatingValue(@PathParam("accountId")Integer accountId,
+    public Response getRating(@PathParam("accountId")Integer accountId,
                                    @PathParam("storyId")Integer storyId){
         return Response.ok().entity(ratingService.getRating(accountId, storyId)).build();
     }
