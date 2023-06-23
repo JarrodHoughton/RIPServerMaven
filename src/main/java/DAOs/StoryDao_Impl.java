@@ -263,7 +263,7 @@ public class StoryDao_Impl implements StoryDao_Interface {
         try {
             submittedStories = new ArrayList<>();
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT * FROM stories WHERE approved='F' AND submitted='T';");
+            prepStmt = connection.prepareStatement("SELECT * FROM stories WHERE approved='F' AND submitted='T' AND rejected='F';");
             rs = prepStmt.executeQuery();
             while (rs.next()) {
                 Story story = new Story();
@@ -286,6 +286,10 @@ public class StoryDao_Impl implements StoryDao_Interface {
                 story.setImage(getImageById(story.getId()));
                 story.setImageName(getImageNameById(story.getId()));
                 story.setGenreIds(getStoryGenres(story.getId()));
+            }
+            
+            if (submittedStories.isEmpty()) {
+                return null;
             }
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -312,6 +316,10 @@ public class StoryDao_Impl implements StoryDao_Interface {
             
             for (Integer storyId : storyIds) {
                 stories.add(getStory(storyId));
+            }
+            
+            if (stories.isEmpty()) {
+                return null;
             }
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -537,6 +545,10 @@ public class StoryDao_Impl implements StoryDao_Interface {
             for (Integer storyId : storyIds) {
                 storySearchResults.add(getStory(storyId));
             }
+            
+            if (storySearchResults.isEmpty()) {
+                return null;
+            }
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -577,6 +589,10 @@ public class StoryDao_Impl implements StoryDao_Interface {
                 story.setImageName(getImageNameById(story.getId()));
                 story.setGenreIds(getStoryGenres(story.getId()));
             }
+            
+            if (submittedStories.isEmpty()) {
+                return null;
+            }
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -616,6 +632,10 @@ public class StoryDao_Impl implements StoryDao_Interface {
                 story.setImage(getImageById(story.getId()));
                 story.setImageName(getImageNameById(story.getId()));
                 story.setGenreIds(getStoryGenres(story.getId()));
+            }
+            
+            if (draftedStories.isEmpty()) {
+                return null;
             }
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
