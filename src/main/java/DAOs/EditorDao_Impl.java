@@ -56,6 +56,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }
@@ -89,6 +90,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }
@@ -121,6 +123,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             closeConnections();
         }
@@ -252,6 +255,26 @@ public class EditorDao_Impl implements EditorDao_Interface {
             closeConnections();
         }
         return topEditors;
+    }
+
+    @Override
+    public Boolean searchForEditor(String accountEmail) {
+        Boolean editorFound = false;
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("SELECT COUNT(1) FROM accounts WHERE accountEmail=?");
+            prepStmt.setString(1, accountEmail);
+            rs = prepStmt.executeQuery();
+            if (rs.next()) {
+                editorFound = true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeConnections();
+        }
+        return editorFound;
     }
 
 

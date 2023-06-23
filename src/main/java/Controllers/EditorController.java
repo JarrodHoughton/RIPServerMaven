@@ -51,6 +51,17 @@ public class EditorController {
         return Response.ok().entity(editorService.deleteEditor(editorId)).build();
     }
     
+    @Path("/searchForEditor/{accountEmail}")
+    @GET
+    public Response addApplication(@PathParam("/{accountEmail") String accountEmail) {
+        return Response.ok().entity(editorService.searchForEditor(accountEmail)).build();
+    }
+    @Path("/getEditor/{accountEmail}")
+    @GET
+    public Response getEditor(@PathParam("/{accountEmail") String accountEmail) {
+        return Response.ok().entity(editorService.getEditorByEmail(accountEmail)).build();
+    }
+    
     @Path("/getAllEditors")
     @GET
     public Response getAllEditors() {

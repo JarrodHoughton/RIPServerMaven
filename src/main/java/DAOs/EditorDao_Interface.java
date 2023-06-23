@@ -20,5 +20,6 @@ public interface EditorDao_Interface {
     public Boolean deleteEditor(Integer id);
     public Boolean addEditor(Editor editor);
     public List<Integer> getTopEditors(Integer numberOfEditors);
+    public Boolean searchForEditor(String accountEmail);
     
 }

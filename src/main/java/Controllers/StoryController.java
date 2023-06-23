@@ -87,7 +87,7 @@ public class StoryController {
         StoriesHolder storiesHolder = new StoriesHolder();
         storiesHolder.setStories(storyService.getRecommendations(genreIds));
         if (storiesHolder.getStories()!=null) {
-            storiesHolder.setStoryIds(new ArrayList<Integer>());
+            storiesHolder.setStoryIds(new ArrayList<>());
         }
         return Response.ok().entity(storiesHolder).build();
     }

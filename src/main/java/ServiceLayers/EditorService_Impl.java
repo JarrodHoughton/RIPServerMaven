@@ -66,5 +66,10 @@ public class EditorService_Impl implements EditorService_Interface{
     public List<Integer> getTopEditors(Integer numberOfEditors) {
         return editorDao.getTopEditors(numberOfEditors);
             }
+
+    @Override
+    public Boolean searchForEditor(String email) {
+        return editorDao.searchForEditor(email);
+    }
     
 }
