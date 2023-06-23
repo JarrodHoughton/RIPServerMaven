@@ -16,6 +16,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,10 +69,18 @@ public class LikeController {
     @GET
     public Response getStoryLikesByDate(@PathParam("storyId")Integer storyId,
                                         @PathParam("startDate")String startDate,
-                                        @PathParam("endDate")String endDate){        
-        Timestamp start = Timestamp.valueOf(LocalDateTime.parse(startDate));
-        Timestamp end = Timestamp.valueOf(LocalDateTime.parse(endDate));        
-        return Response.ok().entity(likeService.getStoryLikesByDate(storyId, start, end)).build();
+                                        @PathParam("endDate")String endDate){
+        try{
+            Timestamp start = Timestamp.valueOf(LocalDateTime.parse(startDate));
+            Timestamp end = Timestamp.valueOf(LocalDateTime.parse(endDate));
+            return Response.ok().entity(likeService.getStoryLikesByDate(storyId, start, end)).build();
+        
+        }catch(DateTimeParseException e){
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Invalid date format. Please provide valid dates in the format yyyy-MM-dd HH:mm:ss")
+                    .build();
+        }
+        
     }
     
     @Path("/getMostLikedBooks/{numberOfBooks}/{startDate}/{endDate}")
@@ -79,12 +88,21 @@ public class LikeController {
     public Response getMostLikedBooks(@PathParam("numberOfBooks")Integer numberOFBooks,
                                       @PathParam("startDate")String startDate,
                                       @PathParam("endDate")String endDate){
-        List<Integer> bookIds = new ArrayList<>();
-        Timestamp start = Timestamp.valueOf(LocalDateTime.parse(startDate));
-        Timestamp end = Timestamp.valueOf(LocalDateTime.parse(endDate)); 
-        for(Integer storyId : likeService.getMostLikedBooks(numberOFBooks, start, end)){
+        try{
+            List<Integer> bookIds = new ArrayList<>();
+            Timestamp start = Timestamp.valueOf(LocalDateTime.parse(startDate));
+            Timestamp end = Timestamp.valueOf(LocalDateTime.parse(endDate));
+            
+            for(Integer storyId : likeService.getMostLikedBooks(numberOFBooks, start, end)){
             bookIds.add(storyId);
-        }
-        return Response.ok().entity(bookIds).build();
+            }            
+            return Response.ok().entity(bookIds).build();
+            
+        }catch(DateTimeParseException e){            
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Invalid date format. Please provide valid dates in the format yyyy-MM-dd HH:mm:ss")
+                    .build();
+        }        
+        
     }
 }

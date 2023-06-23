@@ -16,6 +16,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +55,8 @@ public class RatingController {
     
     @Path("/getRating/{accountId}/{storyId}")
     @GET
-    public Response getRatingValue(@PathParam("accountId")Integer accountId, @PathParam("storyId")Integer storyId){
+    public Response getRatingValue(@PathParam("accountId")Integer accountId,
+                                   @PathParam("storyId")Integer storyId){
         return Response.ok().entity(ratingService.getRating(accountId, storyId)).build();
     }
     
@@ -99,6 +101,7 @@ public class RatingController {
     public Response getTopHighestRatedStoriesInTimePeriod(@PathParam("startDate")String startDate, 
                                                           @PathParam("endDate")String endDate,
                                                           @PathParam("numberOfEntries")Integer numberOfEntries){
+        try{
         List<Integer> bookIds = new ArrayList<>();
         Timestamp start = Timestamp.valueOf(LocalDateTime.parse(startDate));
         Timestamp end = Timestamp.valueOf(LocalDateTime.parse(endDate));
@@ -106,5 +109,11 @@ public class RatingController {
             bookIds.add(storyId);
         }
         return Response.ok().entity(bookIds).build();
+        
+        }catch(DateTimeParseException e){
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Invalid date format. Please provide valid dates in the format yyyy-MM-dd HH:mm:ss")
+                    .build();
+        }
     }
 }
