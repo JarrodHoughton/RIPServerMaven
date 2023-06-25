@@ -259,6 +259,31 @@ public class WriterDao_Impl implements WriterDao_Interface {
         }
         return topWriters;
     }
+    
+    @Override
+    public Integer getTotalViewsByWriterId(Integer writerId) {
+    Integer totalViews = null;
+    try {
+        connection = DBManager.getConnection();
+        prepStmt = connection.prepareStatement("SELECT COUNT(*) AS totalViews FROM views "
+                + "INNER JOIN stories ON views.storyId = stories.storyId "
+                + "WHERE stories.writerId = ?");
+        prepStmt.setInt(1, writerId);
+        rs = prepStmt.executeQuery();
+
+        if (rs.next()) {
+            totalViews = rs.getInt("totalViews");
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+        return null;
+    } finally {
+        closeConnections();
+    }
+
+    return totalViews;
+}
+
 
     @Override
     public List<Integer> getTopWritersByDate(Integer numberOfWriters, Timestamp startDate, Timestamp endDate) {
