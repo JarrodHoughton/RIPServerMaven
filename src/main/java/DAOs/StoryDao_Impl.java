@@ -162,7 +162,7 @@ public class StoryDao_Impl implements StoryDao_Interface {
     
     @Override
     public List<Story> getRecommendations(List<Integer> genreIds) {
-        if (genreIds!=null) {
+        if (genreIds==null) {
             return null;
         } else if (genreIds.isEmpty()) {
             return null;
@@ -335,7 +335,7 @@ public class StoryDao_Impl implements StoryDao_Interface {
         Boolean updated = false;
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("UPDATE stories SET title=?, blurb=?, approved=?, submitted=?, rejected=?,commentsEnabled=?, content=?, viewCount=?, rating=?, likeCount=? WHERE storyId=?;");
+            prepStmt = connection.prepareStatement("UPDATE stories SET title=?, blurb=?, approved=?, submitted=?, rejected=?, commentsEnabled=?, content=?, viewCount=?, rating=?, likeCount=? WHERE storyId=?;");
             prepStmt.setString(1, story.getTitle());
             prepStmt.setString(2, story.getBlurb());
             prepStmt.setString(3, story.getApproved() ? "T" : "F");

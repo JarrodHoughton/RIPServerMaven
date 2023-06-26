@@ -184,7 +184,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
         Boolean added = false;
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("INSERT INTO accounts (accountName, accountSurname, accountEmail, accountPasswordHash, accountSalt, accountPhoneNumber, accountType, verifyToken) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
+            prepStmt = connection.prepareStatement("INSERT INTO accounts (accountName, accountSurname, accountEmail, accountPasswordHash, accountSalt, accountPhoneNumber, accountType, verifyToken, verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
             prepStmt.setString(1, editor.getName());
             prepStmt.setString(2, editor.getSurname());
             prepStmt.setString(3, editor.getEmail());
@@ -193,13 +193,15 @@ public class EditorDao_Impl implements EditorDao_Interface {
             prepStmt.setString(6, editor.getPhoneNumber());
             prepStmt.setString(7, editor.getUserType());
             prepStmt.setString(8, "");
+            prepStmt.setString(9, "T");
             prepStmt.executeUpdate();
             prepStmt = connection.prepareStatement("SELECT accountId FROM accounts WHERE accountEmail=?;");
+            prepStmt.setString(1, editor.getEmail());
             rs = prepStmt.executeQuery();
             if (rs.next()) {
                 prepStmt = connection.prepareStatement("INSERT INTO `ripdb`.`editorsapprovals` (`accountId`, `approvalCount`) VALUES (?, ?);");
                 prepStmt.setInt(1, rs.getInt(1));
-                prepStmt.setInt(2, editor.getApprovalCount());
+                prepStmt.setInt(2, 0);
                 prepStmt.executeUpdate();
             }
             added = true;
@@ -262,7 +264,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
         Boolean editorFound = false;
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT COUNT(1) FROM accounts WHERE accountEmail=?");
+            prepStmt = connection.prepareStatement("SELECT accountId FROM accounts WHERE accountEmail=?");
             prepStmt.setString(1, accountEmail);
             rs = prepStmt.executeQuery();
             if (rs.next()) {
