@@ -19,4 +19,5 @@ public interface GenreService_Interface {
     public String deleteGenre(Integer id);
     public String addGenre(Genre genre);
     public List<Genre> getTopGenres(Timestamp startDate, Timestamp endDate, Integer numberOfEntries);
+    public Integer getTotalViewsByGenreWithinTimePeriod(Integer genreId, Timestamp startDate, Timestamp endDate);
 }

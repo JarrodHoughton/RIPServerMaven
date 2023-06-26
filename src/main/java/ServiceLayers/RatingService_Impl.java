@@ -75,6 +75,11 @@ public class RatingService_Impl implements RatingService_Interface {
     public Rating getRating(Integer accountId, Integer storyId) {
         return ratingDao.getRating(accountId, storyId);
     }
+
+    @Override
+    public Double getAverageRatingOfAStoryInATimePeriod(Integer storyId, Timestamp startDate, Timestamp endDate) {
+        return ratingDao.getAverageRatingOfAStoryInATimePeriod(storyId, startDate, endDate);
+    }
     
     
     

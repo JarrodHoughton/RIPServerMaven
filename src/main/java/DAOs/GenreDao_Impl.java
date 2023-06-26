@@ -213,6 +213,42 @@ public class GenreDao_Impl implements GenreDao_Interface {
 
         return genres;
     }
+    
+    @Override
+    public Integer getTotalViewsByGenreWithinTimePeriod(Integer genreId, Timestamp startDate, Timestamp endDate) {
+        int totalViews = 0;
+
+        try {
+            connection = DBManager.getConnection();
+
+            String query = "SELECT COUNT(*) AS totalViews " +
+                    "FROM ripdb.views v " +
+                    "JOIN ripdb.stories s ON v.storyId = s.storyId " +
+                    "JOIN ripdb.stories_genres sg ON s.storyId = sg.storyId " +
+                    "WHERE sg.genreId = ? " +
+                    "AND v.viewDate >= ? " +
+                    "AND v.viewDate <= ?";
+
+            prepStmt = connection.prepareStatement(query);
+            prepStmt.setInt(1, genreId);
+            prepStmt.setTimestamp(2, startDate);
+            prepStmt.setTimestamp(3, endDate);
+
+            rs = prepStmt.executeQuery();
+
+            if (rs.next()) {
+                totalViews = rs.getInt("totalViews");
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } finally {
+            closeConnections();
+        }
+
+        return totalViews;
+    }
 
 }
 

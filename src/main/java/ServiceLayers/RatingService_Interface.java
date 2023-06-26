@@ -23,4 +23,5 @@ public interface RatingService_Interface {
     public Boolean checkRatingExists(Rating rating);
     public String updateRatingValue(Rating rating);
     public Rating getRating(Integer accountId, Integer storyId);
+    public Double getAverageRatingOfAStoryInATimePeriod(Integer storyId, Timestamp startDate, Timestamp endDate);
 }

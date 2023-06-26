@@ -196,7 +196,7 @@ public class RatingDao_Impl implements RatingDao_Interface {
     public List<Integer> getTopHighestRatedStoriesInTimePeriod(Timestamp startDate, Timestamp endDate, Integer numberOfEntries) {
         ArrayList<Integer> storyIds = new ArrayList<>();
         try {
-            String sql = "SELECT stroyId, AVG(ratingValue) AS average_rating FROM ratings WHERE ratingDate BETWEEN ? AND ? GROUP BY storyId ORDER BY average_rating DESC LIMIT ?;";
+            String sql = "SELECT storyId, AVG(ratingValue) AS average_rating FROM ratings WHERE ratingDate BETWEEN ? AND ? GROUP BY storyId ORDER BY average_rating DESC LIMIT ?;";
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(sql);             
             prepStmt.setTimestamp(1, startDate);
@@ -284,6 +284,32 @@ public class RatingDao_Impl implements RatingDao_Interface {
         
         return rating;
     }
+    
+    @Override
+    public Double getAverageRatingOfAStoryInATimePeriod(Integer storyId, Timestamp startDate, Timestamp endDate) {
+    Double averageRating = 0.0;
+
+    try {
+        connection = DBManager.getConnection();
+        prepStmt = connection.prepareStatement("SELECT AVG(ratingValue) AS average_rating FROM ratings WHERE storyId = ? AND ratingDate BETWEEN ? AND ?;");
+        prepStmt.setInt(1, storyId);
+        prepStmt.setTimestamp(2, startDate);
+        prepStmt.setTimestamp(3, endDate);
+        rs = prepStmt.executeQuery();
+
+        if (rs.next()) {
+            averageRating = rs.getDouble("average_rating");
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(RatingDao_Impl.class.getName()).log(Level.SEVERE, "Failed to get average rating within time period", ex);
+        return 0.0;
+    } finally {
+        closeConnections();
+    }
+
+    return averageRating;
+}
+
 
 
 }

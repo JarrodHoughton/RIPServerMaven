@@ -19,4 +19,5 @@ public interface GenreDao_Interface {
     public Boolean deleteGenre(Integer id);
     public Boolean addGenre(Genre genre);
     public List<Genre> getTopGenres(Timestamp startDate, Timestamp endDate, Integer numberOfEntries);
+    public Integer getTotalViewsByGenreWithinTimePeriod(Integer genreId, Timestamp startDate, Timestamp endDate);
 }

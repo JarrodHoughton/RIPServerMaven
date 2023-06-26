@@ -58,6 +58,11 @@ public class GenreService_Impl implements GenreService_Interface {
     public List<Genre> getTopGenres(Timestamp startDate, Timestamp endDate, Integer numberOfEntries) {
         return genreDao.getTopGenres(startDate, endDate, numberOfEntries);
     }
+
+    @Override
+    public Integer getTotalViewsByGenreWithinTimePeriod(Integer genreId, Timestamp startDate, Timestamp endDate) {
+        return genreDao.getTotalViewsByGenreWithinTimePeriod(genreId, startDate, endDate);
+    }
     
     
 }
