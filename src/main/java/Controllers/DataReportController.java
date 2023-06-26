@@ -9,6 +9,7 @@ import ServiceLayers.*;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
 import java.sql.Timestamp;
@@ -39,43 +40,44 @@ public class DataReportController {
     }
 
     @GET
-    @Path("/getMostLikedStories/{numberOfStories}/{startDate}/{endDate}")
-    public Response getMostLikedStories(
-            @PathParam("numberOfStories") String numberOfStories,
-            @PathParam("startDate") String startDate,
-            @PathParam("endDate") String endDate
-    ) {
-        try {
-            List<Story> listOfStories = new ArrayList<>();
-            Timestamp start = getTimestamp(startDate);
-            Timestamp end = getTimestamp(endDate);
+@Path("/getMostLikedStories")
+public Response getMostLikedStories(
+    @QueryParam("numberOfStories") String numberOfStories,
+    @QueryParam("startDate") String startDate,
+    @QueryParam("endDate") String endDate
+) {
+    try {
+        List<Story> listOfStories = new ArrayList<>();
+        Timestamp start = getTimestamp(startDate);
+        Timestamp end = getTimestamp(endDate);
 
-            if (start == null || end == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("Invalid date format. Please provide valid dates in the format 'yyyy-MM-dd HH:mm:ss'.")
-                        .build();
-            }
-            
-            Integer numberOfEntries = Integer.valueOf(numberOfStories);
-
-            for (Integer storyId : likeService.getMostLikedBooks(numberOfEntries, start, end)) {
-                listOfStories.add(storyService.getStory(storyId));
-            }
-
-            return Response.ok().entity(listOfStories).build();
-        } catch (IllegalArgumentException e) {
+        if (start == null || end == null) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+                .entity("Invalid date format. Please provide valid dates in the format 'yyyy-MM-dd HH:mm:ss'.")
+                .build();
         }
+
+        Integer numberOfEntries = Integer.valueOf(numberOfStories);
+
+        for (Integer storyId : likeService.getMostLikedBooks(numberOfEntries, start, end)) {
+            listOfStories.add(storyService.getStory(storyId));
+        }
+
+        return Response.ok().entity(listOfStories).build();
+    } catch (IllegalArgumentException e) {
+        return Response.status(Response.Status.BAD_REQUEST)
+            .entity(e.getMessage())
+            .build();
     }
+}
+
 
     @GET
-    @Path("/getStoryLikesByDate/{storyId}/{startDate}/{endDate}")
+    @Path("/getStoryLikesByDate")
     public Response getStoryLikesByDate(
-            @PathParam("storyId") String storyId,
-            @PathParam("startDate") String startDate,
-            @PathParam("endDate") String endDate
+            @QueryParam("storyId") Integer storyId,
+            @QueryParam("startDate") String startDate,
+            @QueryParam("endDate") String endDate
     ) {
         try {
             Timestamp start = getTimestamp(startDate);
@@ -87,9 +89,8 @@ public class DataReportController {
                         .build();
             }
             
-            Integer theId = Integer.valueOf(storyId);
 
-            return Response.ok().entity(likeService.getStoryLikesByDate(theId, start, end)).build();
+            return Response.ok().entity(likeService.getStoryLikesByDate(storyId, start, end)).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
@@ -98,11 +99,11 @@ public class DataReportController {
     }
 
     @GET
-    @Path("/getMostViewedStories/{numberOfStories}/{startDate}/{endDate}")
+    @Path("/getMostViewedStories")
     public Response getMostViewedStories(
-            @PathParam("numberOfStories") Integer numberOfStories,
-            @PathParam("startDate") String startDate,
-            @PathParam("endDate") String endDate
+            @QueryParam("numberOfEntries") Integer numberOfStories,
+            @QueryParam("startDate") String startDate,
+            @QueryParam("endDate") String endDate
     ) {
         try {
             List<Story> listOfStories = new ArrayList<>();
@@ -128,11 +129,11 @@ public class DataReportController {
     }
 
     @GET
-    @Path("/getStoryViewsByDate/{storyId}/{startDate}/{endDate}")
+    @Path("/getStoryViewsByDate")
     public Response getStoryViewsByDate(
-            @PathParam("storyId") Integer storyId,
-            @PathParam("startDate") String startDate,
-            @PathParam("endDate") String endDate
+            @QueryParam("storyId") Integer storyId,
+            @QueryParam("startDate") String startDate,
+            @QueryParam("endDate") String endDate
     ) {
         try {
             Timestamp start = getTimestamp(startDate);
@@ -153,11 +154,11 @@ public class DataReportController {
     }
 
     @GET
-    @Path("/getTopHighestRatedStories/{startDate}/{endDate}/{numberOfEntries}")
+    @Path("/getTopHighestRatedStories")
     public Response getTopHighestRatedStoriesInTimePeriod(
-            @PathParam("startDate") String startDate,
-            @PathParam("endDate") String endDate,
-            @PathParam("numberOfEntries") Integer numberOfEntries
+            @QueryParam("startDate") String startDate,
+            @QueryParam("endDate") String endDate,
+            @QueryParam("numberOfEntries") Integer numberOfEntries
     ) {
         try {
             List<Story> listOfStories = new ArrayList<>();
@@ -181,13 +182,38 @@ public class DataReportController {
                     .build();
         }
     }
+    
+    @GET
+    @Path("/getStoryRatingByDate")    
+    public Response getAverageRatingOfAStoryInATimePeriod(
+            @QueryParam("startDate") String startDate,
+            @QueryParam("endDate") String endDate,
+            @QueryParam("storyId") Integer storyId
+    ){
+        try {
+            Timestamp start = getTimestamp(startDate);
+            Timestamp end = getTimestamp(endDate);
+
+            if (start == null || end == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Invalid date format. Please provide valid dates in the format 'yyyy-MM-dd HH:mm:ss'.")
+                        .build();
+            }
+
+        return Response.ok().entity(ratingService.getAverageRatingOfAStoryInATimePeriod(storyId, start, end)).build();        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+    
 
     @GET
-    @Path("/getTopGenres/{startDate}/{endDate}/{numberOfEntries}")
+    @Path("/getTopGenres")
     public Response getTopGenres(
-            @PathParam("startDate") String startDate,
-            @PathParam("endDate") String endDate,
-            @PathParam("numberOfEntries") Integer numberOfEntries
+            @QueryParam("startDate") String startDate,
+            @QueryParam("endDate") String endDate,
+            @QueryParam("numberOfEntries") Integer numberOfEntries
     ) {
         try {
             List<Genre> topGenres = new ArrayList<>();
@@ -211,16 +237,40 @@ public class DataReportController {
                     .build();
         }
     }
+    
+    @GET
+    @Path("/getGenreViewsByDate")    
+    public Response getGenreViewsByDate(
+            @QueryParam("startDate") String startDate,
+            @QueryParam("endDate") String endDate,
+            @QueryParam("genreId") Integer genreId
+    ){
+        try {
+            Timestamp start = getTimestamp(startDate);
+            Timestamp end = getTimestamp(endDate);
+
+            if (start == null || end == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Invalid date format. Please provide valid dates in the format 'yyyy-MM-dd HH:mm:ss'.")
+                        .build();
+            }
+
+        return Response.ok().entity(genreService.getTotalViewsByGenreWithinTimePeriod(genreId, start, end)).build();        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
 
     @GET
-    @Path("/getTopWriters/{numberOfEntries}")
+    @Path("/getTopWriters")
     public Response getTopWriters(
-            @PathParam("numberOfEntries") Integer numberOfEntries
+            @QueryParam("numberOfWriters") Integer numberOfWriters
     ) {
         try {
             List<Writer> topWriters = new ArrayList<>();
 
-            for (Integer id : writerService.getTopWriters(numberOfEntries)) {
+            for (Integer id : writerService.getTopWriters(numberOfWriters)) {
                 topWriters.add(writerService.getWriter(id));
             }
 
@@ -263,9 +313,9 @@ public class DataReportController {
     }
 
     @GET
-    @Path("/getTopEditors/{numberOfEntries}")
+    @Path("/getTopEditors")
     public Response getTopEditors(
-            @PathParam("numberOfEntries") Integer numberOfEntries
+            @QueryParam("numberOfEntries") Integer numberOfEntries
     ) {
         try {
             List<Editor> topEditors = new ArrayList<>();
@@ -281,6 +331,29 @@ public class DataReportController {
                     .build();
         }
     }
+    
+    
+    
+    @GET
+    @Path("/getTotalViewsByWriterId")
+    public Response getTotalViewsByWriterId(@QueryParam("writerId") Integer writerId) {
+    try {
+        Integer totalViews = writerService.getTotalViewsByWriterId(writerId);
+        if (totalViews == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Writer with ID " + writerId + " not found.")
+                    .build();
+        }
+        return Response.ok().entity(totalViews).build();
+    } catch (IllegalArgumentException e) {
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity(e.getMessage())
+                .build();
+    }
+}
+
+    
+    
 
     private Timestamp getTimestamp(String date) {
         try {

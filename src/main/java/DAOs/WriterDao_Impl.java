@@ -267,7 +267,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
         connection = DBManager.getConnection();
         prepStmt = connection.prepareStatement("SELECT COUNT(*) AS totalViews FROM views "
                 + "INNER JOIN stories ON views.storyId = stories.storyId "
-                + "WHERE stories.writerId = ?");
+                + "WHERE stories.accountId = ?");
         prepStmt.setInt(1, writerId);
         rs = prepStmt.executeQuery();
 
