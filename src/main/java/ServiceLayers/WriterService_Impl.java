@@ -73,4 +73,9 @@ public class WriterService_Impl implements WriterService_Interface{
         return writerDao.getTopWritersByDate(numberOfWriters, startDate, endDate);
     }
     
+    @Override
+    public Integer getTotalViewsByWriterId(Integer writerId){
+        return writerDao.getTotalViewsByWriterId(writerId);
+    }
+    
 }
