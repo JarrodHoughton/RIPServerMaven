@@ -39,7 +39,9 @@ public abstract class StoryStatistic {
     }
 
     public void setDate(String date) {
-        this.date = LocalDateTime.parse(date);
+        if (date != null) {
+            this.date = LocalDateTime.parse(date);
+        }
     }
     
     public void setDate(LocalDateTime date) {
