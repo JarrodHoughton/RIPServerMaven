@@ -19,4 +19,5 @@ public interface RatingDao_Interface {
     public List<Integer> getTopHighestRatedStoriesInTimePeriod(Timestamp startDate, Timestamp endDate, Integer numberOfEntries);
     public Boolean checkRatingExists(Rating rating);
     public Boolean updateRatingValue(Rating rating);
+    public Double getAverageRatingOfAStoryInATimePeriod(Integer storyId, Timestamp startDate, Timestamp endDate);
 }
