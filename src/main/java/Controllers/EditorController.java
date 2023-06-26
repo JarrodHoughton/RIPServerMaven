@@ -47,19 +47,26 @@ public class EditorController {
     
     @Path("/deleteEditor/{editorId}")
     @GET
-    public Response addApplication(@PathParam("/{editorId") Integer editorId) {
+    public Response addApplication(@PathParam("editorId") Integer editorId) {
         return Response.ok().entity(editorService.deleteEditor(editorId)).build();
     }
     
     @Path("/searchForEditor/{accountEmail}")
     @GET
-    public Response addApplication(@PathParam("/{accountEmail") String accountEmail) {
+    public Response addApplication(@PathParam("accountEmail") String accountEmail) {
         return Response.ok().entity(editorService.searchForEditor(accountEmail)).build();
     }
-    @Path("/getEditor/{accountEmail}")
+    
+    @Path("/getEditorByEmail/{accountEmail}")
     @GET
-    public Response getEditor(@PathParam("/{accountEmail") String accountEmail) {
+    public Response getEditor(@PathParam("accountEmail") String accountEmail) {
         return Response.ok().entity(editorService.getEditorByEmail(accountEmail)).build();
+    }
+    
+    @Path("/getEditorById/{editorId}")
+    @GET
+    public Response getEditor(@PathParam("editorId") Integer editorId) {
+        return Response.ok().entity(editorService.getEditor(editorId)).build();
     }
     
     @Path("/getAllEditors")
