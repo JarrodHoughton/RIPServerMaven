@@ -13,9 +13,10 @@ import java.util.List;
  */
 public interface ReaderDao_Interface {
     public Reader getReader(String accountEmail);
+    public Reader getReader(Integer readerId);
     public List<Reader> getAllReaders(); 
     public Boolean addReader(Reader reader);
-    public Boolean updateReaderDetails(Reader reader);
+    public Boolean updateReader(Reader reader);
     public Boolean setVerified(Integer readerId);
     public Boolean isVerified(Integer readerId);
     public String getVerifyToken(Integer readerId);

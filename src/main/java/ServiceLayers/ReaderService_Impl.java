@@ -49,8 +49,8 @@ public class ReaderService_Impl implements ReaderService_Interface{
     }
 
     @Override
-    public String updateReaderDetails(Reader reader) {
-        if (readerDao.updateReaderDetails(reader)) {
+    public String updateReader(Reader reader) {
+        if (readerDao.updateReader(reader)) {
             return "Reader details were updated successfully.";
         } else {
             return "System failed to update the reader's details.";
@@ -115,6 +115,11 @@ public class ReaderService_Impl implements ReaderService_Interface{
     @Override
     public Boolean isVerified(Integer readerId) {
         return readerDao.isVerified(readerId);
+    }
+
+    @Override
+    public Reader getReader(Integer readerId) {
+        return readerDao.getReader(readerId);
     }
     
 }

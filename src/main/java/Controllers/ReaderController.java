@@ -57,10 +57,16 @@ public class ReaderController {
         return Response.ok().entity(readerService.getReader(accountEmail)).build();
     }
     
+    @Path("/getReaderById/{readerId}")
+    @GET
+    public Response getReaderById(@PathParam("readerId") Integer readerId) {
+        return Response.ok().entity(readerService.getReader(readerId)).build();
+    }
+    
     @Path("/updateReaderDetails")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateReaderDetails(Reader reader){
-        return Response.ok().entity(readerService.updateReaderDetails(reader)).build();
+        return Response.ok().entity(readerService.updateReader(reader)).build();
     }
 }

@@ -13,9 +13,10 @@ import java.util.List;
  */
 public interface ReaderService_Interface {
     public Reader getReader(String accountEmail);
+    public Reader getReader(Integer readerId);
     public List<Reader> getAllReaders(); 
     public String addReader(Reader reader);
-    public String updateReaderDetails(Reader reader);
+    public String updateReader(Reader reader);
     public Boolean userExists(String accountEmail);
     public String updateFavouriteGenresOfAReader(Reader reader);
     public String deleteAFavouriteGenreOfAReader(Reader reader, Integer genreID);
