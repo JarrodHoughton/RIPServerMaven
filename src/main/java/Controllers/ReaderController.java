@@ -4,11 +4,15 @@
  */
 package Controllers;
 
+import Models.Reader;
 import ServiceLayers.ReaderService_Impl;
 import ServiceLayers.ReaderService_Interface;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 /**
@@ -51,5 +55,12 @@ public class ReaderController {
     @GET
     public Response getReader(@PathParam("accountEmail") String accountEmail) {
         return Response.ok().entity(readerService.getReader(accountEmail)).build();
+    }
+    
+    @Path("/updateReaderDetails")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateReaderDetails(Reader reader){
+        return Response.ok().entity(readerService.updateReaderDetails(reader)).build();
     }
 }
