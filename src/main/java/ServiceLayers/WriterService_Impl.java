@@ -77,5 +77,13 @@ public class WriterService_Impl implements WriterService_Interface{
     public Integer getTotalViewsByWriterId(Integer writerId){
         return writerDao.getTotalViewsByWriterId(writerId);
     }
+
+    @Override
+    public String blockWriters(List<Integer> writerId) {
+        if (writerDao.blockWriters(writerId)) {
+            return "Writers selected have been blocked successfully.";
+        }
+        return "System failed to block writers selected.";
+    }
     
 }

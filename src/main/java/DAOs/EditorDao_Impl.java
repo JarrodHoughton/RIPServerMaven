@@ -140,7 +140,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
             prepStmt.setString(2, editor.getSurname());
             prepStmt.setString(3, editor.getEmail());
             prepStmt.setString(4, editor.getPasswordHash());
-            prepStmt.setString(5, editor.getSalt());
+            prepStmt.setString(5, editor.getPhoneNumber());
             prepStmt.setString(6, editor.getUserType());
             prepStmt.setInt(7, editor.getId());
             prepStmt.executeUpdate();

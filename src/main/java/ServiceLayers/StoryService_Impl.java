@@ -67,7 +67,7 @@ public class StoryService_Impl implements StoryService_Interface{
     @Override
     public List<Story> getRecommendations(List<Integer> genreIds) {
         List<Story> recommendedStories = storyDao.getRecommendations(genreIds);
-        if (recommendedStories != null && recommendedStories.isEmpty()) {
+        if (recommendedStories != null && !recommendedStories.isEmpty()) {
             return recommendedStories;
         } else {
             return storyDao.getApprovedStories(10);
@@ -97,6 +97,17 @@ public class StoryService_Impl implements StoryService_Interface{
     @Override
     public List<Story> getWritersDraftedStories(List<Integer> storyIds, Integer writerId) {
         return storyDao.getWritersDraftedStories(storyIds, writerId);
+    }
+
+    @Override
+    public String updateStories(List<Story> stories) {
+        String message = "Stories were updated successfully.";
+        for (Story story : stories) {
+            if (!storyDao.updateStory(story)) {
+                message = "System failed to updat stories.";
+            }
+        }
+        return message;
     }
     
 }

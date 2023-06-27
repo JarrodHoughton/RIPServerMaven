@@ -19,6 +19,7 @@ public interface WriterService_Interface {
     public String addWriter(Integer readerId);
     public String deleteWriter(Integer writerId);
     public String updateWriter(Writer writer);
+    public String blockWriters(List<Integer> writerId);
     public List<Integer> getTopWriters(Integer numberOfWriters);
     public List<Integer> getTopWritersByDate(Integer numberOfWriters, Timestamp startDate, Timestamp endDate);
     public Integer getTotalViewsByWriterId(Integer writerId);

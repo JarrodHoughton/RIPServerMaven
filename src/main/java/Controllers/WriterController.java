@@ -4,12 +4,17 @@
  */
 package Controllers;
 
+import Models.Writer;
 import ServiceLayers.WriterService_Impl;
 import ServiceLayers.WriterService_Interface;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.List;
 
 /**
  *
@@ -27,5 +32,37 @@ public class WriterController {
     @GET
     public Response addWriter(@PathParam("readerId") Integer readerId) {
         return Response.ok().entity(writerService.addWriter(readerId)).build();
+    }
+    
+    @Path("/getWriterByEmail/{accountEmail}")
+    @GET
+    public Response getWriterByEmail(@PathParam("accountEmail") String accountEmail) {
+        return Response.ok().entity(writerService.getWriterByEmail(accountEmail)).build();
+    }
+    
+    @Path("/getWriterById/{writerId}")
+    @GET
+    public Response getWriterById(@PathParam("writerId") Integer writerId) {
+        return Response.ok().entity(writerService.getWriter(writerId)).build();
+    }
+    
+    @Path("/getAllWriters")
+    @GET
+    public Response getALlWriters() {
+        return Response.ok().entity(writerService.getAllWriters()).build();
+    }
+    
+    @Path("/updateWriter")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateWriter(Writer writer) {
+        return Response.ok().entity(writerService.updateWriter(writer)).build();
+    }
+    
+    @Path("/blockWriters")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response blockWriters(List<Integer> writerIds) {
+        return Response.ok().entity(writerService.blockWriters(writerIds)).build();
     }
 }

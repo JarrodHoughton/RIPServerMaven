@@ -86,7 +86,7 @@ public class StoryController {
     public Response getRecommendations(List<Integer> genreIds) {
         StoriesHolder storiesHolder = new StoriesHolder();
         storiesHolder.setStories(storyService.getRecommendations(genreIds));
-        if (storiesHolder.getStories()!=null) {
+        if (storiesHolder.getStories()== null) {
             storiesHolder.setStoryIds(new ArrayList<>());
         }
         return Response.ok().entity(storiesHolder).build();
@@ -112,5 +112,12 @@ public class StoryController {
     public Response getWritersDraftedStories(StoriesHolder storiesHolder) {
         storiesHolder.setStories(storyService.getWritersDraftedStories(storiesHolder.getStoryIds(), storiesHolder.getId()));
         return Response.ok().entity(storiesHolder).build();
+    }
+    
+    @Path("/updateStories")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateStories(List<Story> stories) {
+        return Response.ok().entity(storyService.updateStories(stories)).build();
     }
 }

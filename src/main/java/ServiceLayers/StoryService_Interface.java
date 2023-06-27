@@ -20,6 +20,7 @@ public interface StoryService_Interface {
     public List<Story> getTopPicks();
     public List<Story> searchForStories(String searchValue);
     public String updateStory(Story story);
+    public String updateStories(List<Story> stories);
     public String deleteStory(Integer storyId);
     public String addStory(Story story);
     public List<Story> getRecommendations(List<Integer> genreIds);
