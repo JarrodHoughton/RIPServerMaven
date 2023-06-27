@@ -98,60 +98,67 @@ public Response getMostLikedStories(
         }
     }
 
-    @GET
-    @Path("/getMostViewedStories")
-    public Response getMostViewedStories(
-            @QueryParam("numberOfEntries") Integer numberOfStories,
-            @QueryParam("startDate") String startDate,
-            @QueryParam("endDate") String endDate
-    ) {
-        try {
-            List<Story> listOfStories = new ArrayList<>();
-            Timestamp start = getTimestamp(startDate);
-            Timestamp end = getTimestamp(endDate);
+@GET
+@Path("/getMostViewedStories")
+public Response getMostViewedStories(
+    @QueryParam("numberOfEntries") Integer numberOfEntries,
+    @QueryParam("startDate") String startDate,
+    @QueryParam("endDate") String endDate
+) {
+    try {
+        List<Story> listOfStories = new ArrayList<>();
+        Timestamp start = getTimestamp(startDate);
+        Timestamp end = getTimestamp(endDate);
 
-            if (start == null || end == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("Invalid date format. Please provide valid dates in the format 'yyyy-MM-dd HH:mm:ss'.")
-                        .build();
-            }
-
-            for (Integer storyId : viewService.getMostViewedStoriesInATimePeriod(numberOfStories, start, end)) {
-                listOfStories.add(storyService.getStory(storyId));
-            }
-
-            return Response.ok().entity(listOfStories).build();
-        } catch (IllegalArgumentException e) {
+        if (start == null || end == null) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
+                    .entity("Invalid date format. Please provide valid dates in the format 'yyyy-MM-dd HH:mm:ss'.")
                     .build();
         }
-    }
 
-    @GET
-    @Path("/getStoryViewsByDate")
-    public Response getStoryViewsByDate(
-            @QueryParam("storyId") Integer storyId,
-            @QueryParam("startDate") String startDate,
-            @QueryParam("endDate") String endDate
-    ) {
-        try {
-            Timestamp start = getTimestamp(startDate);
-            Timestamp end = getTimestamp(endDate);
-
-            if (start == null || end == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("Invalid date format. Please provide valid dates in the format 'yyyy-MM-dd HH:mm:ss'.")
-                        .build();
+        List<Integer> storyIds = viewService.getMostViewedStoriesInATimePeriod(numberOfEntries, start, end);
+        for (Integer storyId : storyIds) {
+            Story story = storyService.getStory(storyId);
+            if (story != null) {
+                listOfStories.add(story);
             }
+        }
 
-            return Response.ok().entity(viewService.getTheViewsOnAStoryInATimePeriod(storyId, start, end)).build();
-        } catch (IllegalArgumentException e) {
+        return Response.ok().entity(listOfStories).build();
+    } catch (IllegalArgumentException e) {
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity(e.getMessage())
+                .build();
+    }
+}
+
+
+@GET
+@Path("/getStoryViewsByDate")
+public Response getStoryViewsByDate(
+        @QueryParam("storyId") Integer storyId,
+        @QueryParam("startDate") String startDate,
+        @QueryParam("endDate") String endDate
+) {
+    try {
+        Timestamp start = getTimestamp(startDate);
+        Timestamp end = getTimestamp(endDate);
+
+        if (start == null || end == null) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
+                    .entity("Invalid date format. Please provide valid dates in the format 'yyyy-MM-dd HH:mm:ss'.")
                     .build();
         }
+
+        Integer views = viewService.getTheViewsOnAStoryInATimePeriod(storyId, start, end);
+        return Response.ok().entity(views).build();
+    } catch (IllegalArgumentException e) {
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity(e.getMessage())
+                .build();
     }
+}
+
 
     @GET
     @Path("/getTopHighestRatedStories")
