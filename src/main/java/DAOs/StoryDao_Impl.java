@@ -363,12 +363,101 @@ public class StoryDao_Impl implements StoryDao_Interface {
     public Boolean deleteStory(Integer storyId) {
         Boolean deleted = false;
         try {
+            deleteImage(storyId);
+            deleted = deleteStoryGenres(storyId) && deleteStoryLikes(storyId) && deleteStoryRatings(storyId) && deleteStoryComments(storyId) && deleteStoryViews(storyId);
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("DELETE FROM `ripdb`.`stories` WHERE `accountId`=?;");
+            prepStmt = connection.prepareStatement("DELETE FROM stories WHERE storyId=?;");
             prepStmt.setInt(1, storyId);
             prepStmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeConnections();
+        }
+        return deleted;
+    }
+    
+    private Boolean deleteStoryGenres(Integer storyId) {
+        Boolean deleted = false;
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("DELETE FROM stories_genres WHERE storyId=?;");
+            prepStmt.setInt(1, storyId);
+            prepStmt.executeUpdate();
+            deleted = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeConnections();
+        }
+        return deleted;
+    }
+    
+    private Boolean deleteStoryLikes(Integer storyId) {
+        Boolean deleted = false;
+        try {
             deleteImage(storyId);
             deleted = deleteStoryGenres(storyId);
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("DELETE FROM likes WHERE storyId=?;");
+            prepStmt.setInt(1, storyId);
+            prepStmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeConnections();
+        }
+        return deleted;
+    }
+    
+    private Boolean deleteStoryRatings(Integer storyId) {
+        Boolean deleted = false;
+        try {
+            deleteImage(storyId);
+            deleted = deleteStoryGenres(storyId);
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("DELETE FROM ratings WHERE storyId=?;");
+            prepStmt.setInt(1, storyId);
+            prepStmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeConnections();
+        }
+        return deleted;
+    }
+    
+    private Boolean deleteStoryComments(Integer storyId) {
+        Boolean deleted = false;
+        try {
+            deleteImage(storyId);
+            deleted = deleteStoryGenres(storyId);
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("DELETE FROM comments WHERE storyId=?;");
+            prepStmt.setInt(1, storyId);
+            prepStmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeConnections();
+        }
+        return deleted;
+    }
+    
+    private Boolean deleteStoryViews(Integer storyId) {
+        Boolean deleted = false;
+        try {
+            deleteImage(storyId);
+            deleted = deleteStoryGenres(storyId);
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("DELETE FROM views WHERE storyId=?;");
+            prepStmt.setInt(1, storyId);
+            prepStmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -444,23 +533,6 @@ public class StoryDao_Impl implements StoryDao_Interface {
             }
         }
         return added;
-    }
-
-    private Boolean deleteStoryGenres(Integer storyId) {
-        Boolean deleted = false;
-        try {
-            connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("DELETE FROM stories_genres WHERE storyId=?;");
-            prepStmt.setInt(1, storyId);
-            prepStmt.executeUpdate();
-            deleted = true;
-        } catch (SQLException ex) {
-            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        } finally {
-            closeConnections();
-        }
-        return deleted;
     }
 
     private List<Integer> getStoryGenres(Integer storyId) {
