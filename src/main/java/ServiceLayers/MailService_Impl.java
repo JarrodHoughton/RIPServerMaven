@@ -49,7 +49,7 @@ import java.util.logging.Logger;
 public class MailService_Impl implements MailService_Interface {
 
     private static final String SERVER_EMAIL = "readersareinnovators.vzap@gmail.com";
-    private static final String CREDENTIALS_FILE_PATH = "/client_secret_888515690154-kbtgv7i9erqcs1okj1p0lg9tvbpg4qab.apps.googleusercontent.com.json";
+    private static final String CREDENTIALS_FILE_PATH = "/client_secret_888515690154-fq4hbk2ku58n41r43oedqvvtnjt0r190.apps.googleusercontent.com.json";
     private final Gmail service;
 
     public MailService_Impl() throws IOException, GeneralSecurityException {
@@ -331,9 +331,18 @@ public class MailService_Impl implements MailService_Interface {
             Message message = new Message();
             message.setRaw(encodedEmail);
 
-            message = service.users().messages().send("me", message).execute();
-            System.out.println("Message id: " + message.getId());
-            System.out.println(message.toPrettyString());
+            try {
+                message = service.users().messages().send("me", message).execute();
+                System.out.println("Message id: " + message.getId());
+                System.out.println(message.toPrettyString());
+            } catch (GoogleJsonResponseException e) {
+                GoogleJsonError error = e.getDetails();
+                if (error.getCode() == 403) {
+                    Logger.getLogger(MailService_Impl.class.getName()).log(Level.SEVERE, null, e);
+                } else {
+                    throw e;
+                }
+            }
             emailSent = true;
         } catch (MessagingException | IOException ex) {
             Logger.getLogger(MailService_Impl.class.getName()).log(Level.SEVERE, null, ex);
