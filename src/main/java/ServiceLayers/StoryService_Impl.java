@@ -47,8 +47,8 @@ public class StoryService_Impl implements StoryService_Interface{
     }
 
     @Override
-    public String deleteStory(Integer storyId) {
-        if (storyDao.deleteStory(storyId)) {
+    public String deleteStory(Story story) {
+        if (storyDao.deleteStory(story)) {
             return "Story was successfully deleted from the system.";
         } else {
             return "System failed to delete the story from the system.";
@@ -57,15 +57,24 @@ public class StoryService_Impl implements StoryService_Interface{
     
     @Override
     public String addStory(Story story) { 
+        if (storyDao.searchForTitle(story.getTitle())) {
+            return "Story with this title already exists.";
+        }
+        
         if (storyDao.addStory(story)) {
-            return "Story was successfully added to the system.";
+            return "Your story has been saved!";
         } else {
-            return "System failed to add the story.";
+            return "System failed to save your story. Please try again...";
         }
     }
 
     @Override
     public List<Story> getRecommendations(List<Integer> genreIds) {
+        if (genreIds == null) {
+            return null;
+        } else if (genreIds.isEmpty()) {
+            return null;
+        }
         List<Story> recommendedStories = storyDao.getRecommendations(genreIds);
         if (recommendedStories != null && !recommendedStories.isEmpty()) {
             return recommendedStories;

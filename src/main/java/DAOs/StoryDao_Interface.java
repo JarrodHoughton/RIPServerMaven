@@ -23,6 +23,7 @@ public interface StoryDao_Interface {
     public List<Story> searchForStories(String searchValue);
     public List<Story> getTopPicks();
     public Boolean updateStory(Story story);
-    public Boolean deleteStory(Integer storyId);
+    public Boolean deleteStory(Story story);
     public Boolean addStory(Story story);
+    public Boolean searchForTitle(String title);
 }

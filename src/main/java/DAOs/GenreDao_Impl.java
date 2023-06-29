@@ -190,9 +190,10 @@ public class GenreDao_Impl implements GenreDao_Interface {
 
     @Override
     public List<Genre> searchForGenres(String searchValue) {
-        List<Genre> genres = new ArrayList<>();
+        List<Genre> genres = null;
         Genre genre;
         try {
+            genres = new ArrayList<>();
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT * FROM genres WHERE genreName LIKE ?");
             prepStmt.setString(1, "%"+searchValue+"%");
@@ -210,7 +211,11 @@ public class GenreDao_Impl implements GenreDao_Interface {
         } finally {
             closeConnections();
         }
-
+        
+        if (genres!=null && genres.isEmpty()) {
+            return null;
+        }
+        
         return genres;
     }
     

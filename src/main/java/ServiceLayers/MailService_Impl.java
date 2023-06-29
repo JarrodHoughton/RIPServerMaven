@@ -44,19 +44,19 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author jarro
+ * @author Jarrod
  */
 public class MailService_Impl implements MailService_Interface {
 
-    private static final String SERVER_EMAIL = "readersareinnovators.vzap@gmail.com";
-    private static final String CREDENTIALS_FILE_PATH = "/client_secret_888515690154-fq4hbk2ku58n41r43oedqvvtnjt0r190.apps.googleusercontent.com.json";
+    private static final String SERVER_EMAIL = "readersareinnovators.platform@gmail.com";
+    private static final String CREDENTIALS_FILE_PATH = "/client_secret_866186881474-r38sas7onvsd0g69ckh154l9ou6kdch2.apps.googleusercontent.com.json";
     private final Gmail service;
 
     public MailService_Impl() throws IOException, GeneralSecurityException {
         NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
         service = new Gmail.Builder(httpTransport, jsonFactory, getCredentials(httpTransport, jsonFactory))
-                .setApplicationName("ReadersAreInnovators")
+                .setApplicationName("readersareinnovators-391220")
                 .build();
     }
 

@@ -65,7 +65,7 @@ public class StoryController {
     @Path("/deleteStory/{storyId}")
     @GET
     public Response deleteStory(@PathParam("storyId") Integer storyId) {
-        return Response.ok().entity(storyService.deleteStory(storyId)).build();
+        return Response.ok().entity(storyService.deleteStory(storyService.getStory(storyId))).build();
     }
     
     @Path("/getTopPicks")
