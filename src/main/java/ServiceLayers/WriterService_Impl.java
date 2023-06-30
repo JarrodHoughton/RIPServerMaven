@@ -7,20 +7,24 @@ package ServiceLayers;
 import DAOs.WriterDao_Impl;
 import DAOs.WriterDao_Interface;
 import Models.Writer;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
- * @author jarro
+ * @author Jarrod
  */
-public class WriterService_Impl implements WriterService_Interface{
+public class WriterService_Impl implements WriterService_Interface {
     private final WriterDao_Interface writerDao;
 
     public WriterService_Impl() {
         writerDao = new WriterDao_Impl();
     }
-    
+
     @Override
     public Writer getWriter(Integer writerId) {
         return writerDao.getWriter(writerId);
@@ -72,9 +76,9 @@ public class WriterService_Impl implements WriterService_Interface{
     public List<Integer> getTopWritersByDate(Integer numberOfWriters, Timestamp startDate, Timestamp endDate) {
         return writerDao.getTopWritersByDate(numberOfWriters, startDate, endDate);
     }
-    
+
     @Override
-    public Integer getTotalViewsByWriterId(Integer writerId){
+    public Integer getTotalViewsByWriterId(Integer writerId) {
         return writerDao.getTotalViewsByWriterId(writerId);
     }
 
@@ -85,5 +89,13 @@ public class WriterService_Impl implements WriterService_Interface{
         }
         return "System failed to block writers selected.";
     }
-    
+
+    @Override
+    public String addWriters(List<Integer> writerIds) {
+        if (writerDao.addWriters(writerIds)) {
+            return "Writers selected have been added successfully.";
+        }
+        return "System failed to add writers selected.";
+    }
+
 }

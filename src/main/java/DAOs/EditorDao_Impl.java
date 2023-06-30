@@ -25,7 +25,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
     private Connection connection;
     private PreparedStatement prepStmt;
     private ResultSet rs;
-    
+
     public EditorDao_Impl() {
     }
 
@@ -39,7 +39,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
                     + "FROM accounts as A \n"
                     + "INNER JOIN editorsapprovals as E \n"
                     + "ON A.accountId=E.accountId "
-                            + "WHERE A.accountId = ?;");
+                    + "WHERE A.accountId = ?;");
             prepStmt.setInt(1, id);
             rs = prepStmt.executeQuery();
             if (rs.next()) {
@@ -62,7 +62,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
         }
         return editor;
     }
-    
+
     @Override
     public Editor getEditorByEmail(String email) {
         Editor editor = null;
@@ -73,7 +73,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
                     + "FROM accounts as A \n"
                     + "INNER JOIN editorsapprovals as E\n"
                     + "ON A.accountId=E.accountId\n"
-                            + "WHERE A.accountEmail= ?;");
+                    + "WHERE A.accountEmail= ?;");
             prepStmt.setString(1, email);
             rs = prepStmt.executeQuery();
             if (rs.next()) {
@@ -147,8 +147,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
             prepStmt = connection.prepareStatement("UPDATE `ripdb`.`editorsapprovals` SET `approvalCount`=? WHERE `accountId`=?;");
             prepStmt.setInt(1, editor.getApprovalCount());
             prepStmt.setInt(2, editor.getId());
-            prepStmt.executeUpdate();
-            updated = true;
+            updated = prepStmt.executeUpdate() > 0;
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -168,8 +167,7 @@ public class EditorDao_Impl implements EditorDao_Interface {
             prepStmt.executeUpdate();
             prepStmt = connection.prepareStatement("DELETE FROM `ripdb`.`accounts` WHERE `accountId`=?;");
             prepStmt.setInt(1, id);
-            prepStmt.executeUpdate();
-            deleted = true;
+            deleted = prepStmt.executeUpdate() > 0;
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -182,6 +180,9 @@ public class EditorDao_Impl implements EditorDao_Interface {
     @Override
     public Boolean addEditor(Editor editor) {
         Boolean added = false;
+        Integer editorId = null;
+
+        //add editor to the account table
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("INSERT INTO accounts (accountName, accountSurname, accountEmail, accountPasswordHash, accountSalt, accountPhoneNumber, accountType, verifyToken, verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
@@ -194,17 +195,37 @@ public class EditorDao_Impl implements EditorDao_Interface {
             prepStmt.setString(7, editor.getUserType());
             prepStmt.setString(8, "");
             prepStmt.setString(9, "T");
-            prepStmt.executeUpdate();
+            added = prepStmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeConnections();
+        }
+
+        //get the editors accountId
+        try {
+            connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT accountId FROM accounts WHERE accountEmail=?;");
             prepStmt.setString(1, editor.getEmail());
             rs = prepStmt.executeQuery();
             if (rs.next()) {
-                prepStmt = connection.prepareStatement("INSERT INTO `ripdb`.`editorsapprovals` (`accountId`, `approvalCount`) VALUES (?, ?);");
-                prepStmt.setInt(1, rs.getInt(1));
-                prepStmt.setInt(2, 0);
-                prepStmt.executeUpdate();
+                editorId = rs.getInt(1);
             }
-            added = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeConnections();
+        }
+
+        //add new editorApproval count
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("INSERT INTO editorsapprovals (accountId, approvalCount) VALUES (?, ?);");
+            prepStmt.setInt(1, editorId);
+            prepStmt.setInt(2, 0);
+            added = prepStmt.executeUpdate() > 0;
         } catch (SQLException ex) {
             Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -213,42 +234,17 @@ public class EditorDao_Impl implements EditorDao_Interface {
         }
         return added;
     }
-    
-    private void closeConnections(){
-         if(rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        if(prepStmt!=null){
-                try {
-                    prepStmt.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-    }
 
     @Override
     public List<Integer> getTopEditors(Integer numberOfEditors) {
-        List<Integer> topEditors = new ArrayList<>();        
+        List<Integer> topEditors = new ArrayList<>();
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT accountId, approvalCount FROM editorsapprovals ORDER BY approvalCount DESC LIMIT ?;");
             prepStmt.setInt(1, numberOfEditors);
             rs = prepStmt.executeQuery();
             while (rs.next()) {
-                topEditors.add(rs.getInt("accountId")); 
+                topEditors.add(rs.getInt("accountId"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -279,5 +275,32 @@ public class EditorDao_Impl implements EditorDao_Interface {
         return editorFound;
     }
 
+    
+    private void closeConnections() {
+        if (rs != null) {
+            try {
+                rs.close();
+                rs = null;
+            } catch (SQLException ex) {
+                Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if (prepStmt != null) {
+            try {
+                prepStmt.close();
+                prepStmt = null;
+            } catch (SQLException ex) {
+                Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if (connection != null) {
+            try {
+                connection.close();
+                connection = null;
+            } catch (SQLException ex) {
+                Logger.getLogger(EditorDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
+    }
 }

@@ -4,11 +4,12 @@
  */
 package Models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
- * @author jarro
+ * @author Jarrod
  */
 public class Writer extends Reader{
     private List<Integer> submittedStoryIds;
@@ -23,6 +24,8 @@ public class Writer extends Reader{
     public Writer(){
         super();
         super.setUserType("W");
+        this.submittedStoryIds = new ArrayList<>();
+        this.draftedStoryIds = new ArrayList<>();
     }
     
     public List<Integer> getSubmittedStoryIds() {

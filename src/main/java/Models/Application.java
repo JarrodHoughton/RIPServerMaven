@@ -6,11 +6,13 @@ package Models;
 
 /**
  *
- * @author jarro
+ * @author Jarrod
  */
 public class Application {
     private Integer readerId;
     private String motivation;
+    private String readerName;
+    private String readerSurname;
 
     public Application() {}
 
@@ -18,6 +20,15 @@ public class Application {
         this.readerId = readerId;
         this.motivation = motivation;
     }
+
+    public Application(Integer readerId, String motivation, String readerName, String readerSurname) {
+        this.readerId = readerId;
+        this.motivation = motivation;
+        this.readerName = readerName;
+        this.readerSurname = readerSurname;
+    }
+    
+    
 
     public String getMotivation() {
         return motivation;
@@ -33,6 +44,22 @@ public class Application {
 
     public void setReaderId(Integer readerId) {
         this.readerId = readerId;
+    }
+
+    public String getReaderName() {
+        return readerName;
+    }
+
+    public void setReaderName(String readerName) {
+        this.readerName = readerName;
+    }
+
+    public String getReaderSurname() {
+        return readerSurname;
+    }
+
+    public void setReaderSurname(String readerSurname) {
+        this.readerSurname = readerSurname;
     }
     
     @Override

@@ -110,6 +110,6 @@ public class LikeController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response checkIfLikeExists(Like like){
-        return Response.ok().entity(likeService.checkIfLikeExists(like)).build();
+        return Response.ok().entity(likeService.searchForLike(like)).build();
     }
 }

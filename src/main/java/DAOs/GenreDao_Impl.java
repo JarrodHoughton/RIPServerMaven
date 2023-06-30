@@ -18,8 +18,7 @@ public class GenreDao_Impl implements GenreDao_Interface {
     private PreparedStatement prepStmt;
     private ResultSet rs;
 
-    public GenreDao_Impl() {
-    }
+    public GenreDao_Impl() {}
 
     @Override
     public Genre getGenre(Integer id) {
@@ -49,10 +48,11 @@ public class GenreDao_Impl implements GenreDao_Interface {
 
     @Override
     public List<Genre> getAllGenres() {
-        List<Genre> genres = new ArrayList<>();
+        List<Genre> genres = null;
         Genre genre;
 
         try {
+            genres = new ArrayList<>();
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT * FROM genres;");
             rs = prepStmt.executeQuery();
@@ -75,85 +75,42 @@ public class GenreDao_Impl implements GenreDao_Interface {
 
     @Override
     public Boolean deleteGenre(Integer id) {
-
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("DELETE FROM genres WHERE genreId = ?;");
             prepStmt.setInt(1, id);
-            prepStmt.executeUpdate();
-
-            // Check to see if the genre was deleted
-            prepStmt = connection.prepareStatement("SELECT * FROM genres WHERE genreId = ?;");
-            prepStmt.setInt(1, id);
-            rs = prepStmt.executeQuery();
-            if (rs != null) {
-                return false;
-            }
+            return prepStmt.executeUpdate() > 0;
         } catch (SQLException ex) {
             Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         } finally {
             closeConnections();
         }
-
-        return true;
     }
 
     @Override
     public Boolean addGenre(Genre genre) {
-
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("INSERT INTO genres (genreName) VALUES (?);");
             prepStmt.setString(1, genre.getName());
-            prepStmt.executeUpdate();
-
+            return prepStmt.executeUpdate() > 0;
         } catch (SQLException ex) {
             Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         } finally {
             closeConnections();
         }
-
-        return true;
-    }
-
-    private void closeConnections() {
-        
-        if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        
-        if (prepStmt != null) {
-            try {
-                prepStmt.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        
     }
 
     @Override
     public List<Genre> getTopGenres(Timestamp startDate, Timestamp endDate, Integer numberOfEntries) {
-
-        List<Genre> genres = new ArrayList<>();
+        List<Genre> genres = null;
 
         try {
+            genres = new ArrayList<>();
             connection = DBManager.getConnection();
-
-            String query = "SELECT g.genreId, g.genreName, COUNT(*) AS viewCount " +
+            String query = "SELECT g.genreId, g.genreName, COUNT(viewId) AS viewCount " +
                     "FROM ripdb.views v " +
                     "JOIN ripdb.stories s ON v.storyId = s.storyId " +
                     "JOIN ripdb.stories_genres sg ON s.storyId = sg.storyId " +
@@ -183,6 +140,10 @@ public class GenreDao_Impl implements GenreDao_Interface {
             return null;
         } finally {
             closeConnections();
+        }
+        
+        if (genres!=null && genres.isEmpty()) {
+            return null;
         }
 
         return genres;
@@ -221,12 +182,12 @@ public class GenreDao_Impl implements GenreDao_Interface {
     
     @Override
     public Integer getTotalViewsByGenreWithinTimePeriod(Integer genreId, Timestamp startDate, Timestamp endDate) {
-        int totalViews = 0;
+        Integer totalViews = null;
 
         try {
             connection = DBManager.getConnection();
 
-            String query = "SELECT COUNT(*) AS totalViews " +
+            String query = "SELECT COUNT(viewId) AS totalViews " +
                     "FROM ripdb.views v " +
                     "JOIN ripdb.stories s ON v.storyId = s.storyId " +
                     "JOIN ripdb.stories_genres sg ON s.storyId = sg.storyId " +
@@ -254,7 +215,36 @@ public class GenreDao_Impl implements GenreDao_Interface {
 
         return totalViews;
     }
-
+    
+    private void closeConnections() {
+        
+        if (rs != null) {
+            try {
+                rs.close();
+                rs = null;
+            } catch (SQLException ex) {
+                Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        if (prepStmt != null) {
+            try {
+                prepStmt.close();
+                prepStmt = null;
+            } catch (SQLException ex) {
+                Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if (connection != null) {
+            try {
+                connection.close();
+                connection = null;
+            } catch (SQLException ex) {
+                Logger.getLogger(GenreDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }
 }
 
 

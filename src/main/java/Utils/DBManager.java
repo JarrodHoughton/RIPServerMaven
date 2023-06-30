@@ -23,7 +23,7 @@ public class DBManager {
         //GetProperties properties = new GetProperties("src\\main\\java\\Properties\\config.properties");
         dataSource = new BasicDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/RIPDB?autoReconnect=true&useSSL=false");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/RIPDB?autoReconnect=true&useSSL=false&allowMultiQueries=true");
         dataSource.setPassword("root");
         dataSource.setUsername("root");
         dataSource.setMinIdle(10);

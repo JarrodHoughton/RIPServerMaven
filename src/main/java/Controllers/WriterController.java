@@ -65,4 +65,11 @@ public class WriterController {
     public Response blockWriters(List<Integer> writerIds) {
         return Response.ok().entity(writerService.blockWriters(writerIds)).build();
     }
+    
+    @Path("/addWriters")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addWriters(List<Integer> writerIds) {
+        return Response.ok().entity(writerService.addWriters(writerIds)).build();
+    }
 }

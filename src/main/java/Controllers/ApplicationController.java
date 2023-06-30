@@ -14,6 +14,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.List;
 
 /**
  *
@@ -44,5 +45,12 @@ public class ApplicationController {
     @GET
     public Response addApplication(@PathParam("readerId") Integer readerId) {
         return Response.ok().entity(applicationService.deleteApplication(readerId)).build();
+    }
+    
+    @Path("/deleteApplications")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addApplication(List<Integer> accountIds) {
+        return Response.ok().entity(applicationService.deleteApplications(accountIds)).build();
     }
 }

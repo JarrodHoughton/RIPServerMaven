@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,9 +45,7 @@ public class StoryDao_Impl implements StoryDao_Interface {
         this.IMAGES_FILE_PATH = ROOT_DIR.substring(0, ROOT_DIR.indexOf("\\")) + "\\RIPServerImages";
         File imageFile = new File(IMAGES_FILE_PATH);
         if (!imageFile.exists()) {
-            System.out.println("Directory created: " + imageFile.mkdir() + " " + IMAGES_FILE_PATH);
-        } else {
-            System.out.println("Directory exists: " + IMAGES_FILE_PATH);
+            imageFile.mkdir();
         }
     }
 
@@ -318,7 +317,6 @@ public class StoryDao_Impl implements StoryDao_Interface {
 
     @Override
     public Boolean updateStory(Story story) {
-        System.out.println(story);
         Boolean updated;
         try {
             connection = DBManager.getConnection();
@@ -335,118 +333,50 @@ public class StoryDao_Impl implements StoryDao_Interface {
             prepStmt.setInt(10, story.getLikeCount());
             prepStmt.setString(11, story.getImageName());
             prepStmt.setInt(12, story.getId());
-            prepStmt.executeUpdate();
+            updated = prepStmt.executeUpdate() >= 0;
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         } finally {
             closeConnections();
         }
-
+        
+        updated = updated && deleteStoryGenres(story) && addStoryGenres(story);
+        
         if (story.getImage() != null) {
-            updated = updateImage(story);
+            updated = updated && updateImage(story);
         } else {
-            updated = addImageData(story);
+            updated = updated && addImageData(story);
         }
-        updated = updated && deleteStoryGenres(story.getId()) && addStoryGenres(story);
 
         return updated;
+    }
+
+    private Boolean deleteStoryGenres(Story story) {
+        Boolean deleted = false;
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("DELETE FROM stories_genres WHERE storyId=?;");
+            prepStmt.setInt(1, story.getId());
+            deleted = prepStmt.executeUpdate() >= 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeConnections();
+        }
+        return deleted;
     }
 
     @Override
     public Boolean deleteStory(Story story) {
         Boolean deleted = false;
         try {
-            deleted = deleteImage(story) && deleteStoryGenres(story.getId()) && deleteStoryLikes(story.getId()) && deleteStoryRatings(story.getId()) && deleteStoryComments(story.getId()) && deleteStoryViews(story.getId());
+            deleted = deleteImage(story);
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("DELETE FROM stories WHERE storyId=?;");
             prepStmt.setInt(1, story.getId());
-            prepStmt.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        } finally {
-            closeConnections();
-        }
-        return deleted;
-    }
-
-    private Boolean deleteStoryGenres(Integer storyId) {
-        Boolean deleted = false;
-        try {
-            connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("DELETE FROM stories_genres WHERE storyId=?;");
-            prepStmt.setInt(1, storyId);
-            prepStmt.executeUpdate();
-            deleted = true;
-        } catch (SQLException ex) {
-            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        } finally {
-            closeConnections();
-        }
-        return deleted;
-    }
-
-    private Boolean deleteStoryLikes(Integer storyId) {
-        Boolean deleted = false;
-        try {
-            deleted = deleteStoryGenres(storyId);
-            connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("DELETE FROM likes WHERE storyId=?;");
-            prepStmt.setInt(1, storyId);
-            prepStmt.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        } finally {
-            closeConnections();
-        }
-        return deleted;
-    }
-
-    private Boolean deleteStoryRatings(Integer storyId) {
-        Boolean deleted = false;
-        try {
-            deleted = deleteStoryGenres(storyId);
-            connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("DELETE FROM ratings WHERE storyId=?;");
-            prepStmt.setInt(1, storyId);
-            prepStmt.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        } finally {
-            closeConnections();
-        }
-        return deleted;
-    }
-
-    private Boolean deleteStoryComments(Integer storyId) {
-        Boolean deleted = false;
-        try {
-            deleted = deleteStoryGenres(storyId);
-            connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("DELETE FROM comments WHERE storyId=?;");
-            prepStmt.setInt(1, storyId);
-            prepStmt.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        } finally {
-            closeConnections();
-        }
-        return deleted;
-    }
-
-    private Boolean deleteStoryViews(Integer storyId) {
-        Boolean deleted = false;
-        try {
-            deleted = deleteStoryGenres(storyId);
-            connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("DELETE FROM views WHERE storyId=?;");
-            prepStmt.setInt(1, storyId);
-            prepStmt.executeUpdate();
+            deleted = prepStmt.executeUpdate() >= 0;
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -479,10 +409,9 @@ public class StoryDao_Impl implements StoryDao_Interface {
 
     @Override
     public Boolean addStory(Story story) {
-        if (searchForTitle(story.getTitle())) {
-            return false;
-        }
         Boolean added = false;
+
+        //story details to table
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(
@@ -501,52 +430,61 @@ public class StoryDao_Impl implements StoryDao_Interface {
             prepStmt.setInt(10, story.getLikeCount());
             prepStmt.setDouble(11, story.getRating());
             prepStmt.setString(12, story.getImageName());
-            prepStmt.executeUpdate();
+            added = prepStmt.executeUpdate() >= 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeConnections();
+        }
 
+        //get the story id
+        try {
+            connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("select storyId from stories where title = ?;");
             prepStmt.setString(1, story.getTitle());
             rs = prepStmt.executeQuery();
             if (rs.next()) {
                 story.setId(rs.getInt(1));
             }
-
-            if (story.getId() != null && story.getImage() != null) {
-                added = addImageData(story);
-            }
-            added = added && addStoryGenres(story);
         } catch (SQLException ex) {
             Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
         } finally {
             closeConnections();
         }
-        return added;
-    }
 
-    private Boolean addStoryGenre(Integer storyId, Integer genreId) {
-        Boolean added = false;
-        try {
-            connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("INSERT INTO stories_genres(storyId, genreId) VALUES(?, ?);");
-            prepStmt.setInt(1, storyId);
-            prepStmt.setInt(2, genreId);
-            prepStmt.executeUpdate();
-            added = true;
-        } catch (SQLException ex) {
-            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        } finally {
-            closeConnections();
+        //add the story genres
+        added = added && addStoryGenres(story);
+
+        if (story.getId() != null && story.getImage() != null) {
+            added = addImageData(story);
         }
+
         return added;
     }
 
     private Boolean addStoryGenres(Story story) {
         Boolean added = true;
-        for (Integer genreId : story.getGenreIds()) {
-            if (!addStoryGenre(story.getId(), genreId)) {
-                added = false;
+        
+        if (story.getGenreIds().isEmpty()) {
+            return false;
+        }
+        
+        try {
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement("INSERT INTO stories_genres(storyId, genreId) VALUES(?, ?);");
+            for (Integer genreId : story.getGenreIds()) {
+                prepStmt.setInt(1, story.getId());
+                prepStmt.setInt(2, genreId);
+                prepStmt.addBatch();
             }
+
+            added = prepStmt.executeBatch()[0] >= 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(StoryDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeConnections();
         }
         return added;
     }

@@ -15,4 +15,5 @@ public interface ApplicationService_Interface {
     public List<Application> getApplications();
     public String addApplication(Application application);
     public String deleteApplication(Integer accountId);
+    public String deleteApplications(List<Integer> accountIds);
 }

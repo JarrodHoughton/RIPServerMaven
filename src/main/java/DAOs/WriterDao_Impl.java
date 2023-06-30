@@ -24,19 +24,13 @@ public class WriterDao_Impl implements WriterDao_Interface {
     @Override
     public Boolean blockWriters(List<Integer> writerIds) {
         Boolean writersBlocked = false;
-        if (writerIds.isEmpty()) {
-            return false;
-        }
         for (Integer writerId : writerIds) {
             String sql = "UPDATE accounts SET accountType='R' WHERE accountId=?;";
             try {
                 connection = DBManager.getConnection();
                 prepStmt = connection.prepareStatement(sql);
                 prepStmt.setInt(1, writerId);
-                Integer rowsAffected = prepStmt.executeUpdate();
-                if (rowsAffected > 0) {
-                    writersBlocked = true;
-                }
+                writersBlocked = prepStmt.executeUpdate() > 0;
             } catch (SQLException ex) {
                 Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
@@ -48,14 +42,14 @@ public class WriterDao_Impl implements WriterDao_Interface {
     @Override
     public Writer getWriter(Integer writerId) {
         Writer writer = null;
+        String writerDetailsQuery = "SELECT * FROM accounts WHERE accountId = ?;";
         try {
+            writer = new Writer();
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement(
-                    "SELECT * FROM accounts WHERE accountId = ?;");
+            prepStmt = connection.prepareStatement(writerDetailsQuery);
             prepStmt.setInt(1, writerId);
             rs = prepStmt.executeQuery();
             if (rs.next()) {
-                writer = new Writer();
                 writer.setId(writerId);
                 writer.setName(rs.getString("accountName"));
                 writer.setSurname(rs.getString("accountSurname"));
@@ -65,35 +59,80 @@ public class WriterDao_Impl implements WriterDao_Interface {
                 writer.setPhoneNumber(rs.getString("accountPhoneNumber"));
                 writer.setUserType(rs.getString("accountType"));
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } finally {
+            closeConnections();
+        }
 
+        if (writer != null) {
             //getting all the writer's favourite story Ids
-            List<Integer> favouriteStoryIds = new ArrayList<>();
-            prepStmt = connection.prepareStatement(
-                    "SELECT storyId FROM likes WHERE accountId = ?;");
+            writer.setFavouriteStoryIds(getWritersFavouriteStoryIds(writer.getId()));
+
+            //getting all the writer's favourite genre Ids
+            writer.setFavouriteGenreIds(getWritersFavouriteGenreIds(writer.getId()));
+            
+            //getting all the writer's submitted and drafted story Ids
+            writer = setCreatedStories(writer);
+        }
+
+        return writer;
+    }
+
+    private List<Integer> getWritersFavouriteStoryIds(Integer writerId) {
+        List<Integer> favouriteStoryIds = null;
+        String favouriteStoriesQuery = "SELECT storyId FROM likes WHERE accountId = ?;";
+        try {
+            favouriteStoryIds = new ArrayList<>();
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement(favouriteStoriesQuery);
             prepStmt.setInt(1, writerId);
             rs = prepStmt.executeQuery();
             while (rs.next()) {
                 favouriteStoryIds.add(rs.getInt("storyId"));
             }
-            writer.setFavouriteStoryIds(favouriteStoryIds);
+        } catch (SQLException ex) {
+            Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            //getting all the writer's favourite genre Ids
-            List<Integer> favouriteGenreIds = new ArrayList<>();
-            prepStmt = connection.prepareStatement(
-                    "SELECT genreId FROM genres_readers WHERE accountId = ?;");
+        if (favouriteStoryIds != null && favouriteStoryIds.isEmpty()) {
+            return null;
+        }
+
+        return favouriteStoryIds;
+    }
+
+    private List<Integer> getWritersFavouriteGenreIds(Integer writerId) {
+        List<Integer> favouriteGenreIds = null;
+        String favouriteGenresQuery = "SELECT genreId FROM genres_readers WHERE accountId = ?;";
+        try {
+            favouriteGenreIds = new ArrayList<>();
+            connection = DBManager.getConnection();
+            prepStmt = connection.prepareStatement(favouriteGenresQuery);
             prepStmt.setInt(1, writerId);
             rs = prepStmt.executeQuery();
             while (rs.next()) {
                 favouriteGenreIds.add(rs.getInt("genreId"));
             }
-            writer.setFavouriteGenreIds(favouriteGenreIds);
+        } catch (SQLException ex) {
+            Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            //getting all the writer's submitted and drafted story Ids
+        if (favouriteGenreIds != null && favouriteGenreIds.isEmpty()) {
+            return null;
+        }
+
+        return favouriteGenreIds;
+    }
+
+    private Writer setCreatedStories(Writer writer) {
+        try {
+            String createdStoriesQuery = "SELECT storyId, submitted FROM stories WHERE accountId = ?;";
             List<Integer> submittedStoryIds = new ArrayList<>();
             List<Integer> draftedStoryIds = new ArrayList<>();
-            prepStmt = connection.prepareStatement(
-                    "SELECT storyId, submitted FROM stories WHERE accountId = ?;");
-            prepStmt.setInt(1, writerId);
+            prepStmt = connection.prepareStatement(createdStoriesQuery);
+            prepStmt.setInt(1, writer.getId());
             rs = prepStmt.executeQuery();
             while (rs.next()) {
                 Integer storyId = rs.getInt("storyId");
@@ -107,7 +146,6 @@ public class WriterDao_Impl implements WriterDao_Interface {
             writer.setSubmittedStoryIds(submittedStoryIds);
         } catch (SQLException ex) {
             Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
         } finally {
             closeConnections();
         }
@@ -116,23 +154,17 @@ public class WriterDao_Impl implements WriterDao_Interface {
 
     @Override
     public List<Writer> getAllWriters() {
-        List<Writer> writers = new ArrayList<>();
+        List<Writer> writers = null;
+        List<Integer> writerIds = null;
+
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(
                     "SELECT accountId FROM accounts WHERE accountType='W';");
             rs = prepStmt.executeQuery();
-            List<Integer> writerIds = new ArrayList<>();
+            writerIds = new ArrayList<>();
             while (rs.next()) {
                 writerIds.add(rs.getInt("accountId"));
-            }
-
-            for (Integer writerId : writerIds) {
-                writers.add(getWriter(writerId));
-            }
-
-            if (writers.isEmpty()) {
-                return null;
             }
         } catch (SQLException ex) {
             Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
@@ -140,15 +172,24 @@ public class WriterDao_Impl implements WriterDao_Interface {
         } finally {
             closeConnections();
         }
+
+        if (writerIds != null && !writerIds.isEmpty()) {
+            writers = new ArrayList<>();
+            for (Integer writerId : writerIds) {
+                writers.add(getWriter(writerId));
+            }
+        }
+
         return writers;
     }
 
     @Override
     public List<Integer> getTopWritersByDate(Integer numberOfWriters, Timestamp startDate, Timestamp endDate) {
-        List<Integer> topWriters = new ArrayList<>();
+        List<Integer> topWriters = null;
         try {
+            topWriters = new ArrayList<>();
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT v.accountId, COUNT(*) AS viewCount "
+            prepStmt = connection.prepareStatement("SELECT v.accountId, COUNT(viewId) AS viewCount "
                     + "FROM views AS v INNER JOIN stories AS s ON v.storyId = s.storyId "
                     + "WHERE v.viewDate >= ? AND v.viewDate <= ? "
                     + "GROUP BY v.accountId ORDER BY viewCount DESC LIMIT ?;");
@@ -173,8 +214,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
         Writer writer = null;
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement(
-                    "SELECT * FROM accounts WHERE accountEmail = ?;");
+            prepStmt = connection.prepareStatement("SELECT * FROM accounts WHERE accountEmail = ?;");
             prepStmt.setString(1, email);
             rs = prepStmt.executeQuery();
             if (rs.next()) {
@@ -245,6 +285,26 @@ public class WriterDao_Impl implements WriterDao_Interface {
             prepStmt.setInt(1, readerId);
             prepStmt.executeUpdate();
             added = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } finally {
+            closeConnections();
+        }
+        return added;
+    }
+    
+    @Override
+    public Boolean addWriters(List<Integer> writerIds) {
+        Boolean added = false;
+        try {
+            connection = DBManager.getConnection();
+            for (Integer writerId : writerIds) {
+                prepStmt = connection.prepareStatement("UPDATE accounts SET accountType='W' WHERE accountId=?");
+                prepStmt.setInt(1, writerId);
+                prepStmt.addBatch();
+            }
+            added = prepStmt.executeBatch()[0] > 0;
         } catch (SQLException ex) {
             Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -326,7 +386,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
         Integer totalViews = null;
         try {
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT COUNT(*) AS totalViews FROM views "
+            prepStmt = connection.prepareStatement("SELECT COUNT(viewId) AS totalViews FROM views "
                     + "INNER JOIN stories ON views.storyId = stories.storyId "
                     + "WHERE stories.accountId = ?");
             prepStmt.setInt(1, writerId);

@@ -4,11 +4,12 @@
  */
 package Models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
- * @author jarro
+ * @author Jarrod
  */
 public class Reader extends Account{
     private List<Integer> favouriteGenreIds;
@@ -25,6 +26,8 @@ public class Reader extends Account{
     public Reader(){
         super();
         super.setUserType("R");
+        this.favouriteStoryIds = new ArrayList<>();
+        this.favouriteGenreIds = new ArrayList<>();
     }
     
     public List<Integer> getFavouriteGenreIds() {

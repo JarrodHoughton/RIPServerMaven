@@ -20,7 +20,7 @@ public class LikeService_Impl implements LikeService_Interface {
     @Override
     public String addLike(Like like) {
         
-        if (likeDao.checkIfLikeExists(like)) {
+        if (likeDao.searchForLike(like)) {
             return "You have already liked this story.";
         }
         
@@ -66,8 +66,8 @@ public class LikeService_Impl implements LikeService_Interface {
     }
 
     @Override
-    public Boolean checkIfLikeExists(Like like) {
-        return likeDao.checkIfLikeExists(like);
+    public Boolean searchForLike(Like like) {
+        return likeDao.searchForLike(like);
     }
     
     

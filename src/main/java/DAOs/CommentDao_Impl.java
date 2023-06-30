@@ -30,7 +30,7 @@ public class CommentDao_Impl implements CommentDao_Interface{
     @Override
     public List<Comment> getAllCommentForStory(Integer storyId) {
         List<Comment> comments = new ArrayList<>();
-        Comment com;
+        Comment comment;
         
         try { 
             connection = DBManager.getConnection();
@@ -40,18 +40,19 @@ public class CommentDao_Impl implements CommentDao_Interface{
             prepStmt.setInt(1, storyId);
             rs = prepStmt.executeQuery();
             while (rs.next()){
-                com = new Comment();
-                com.setId(rs.getInt("commentId"));
-                com.setDate(rs.getTimestamp("commentDate").toLocalDateTime().toString());
-                com.setReaderId(rs.getInt("accountId"));
-                com.setStoryId(rs.getInt("storyId"));
-                com.setMessage(rs.getString("commentMessage"));
-                com.setName(rs.getString("accountName"));
-                com.setSurname(rs.getString("accountSurname"));
-                comments.add(com);
+                comment = new Comment();
+                comment.setId(rs.getInt("commentId"));
+                comment.setDate(rs.getTimestamp("commentDate").toLocalDateTime().toString());
+                comment.setReaderId(rs.getInt("accountId"));
+                comment.setStoryId(rs.getInt("storyId"));
+                comment.setMessage(rs.getString("commentMessage"));
+                comment.setName(rs.getString("accountName"));
+                comment.setSurname(rs.getString("accountSurname"));
+                comments.add(comment);
             }
         } catch (SQLException ex) {
             Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, "Failed to get all comments for story", ex);
+            return null;
         }finally{
             closeConnections();
         }
@@ -120,8 +121,7 @@ public class CommentDao_Impl implements CommentDao_Interface{
             prepStmt.setString(1, comment.getMessage());
             prepStmt.setInt(2, comment.getReaderId());
             prepStmt.setInt(3, comment.getStoryId());
-            prepStmt.executeUpdate();
-            added = true;
+            added = prepStmt.executeUpdate() > 0;
         } catch (SQLException ex) {
             Logger.getLogger(CommentDao_Impl.class.getName()).log(Level.SEVERE, "Failed to add comment", ex);
             return false;

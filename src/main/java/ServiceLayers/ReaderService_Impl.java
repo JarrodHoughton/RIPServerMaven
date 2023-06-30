@@ -63,8 +63,8 @@ public class ReaderService_Impl implements ReaderService_Interface{
     }
 
     @Override
-    public String updateFavouriteGenresOfAReader(Reader reader) {
-        if (readerDao.updateFavouriteGenresOfAReader(reader)) {
+    public String addFavouriteGenres(Reader reader) {
+        if (readerDao.addFavouriteGenres(reader)) {
             return "Reader's favourite genres were successfully updated.";
         } else {
             return "System failed to update the reader's favourite genres.";

@@ -26,15 +26,17 @@ public class LikeDao_Impl implements LikeDao_Interface {
 
     @Override
     public List<Like> getAllLikes() {
-        List<Like> likes = new ArrayList<>();
-        Like like = new Like();
+        List<Like> likes = null;
+        Like like;
         
         try {
+            likes = new ArrayList<>();
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT * FROM likes;");
             rs = prepStmt.executeQuery();
             
-            while (rs.next()) {                
+            while (rs.next()) {
+                like = new Like();
                 like.setId(rs.getInt("likeId"));
                 like.setDate(rs.getTimestamp("likeDate").toLocalDateTime());
                 like.setReaderId(rs.getInt("accountId"));
@@ -47,15 +49,21 @@ public class LikeDao_Impl implements LikeDao_Interface {
         } finally {
             closeConnections();
         }
+        
+        if (likes != null && likes.isEmpty()) {
+            return null;
+        }
 
         return likes;
     }
 
     @Override
     public List<Like> getLikesByReaderId(Integer accountId) {
-        List<Like> likes = new ArrayList<>();
-        Like like = new Like();
+        List<Like> likes = null;
+        Like like;
         try {
+            likes = new ArrayList<>();
+            like = new Like();
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT * FROM likes WHERE accountId = ?;");
             prepStmt.setInt(1, accountId);
@@ -74,15 +82,21 @@ public class LikeDao_Impl implements LikeDao_Interface {
         } finally {
             closeConnections();
         }
-
+        
+        if (likes != null && likes.isEmpty()) {
+            return null;
+        }
+        
         return likes;
     }
 
     @Override
     public List<Like> getLikesByStory(Integer storyId) {
-        List<Like> likes = new ArrayList<>();
-        Like like = new Like();
+        List<Like> likes = null;
+        Like like;
         try {
+            likes = new ArrayList<>();
+            like = new Like();
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT * FROM likes WHERE storyId = ?;");
             prepStmt.setInt(1, storyId);
@@ -101,7 +115,11 @@ public class LikeDao_Impl implements LikeDao_Interface {
         } finally {
             closeConnections();
         }
-
+        
+        if (likes != null && likes.isEmpty()) {
+            return null;
+        }
+        
         return likes;
     }
 
@@ -141,15 +159,13 @@ public class LikeDao_Impl implements LikeDao_Interface {
             
             prepStmt = connection.prepareStatement("UPDATE stories SET likeCount = likeCount + 1 WHERE storyId = ?;");
             prepStmt.setInt(1, like.getStoryId());
-            prepStmt.executeUpdate();
+            return prepStmt.executeUpdate() > 0;
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, "Failed to add like", ex);
             return false;
         } finally {
             closeConnections();
         }
-        
-        return true;
     }
 
     @Override
@@ -163,25 +179,23 @@ public class LikeDao_Impl implements LikeDao_Interface {
             
             prepStmt = connection.prepareStatement("UPDATE stories SET likeCount = likeCount - 1 WHERE storyId = ?;");
             prepStmt.setInt(1, like.getStoryId());
-            prepStmt.executeUpdate();
+            return prepStmt.executeUpdate() > 0;
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, "Failed to delete like", ex);
             return false;
         } finally {
             closeConnections();
         }
-
-        return true;
     }
 
-    private Boolean searchForLike(Integer readerId, Integer storyId) {
+    @Override
+    public Boolean searchForLike(Like like) {
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT * FROM likes WHERE accountId = ? AND storyId = ?;");
-            prepStmt.setInt(1, readerId);
-            prepStmt.setInt(2, storyId);
+            prepStmt.setInt(1, like.getReaderId());
+            prepStmt.setInt(2, like.getStoryId());
             rs = prepStmt.executeQuery();
-
             return rs.next();
         } catch (SQLException ex) {
             Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, "Failed to search for like", ex);
@@ -193,16 +207,16 @@ public class LikeDao_Impl implements LikeDao_Interface {
 
     @Override
     public List<Integer> getMostLikedBooks(Integer numberOfBooks, Timestamp startDate, Timestamp endDate) {
-        List<Integer> mostLikedBooks = new ArrayList<>();
+        List<Integer> mostLikedBooks = null;
 
         try {
+            mostLikedBooks = new ArrayList<>();
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT storyId, COUNT(*) AS likeCount FROM likes WHERE likeDate >= ? AND likeDate <= ? GROUP BY storyId HAVING COUNT(*) >= 1 ORDER BY likeCount DESC LIMIT ?;");
             prepStmt.setTimestamp(1, startDate);
             prepStmt.setTimestamp(2, endDate);
             prepStmt.setInt(3, numberOfBooks);
             rs = prepStmt.executeQuery();
-
             while (rs.next()) {
                 mostLikedBooks.add(rs.getInt("storyId"));
             }
@@ -212,7 +226,11 @@ public class LikeDao_Impl implements LikeDao_Interface {
         } finally {
             closeConnections();
         }
-
+        
+        if (mostLikedBooks != null && mostLikedBooks.isEmpty()) {
+            return null;
+        }
+        
         return mostLikedBooks;
     }
 
@@ -220,6 +238,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
         if (rs != null) {
             try {
                 rs.close();
+                rs = null;
             } catch (SQLException ex) {
                 Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -227,6 +246,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
         if (prepStmt != null) {
             try {
                 prepStmt.close();
+                prepStmt = null;
             } catch (SQLException ex) {
                 Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -234,6 +254,7 @@ public class LikeDao_Impl implements LikeDao_Interface {
         if (connection != null) {
             try {
                 connection.close();
+                connection = null;
             } catch (SQLException ex) {
                 Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -243,9 +264,10 @@ public class LikeDao_Impl implements LikeDao_Interface {
 
     @Override
     public List<Integer> getMostLikedStoriesByGenreAndTime(Integer genreId, Integer numberOfStories, String startDate, String endDate) {
-        List<Integer> storyIds = new ArrayList<>();
+        List<Integer> storyIds = null;
 
         try {
+            storyIds = new ArrayList<>();
             String query = "SELECT s.storyId FROM ripdb.stories s JOIN ripdb.stories_genres sg ON s.storyId = sg.storyId WHERE sg.genreId = ? AND s.likeDate >= ? AND s.likeDate <= ? ORDER BY s.likeCount DESC LIMIT ?;";
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(query);
@@ -265,30 +287,12 @@ public class LikeDao_Impl implements LikeDao_Interface {
         } finally {
             closeConnections();
         }
-
-        return storyIds;
-    }
-    
-    @Override
-    public Boolean checkIfLikeExists(Like like) {
-        try {
-            connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT COUNT(*) AS likeCount FROM likes WHERE accountId = ? AND storyId = ?;");
-            prepStmt.setInt(1, like.getReaderId());
-            prepStmt.setInt(2, like.getStoryId());
-            rs = prepStmt.executeQuery();
-
-            if (rs.next()) {
-                int likeCount = rs.getInt("likeCount");
-                return likeCount > 0;
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(LikeDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            closeConnections();
+        
+        if (storyIds != null && storyIds.isEmpty()) {
+            return null;
         }
-
-        return false;
+        
+        return storyIds;
     }
 }
 

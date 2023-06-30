@@ -16,8 +16,11 @@ import java.util.logging.Logger;
 public class ReaderDao_Impl implements ReaderDao_Interface {
 
     private Connection connection;
-    PreparedStatement ps;
-    ResultSet rs;
+    private PreparedStatement ps;
+    private ResultSet rs;
+
+    public ReaderDao_Impl() {
+    }
 
     @Override
     public Reader getReader(String accountEmail) {
@@ -50,7 +53,7 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
         }
         return reader;
     }
-    
+
     @Override
     public Reader getReader(Integer readerId) {
         String sql = "SELECT * FROM accounts WHERE accountId = ?";
@@ -84,9 +87,10 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
     }
 
     private List<Integer> getFavouriteGenresOfUser(Integer accountId) {
-        List<Integer> genreList = new ArrayList<>();
+        List<Integer> genreList = null;
         String sql = "SELECT genreId FROM genres_readers WHERE accountId = ?";
         try {
+            genreList = new ArrayList<>();
             connection = DBManager.getConnection();
             ps = connection.prepareStatement(sql);
             ps.setInt(1, accountId);
@@ -100,13 +104,19 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
         } finally {
             closeConnections();
         }
+
+        if (genreList != null && genreList.isEmpty()) {
+            return null;
+        }
+
         return genreList;
     }
 
     private List<Integer> getFavouriteStoriesOfUser(Integer accountId) {
-        List<Integer> storyList = new ArrayList<>();
+        List<Integer> storyList = null;
         String sql = "SELECT storyId FROM likes WHERE accountId = ?";
         try {
+            storyList = new ArrayList<>();
             connection = DBManager.getConnection();
             ps = connection.prepareStatement(sql);
             ps.setInt(1, accountId);
@@ -120,14 +130,20 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
         } finally {
             closeConnections();
         }
+
+        if (storyList != null && storyList.isEmpty()) {
+            return null;
+        }
+
         return storyList;
     }
 
     @Override
     public List<Reader> getAllReaders() {
-        List<Reader> readerList = new ArrayList<>();
+        List<Reader> readerList = null;
         String sql = "SELECT accountEmail FROM accounts";
         try {
+            readerList = new ArrayList<>();
             connection = DBManager.getConnection();
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -141,12 +157,17 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
         } finally {
             closeConnections();
         }
+
+        if (readerList != null && readerList.isEmpty()) {
+            return null;
+        }
+
         return readerList;
     }
 
     @Override
     public Boolean addReader(Reader reader) {
-        System.out.println(reader);
+        Boolean added = false;
         String sql = "INSERT INTO accounts (accountName, accountSurname, accountEmail, accountPasswordHash, accountSalt, accountPhoneNumber, accountType, verifyToken) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             connection = DBManager.getConnection();
@@ -159,27 +180,49 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
             ps.setString(6, reader.getPhoneNumber());
             ps.setString(7, reader.getUserType());
             ps.setString(8, VerificationTokenGenerator.generateToken());
-            ps.executeUpdate();
-            reader.setId(getReader(reader.getEmail()).getId());
-            for (Integer genreId : reader.getFavouriteGenreIds()) {
-                addAFavouriteGenreOfAReader(reader, genreId);
-            }
+            added = ps.executeUpdate() > 0;
         } catch (SQLException e) {
             Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
             return false;
         } finally {
             closeConnections();
         }
-        return true;
+        if (added) {
+            reader.setId(getReaderId(reader.getEmail()));
+        }
+
+        if (reader.getId() != null) {
+            for (Integer genreId : reader.getFavouriteGenreIds()) {
+                added = added && addAFavouriteGenreOfAReader(reader, genreId);
+            }
+        }
+        return added;
+    }
+
+    private Integer getReaderId(String accountEmail) {
+        Integer readerId = null;
+        String sql = "SELECT accountId FROM accounts WHERE accountEmail=?;";
+        try {
+            connection = DBManager.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, accountEmail);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                readerId = rs.getInt("accountId");
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        } finally {
+            closeConnections();
+        }
+        return readerId;
     }
 
     @Override
     public Boolean updateReader(Reader reader) {
         Boolean updated = false;
         String sql = "UPDATE accounts SET accountName = ?, accountSurname = ?, accountEmail = ?, accountPasswordHash = ?, accountSalt = ?, accountPhoneNumber = ?, accountType = ? WHERE accountId = ?";
-        if (!userExists(reader.getEmail())) {
-            return false;
-        }
         try {
             connection = DBManager.getConnection();
             ps = connection.prepareStatement(sql);
@@ -191,15 +234,16 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
             ps.setString(6, reader.getPhoneNumber());
             ps.setString(7, reader.getUserType());
             ps.setInt(8, reader.getId());
-            ps.executeUpdate();
-            updated = updateFavouriteGenresOfAReader(reader);
+            updated = ps.executeUpdate() > 0;
         } catch (SQLException e) {
             Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
             return false;
         } finally {
             closeConnections();
         }
-        return true;
+        
+        updated = updated && deleteFavouriteGenres(reader) && addFavouriteGenres(reader);
+        return updated;
     }
 
     @Override
@@ -222,21 +266,18 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
     }
 
     @Override
-    public Boolean updateFavouriteGenresOfAReader(Reader reader) {
+    public Boolean addFavouriteGenres(Reader reader) {
         Boolean updated = true;
-        String sql = "DELETE FROM genres_readers WHERE accountId = ?;";
+        String addFavouriteGenresSql = "INSERT INTO genres_readers (genreId, accountId) VALUES(?,?)";
         try {
             connection = DBManager.getConnection();
-            ps = connection.prepareStatement(sql);
-            ps.setInt(1, reader.getId());
-            ps.executeUpdate();
-            
-            List<Integer> genreIds = reader.getFavouriteGenreIds();
-            for (Integer genreId : genreIds) {
-                if (!addAFavouriteGenreOfAReader(reader, genreId)) {
-                    updated = false;
-                }
+            ps = connection.prepareStatement(addFavouriteGenresSql);
+            for (Integer genreId : reader.getFavouriteGenreIds()) {
+                ps.setInt(1, genreId);
+                ps.setInt(2, reader.getId());
+                ps.addBatch();
             }
+            updated = ps.executeBatch()[0] >= 0;
         } catch (SQLException e) {
             Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
             return false;
@@ -254,10 +295,23 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
             ps = connection.prepareStatement(sql);
             ps.setInt(1, genreID);
             ps.setInt(2, reader.getId());
-            ps.executeUpdate();
-            List<Integer> listOfGenres = getFavouriteGenresOfUser(reader.getId());
-            reader.setFavouriteGenreIds(listOfGenres);
-            return true;
+            return ps.executeUpdate() >= 0;
+        } catch (SQLException e) {
+            Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
+            return false;
+        } finally {
+            closeConnections();
+        }
+    }
+    
+    @Override
+    public Boolean deleteFavouriteGenres(Reader reader) {
+        String sql = "DELETE FROM genres_readers WHERE accountId = ?";
+        try {
+            connection = DBManager.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, reader.getId());
+            return ps.executeUpdate() >= 0;
         } catch (SQLException e) {
             Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
             return false;
@@ -274,10 +328,7 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
             ps = connection.prepareStatement(sql);
             ps.setInt(1, genreID);
             ps.setInt(2, reader.getId());
-            ps.executeUpdate();
-            List<Integer> listOfGenres = getFavouriteGenresOfUser(reader.getId());
-            reader.setFavouriteGenreIds(listOfGenres);
-            return true;
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
             return false;
@@ -305,8 +356,7 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
             connection = DBManager.getConnection();
             ps = connection.prepareStatement(sql);
             ps.setInt(1, readerId);
-            ps.executeUpdate();
-            verified = true;
+            verified = ps.executeUpdate() > 0;
         } catch (SQLException e) {
             Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
             return false;

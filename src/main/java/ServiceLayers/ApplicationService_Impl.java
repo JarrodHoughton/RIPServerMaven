@@ -44,4 +44,13 @@ public class ApplicationService_Impl implements ApplicationService_Interface {
         }
     }
 
+    @Override
+    public String deleteApplications(List<Integer> accountIds) {
+        if (applicationDao.deleteApplications(accountIds)) {
+            return "Applications deleted from the system successfully.";
+        } else {
+            return "System failed to delete applications.";
+        }
+    }
+
 }

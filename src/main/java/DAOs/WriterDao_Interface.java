@@ -17,6 +17,7 @@ public interface WriterDao_Interface {
     public Writer getWriterByEmail(String email);
     public List<Writer> getAllWriters();
     public Boolean addWriter(Integer readerId);
+    public Boolean addWriters(List<Integer> writerIds);
     public Boolean deleteWriter(Integer writerId);
     public Boolean updateWriter(Writer writer);
     public Boolean blockWriters(List<Integer> writerIds);

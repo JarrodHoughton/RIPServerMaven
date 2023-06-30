@@ -5,14 +5,17 @@
 package ServiceLayers;
 
 import Models.Reader;
+import java.util.List;
 
 /**
  *
- * @author jarro
+ * @author Jarrod
  */
 public interface MailService_Interface {
     public String sendMail(String recipientEmail, String emailContent, String subject);
     public String sendVerficationEmail(Reader reader);
     public String sendVerificationEmailWithHTML(Reader reader);
     public String sendReferralEmail(String recipientEmail, String recipientName);
+    public String notifyApprovedWriters(List<Integer> accountIds, Boolean approved);
+    public String notifyWriterOfStorySubmission(Integer writerId, Boolean approved);
 }

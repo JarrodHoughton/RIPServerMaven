@@ -17,6 +17,7 @@ public interface WriterService_Interface {
     public Writer getWriterByEmail(String email);
     public List<Writer> getAllWriters();
     public String addWriter(Integer readerId);
+    public String addWriters(List<Integer> writerIds);
     public String deleteWriter(Integer writerId);
     public String updateWriter(Writer writer);
     public String blockWriters(List<Integer> writerId);

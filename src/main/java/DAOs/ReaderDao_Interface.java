@@ -21,7 +21,8 @@ public interface ReaderDao_Interface {
     public Boolean isVerified(Integer readerId);
     public String getVerifyToken(Integer readerId);
     public Boolean userExists(String accountEmail);
-    public Boolean updateFavouriteGenresOfAReader(Reader reader);
+    public Boolean addFavouriteGenres(Reader reader);
+    public Boolean deleteFavouriteGenres(Reader reader);
     public Boolean deleteAFavouriteGenreOfAReader(Reader reader, Integer genreID);
     public Boolean addAFavouriteGenreOfAReader(Reader reader, Integer genreID);
     public Boolean deleteReader(Reader reader);

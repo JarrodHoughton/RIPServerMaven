@@ -18,9 +18,9 @@ public interface ReaderService_Interface {
     public String addReader(Reader reader);
     public String updateReader(Reader reader);
     public Boolean userExists(String accountEmail);
-    public String updateFavouriteGenresOfAReader(Reader reader);
-    public String deleteAFavouriteGenreOfAReader(Reader reader, Integer genreID);
     public String addAFavouriteGenreOfAReader(Reader reader, Integer genreID);
+    public String deleteAFavouriteGenreOfAReader(Reader reader, Integer genreID);
+    public String addFavouriteGenres(Reader reader);
     public String deleteReader(Reader reader);
     public void updateFavouriteStoriesOfAReader(Reader reader);
     public String setVerified(Integer readerId);
