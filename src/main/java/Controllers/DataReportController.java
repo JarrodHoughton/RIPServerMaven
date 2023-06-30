@@ -207,7 +207,7 @@ public Response getStoryViewsByDate(
                         .build();
             }
 
-        return Response.ok().entity(ratingService.getAverageRatingOfAStoryInATimePeriod(storyId, start, end)).build();        } catch (IllegalArgumentException e) {
+        return Response.ok().entity(ratingService.getAverageRatingOfAStoryInATimePeriod(storyId, start, end).toString()).build();        } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
                     .build();
