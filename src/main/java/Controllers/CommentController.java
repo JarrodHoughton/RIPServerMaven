@@ -18,7 +18,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.util.List;
 
 @Path("/comment")
 public class CommentController {
@@ -54,7 +53,7 @@ public class CommentController {
     @Path("/getCommentMessage/{commentId}")
     @GET
     public Response getCommentMessage(@PathParam("commentId")Integer commentId){
-        String comment = commentService.getCommentMessage(commentId);
+        Comment comment = commentService.getCommentMessage(commentId);
         
         if(comment == null){
             return Response.status(Response.Status.EXPECTATION_FAILED).entity("Operation failed").build();
