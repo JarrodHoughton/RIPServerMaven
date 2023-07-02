@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  *
- * @author 27713
+ * @author Kylynn van der Merwe
  */
 public interface LikeService_Interface {
     

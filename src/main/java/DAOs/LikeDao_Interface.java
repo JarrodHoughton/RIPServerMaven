@@ -10,7 +10,7 @@ import Models.Like;
 
 /**
  *
- * @author 27713
+ * @author Kylynn van der Merwe
  */
 public interface LikeDao_Interface {
     

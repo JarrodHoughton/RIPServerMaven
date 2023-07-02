@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  *
- * @author 27713
+ * @author Kylynn van der Merwe
  */
 public class CommentService_Impl implements CommentService_Interface {
     private final CommentDao_Interface commentDao;

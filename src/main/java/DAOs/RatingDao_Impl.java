@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 
 /**
  *
- * author 27713
+ * @author Kylynn van der Merwe
  */
 public class RatingDao_Impl implements RatingDao_Interface {
 

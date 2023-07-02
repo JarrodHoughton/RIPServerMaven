@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author 27713
+ * @author Kylynn van der Merwe
  */
 public class RatingService_Impl implements RatingService_Interface {
     private final RatingDao_Interface ratingDao;

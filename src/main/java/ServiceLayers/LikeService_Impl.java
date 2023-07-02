@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  *
- * @author 27713
+ * @author Kylynn van der Merwe
  */
 public class LikeService_Impl implements LikeService_Interface {
     private final LikeDao_Interface likeDao;

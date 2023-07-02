@@ -17,7 +17,7 @@ import Models.Comment;
 
 /**
  *
- * @author 27713
+ * @author Kylynn van der Merwe
  */
 public class CommentDao_Impl implements CommentDao_Interface{
     private Connection connection;

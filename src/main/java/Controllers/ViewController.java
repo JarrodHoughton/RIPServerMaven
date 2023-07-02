@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 /**
  *
- * @author 27713
+ * @author Kylynn van der Merwe
  */
 @Path("/view")
 public class ViewController {
