@@ -5,7 +5,93 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8d012276-d1cc-4cdc-8671-36a8edc98cce" name="Changes" comment="Some files that changed, apparently.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Controllers/DataReportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Controllers/DataReportController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT.war" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT.war" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/ReferralEmailTemplate.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/ReferralEmailTemplate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/VerifyEmailTemplate.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/VerifyEmailTemplate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/DataReportController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/DataReportController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/EditorController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/EditorController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/GenreController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/GenreController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/LoginController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/LoginController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/ReaderController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/ReaderController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/StoryController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/StoryController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/StoryStatisticsController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/WriterController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Controllers/WriterController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/ApplicationDao_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/ApplicationDao_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/ApplicationDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/ApplicationDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/EditorDao_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/EditorDao_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/EditorDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/EditorDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/GenreDao_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/GenreDao_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/GenreDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/GenreDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/LikeDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/LikeDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/RatingDao_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/RatingDao_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/RatingDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/RatingDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/ReaderDao_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/ReaderDao_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/ReaderDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/ReaderDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/StoryDao_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/StoryDao_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/StoryDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/StoryDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/WriterDao_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/WriterDao_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/WriterDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/DAOs/WriterDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Models/Application.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Models/Application.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Models/Editor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Models/Editor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Models/Genre.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Models/Genre.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Models/Reader.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Models/Reader.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Models/Story.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Models/Story.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Models/StoryStatistic.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Models/StoryStatistic.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Models/Writer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Models/Writer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/EditorService_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/EditorService_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/EditorService_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/EditorService_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/GenreService_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/GenreService_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/ReaderService_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/ReaderService_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/ReaderService_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/ReaderService_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/StoryService_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/StoryService_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/StoryService_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/StoryService_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/WriterService_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/WriterService_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/WriterService_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/ServiceLayers/WriterService_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Utils/DBManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/RIPServerMaven-1.0-SNAPSHOT/WEB-INF/classes/Utils/DBManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Controllers/DataReportController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Controllers/DataReportController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Controllers/EditorController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Controllers/EditorController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Controllers/GenreController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Controllers/GenreController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Controllers/LoginController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Controllers/LoginController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Controllers/ReaderController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Controllers/ReaderController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Controllers/StoryController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Controllers/StoryController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Controllers/StoryStatisticsController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Controllers/WriterController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Controllers/WriterController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/ApplicationDao_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/ApplicationDao_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/ApplicationDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/ApplicationDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/EditorDao_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/EditorDao_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/EditorDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/EditorDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/GenreDao_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/GenreDao_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/GenreDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/GenreDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/Like.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/LikeDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/LikeDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/RatingDao_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/RatingDao_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/RatingDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/RatingDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/ReaderDao_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/ReaderDao_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/ReaderDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/ReaderDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/StoryDao_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/StoryDao_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/StoryDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/StoryDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/WriterDao_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/WriterDao_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DAOs/WriterDao_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DAOs/WriterDao_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Models/Application.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Models/Application.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Models/Editor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Models/Editor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Models/Genre.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Models/Genre.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Models/Reader.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Models/Reader.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Models/Story.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Models/Story.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Models/StoryStatistic.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Models/StoryStatistic.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Models/Writer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Models/Writer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayers/EditorService_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayers/EditorService_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayers/EditorService_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayers/EditorService_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayers/GenreService_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayers/GenreService_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayers/ReaderService_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayers/ReaderService_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayers/ReaderService_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayers/ReaderService_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayers/StoryService_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayers/StoryService_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayers/StoryService_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayers/StoryService_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayers/WriterService_Impl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayers/WriterService_Impl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayers/WriterService_Interface.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayers/WriterService_Interface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Utils/DBManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Utils/DBManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,11 +101,11 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings">
     <option name="selectedUrlAndAccountId">
       <UrlAndAccount>
@@ -48,12 +134,12 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
