@@ -33,8 +33,8 @@ public class StoryService_Impl implements StoryService_Interface{
     }
 
     @Override
-    public List<Story> getStoriesInGenre(Integer genreId) {
-        return storyDao.getStoriesInGenre(genreId);
+    public List<Story> getStoriesInGenre(Integer genreId, Integer numberOfStories, Integer offset) {
+        return storyDao.getStoriesInGenre(genreId, numberOfStories, offset);
     }
 
     @Override
@@ -89,8 +89,8 @@ public class StoryService_Impl implements StoryService_Interface{
     }
 
     @Override
-    public List<Story> getSubmittedStories() {
-        return storyDao.getSubmittedStories();
+    public List<Story> getSubmittedStories(Integer numberOfStories, Integer offset) {
+        return storyDao.getSubmittedStories(numberOfStories, offset);
     }
 
     @Override

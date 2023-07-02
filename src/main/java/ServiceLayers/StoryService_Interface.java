@@ -10,13 +10,13 @@ import java.util.List;
 
 /**
  *
- * @author jarro
+ * @author Jarrod
  */
 public interface StoryService_Interface {
     public Story getStory(Integer storyId);
     public List<Story> getAllStories();
-    public List<Story> getSubmittedStories();
-    public List<Story> getStoriesInGenre(Integer genreId);
+    public List<Story> getSubmittedStories(Integer numberOfStories, Integer offset);
+    public List<Story> getStoriesInGenre(Integer genreId, Integer numberOfStories, Integer offset);
     public List<Story> getTopPicks();
     public List<Story> searchForStories(String searchValue);
     public String updateStory(Story story);

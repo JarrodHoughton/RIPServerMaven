@@ -13,6 +13,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -42,10 +43,13 @@ public class StoryController {
         return Response.ok().entity(storyService.getAllStories()).build();
     }
     
-    @Path("/getStoriesInGenre/{genreId}")
+    @Path("/getStoriesInGenre")
     @GET
-    public Response getStoriesInGenre(@PathParam("genreId") Integer genreId) {
-        return Response.ok().entity(storyService.getStoriesInGenre(genreId)).build();
+    public Response getStoriesInGenre(
+            @QueryParam("genreId") Integer genreId, 
+            @QueryParam("numberOfStories") Integer numberOfStories, 
+            @QueryParam("offset") Integer offset) {
+        return Response.ok().entity(storyService.getStoriesInGenre(genreId, numberOfStories, offset)).build();
     }
     
     @Path("/addStory")
@@ -74,10 +78,10 @@ public class StoryController {
         return Response.ok().entity(storyService.getTopPicks()).build();
     }
     
-    @Path("/getSubmittedStories")
+    @Path("/getSubmittedStories/{numberOfStories}/{offset}")
     @GET
-    public Response getSubmittedStories() {
-        return Response.ok().entity(storyService.getSubmittedStories()).build();
+    public Response getSubmittedStories(@PathParam("numberOfStories") Integer numberOfStories, @PathParam("offset") Integer offset) {
+        return Response.ok().entity(storyService.getSubmittedStories(numberOfStories, offset)).build();
     }
     
     @Path("/getRecommendations")
