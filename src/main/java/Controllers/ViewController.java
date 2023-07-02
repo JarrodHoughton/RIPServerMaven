@@ -35,6 +35,9 @@ public class ViewController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addView(View view){
+        if (view == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid input").build();
+        }
         return Response.ok().entity(viewService.addView(view)).build();
     }
     
@@ -42,6 +45,9 @@ public class ViewController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response isViewAlreadyAdded(View view){
+        if (view == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid input").build();
+        }
         return Response.ok().entity(viewService.isViewAlreadyAdded(view)).build();
     }
     

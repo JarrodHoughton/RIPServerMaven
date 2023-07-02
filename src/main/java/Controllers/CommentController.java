@@ -30,25 +30,47 @@ public class CommentController {
     @Path("/getAllComments/{storyId}")
     @GET
     public Response getAllCommentForStory(@PathParam("storyId")Integer storyId){
-        return Response.ok().entity(commentService.getAllCommentForStory(storyId)).build();
+        List<Comment> allComments = commentService.getAllCommentForStory(storyId);
+        
+        if(allComments.isEmpty()){
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity("Operation failed").build();
+        }else{
+            return Response.ok().entity(allComments).build();
+        }
     }
     
     @Path("/addComment")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addComment(Comment comment){
-        return Response.ok().entity(commentService.addComment(comment)).build();
+        if (comment == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid input").build();
+        }else{
+            return Response.ok().entity(commentService.addComment(comment)).build();
+        }        
     }
     
     @Path("/getCommentMessage/{commentId}")
     @GET
     public Response getCommentMessage(@PathParam("commentId")Integer commentId){
-        return Response.ok().entity(commentService.getCommentMessage(commentId)).build();
+        Comment comment = commentService.getCommentMessage(commentId);
+        
+        if(comment == null){
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity("Operation failed").build();
+        }else{
+            return Response.ok().entity(comment).build();
+        }
     }
     
     @Path("/getCommentById/{commentId}")
     @GET
     public Response getCommentById(@PathParam("commentId")Integer commentId){
-        return Response.ok().entity(commentService.getCommentById(commentId)).build();
+        Comment comment = commentService.getCommentById(commentId);
+        
+        if(comment == null){
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity("Operation failed").build();
+        }else{
+            return Response.ok().entity(comment).build();
+        }
     }
 }

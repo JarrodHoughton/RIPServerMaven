@@ -36,6 +36,9 @@ public class LikeController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addLike(Like like){
+        if (like == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid input").build();
+        }
         return Response.ok().entity(likeService.addLike(like)).build();
     }
     
@@ -43,27 +46,33 @@ public class LikeController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteLike(Like like){
+        if (like == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid input").build();
+        }
         return Response.ok().entity(likeService.deleteLike(like)).build();
     }
     
     @Path("/getLikesByReaderId/{accountId}")
     @GET
     public Response getLikesByReaderId(@PathParam("accountId")Integer accountId){
-        List<Like> readerLikes = new ArrayList<>();        
-        for(Like like : likeService.getLikesByReaderId(accountId)){
-            readerLikes.add(like);
-        }
-        return Response.ok().entity(readerLikes).build();
+        List<Like> readerLikes = likeService.getLikesByReaderId(accountId);        
+        if(readerLikes.isEmpty()){
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity("Operation failed").build();
+        }else{
+            return Response.ok().entity(readerLikes).build();
+        }        
     }
     
     @Path("/getLikesByStory/{storyId}")
     @GET    
     public Response getLikesByStory(@PathParam("storyId")Integer storyId){
-        List<Like> storyLikes = new ArrayList<>();
-        for(Like like : likeService.getLikesByStory(storyId)){
-            storyLikes.add(like);
+        List<Like> storyLikes = likeService.getLikesByStory(storyId);
+        
+        if(storyLikes.isEmpty()){
+            return Response.status(Response.Status.EXPECTATION_FAILED).entity("Operation failed").build();
+        }else{
+            return Response.ok().entity(storyLikes).build();
         }
-        return Response.ok().entity(storyLikes).build();
     }
     
     @Path("/getStoryLikesByDate/{storyId}/{startDate}/{endDate}")
@@ -110,6 +119,9 @@ public class LikeController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response checkIfLikeExists(Like like){
+        if (like == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid input").build();
+        }
         return Response.ok().entity(likeService.searchForLike(like)).build();
     }
 }
