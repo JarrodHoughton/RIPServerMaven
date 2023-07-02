@@ -295,7 +295,7 @@ public class StoryDao_Impl implements StoryDao_Interface {
             prepStmt = connection.prepareStatement("SELECT S.storyId FROM stories_genres AS SG INNER JOIN stories AS S ON S.storyId=SG.storyId WHERE SG.genreId=? AND S.submitted='T' AND S.approved='T' LIMIT ? OFFSET ?;");
             prepStmt.setInt(1, genreId);
             prepStmt.setInt(2, numberOfStories);
-            prepStmt.setInt(3, numberOfStories*offset);
+            prepStmt.setInt(3, offset);
             rs = prepStmt.executeQuery();
             while (rs.next()) {
                 storyIds.add(rs.getInt(1));
