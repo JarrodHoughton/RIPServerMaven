@@ -48,7 +48,6 @@ import java.util.logging.Logger;
  * @author Jarrod
  */
 public class MailService_Impl implements MailService_Interface {
-
     private ReaderService_Interface readerService = null;
     private static final String SERVER_EMAIL = "readersareinnovators.platform@gmail.com";
     private static final String CREDENTIALS_FILE_PATH = "/client_secret_866186881474-r38sas7onvsd0g69ckh154l9ou6kdch2.apps.googleusercontent.com.json";

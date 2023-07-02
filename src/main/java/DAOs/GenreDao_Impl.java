@@ -110,7 +110,7 @@ public class GenreDao_Impl implements GenreDao_Interface {
         try {
             genres = new ArrayList<>();
             connection = DBManager.getConnection();
-            String query = "SELECT g.genreId, g.genreName, COUNT(viewId) AS viewCount " +
+            String query = "SELECT g.genreId, g.genreName, COUNT(v.viewId) AS viewCount " +
                     "FROM ripdb.views v " +
                     "JOIN ripdb.stories s ON v.storyId = s.storyId " +
                     "JOIN ripdb.stories_genres sg ON s.storyId = sg.storyId " +

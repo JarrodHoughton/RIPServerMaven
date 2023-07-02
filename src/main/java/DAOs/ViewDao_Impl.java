@@ -95,10 +95,9 @@ public class ViewDao_Impl implements ViewDao_Interface {
 
     @Override
     public List<View> getTheViewsOnAStoryInATimePeriod(Integer storyId, Timestamp startDate, Timestamp endDate) {
-        List<View> views = null;
+        List<View> views = new ArrayList<>();
 
         try {
-            views = new ArrayList<>();
             String query = "SELECT viewId, viewDate, accountId, storyId FROM views WHERE storyId = ? AND viewDate BETWEEN ? AND ?";
             connection = DBManager.getConnection();
             preparedStatement = connection.prepareStatement(query);
