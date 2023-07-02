@@ -9,14 +9,14 @@ import java.util.List;
 
 /**
  *
- * @author jarro
+ * @author Jarrod
  */
 public interface StoryDao_Interface {
     public Story getStory(Integer storyId);
     public List<Story> getAllStories();
-    public List<Story> getSubmittedStories();
+    public List<Story> getSubmittedStories(Integer numberOfStories, Integer offset);
     public List<Story> getApprovedStories(Integer numberOfStories);
-    public List<Story> getStoriesInGenre(Integer genreId);
+    public List<Story> getStoriesInGenre(Integer genreId, Integer numberOfStories, Integer offset);
     public List<Story> getRecommendations(List<Integer>  genreIds);
     public List<Story> getWritersSubmittedStories(List<Integer> storyIds, Integer writerId);
     public List<Story> getWritersDraftedStories(List<Integer> storyIds, Integer writerId);
