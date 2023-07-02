@@ -7,12 +7,8 @@ package ServiceLayers;
 import DAOs.WriterDao_Impl;
 import DAOs.WriterDao_Interface;
 import Models.Writer;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -83,8 +79,8 @@ public class WriterService_Impl implements WriterService_Interface {
     }
 
     @Override
-    public String blockWriters(List<Integer> writerId) {
-        if (writerDao.blockWriters(writerId)) {
+    public String blockWriters(List<Integer> writerIds) {
+        if (writerDao.blockWriters(writerIds)) {
             return "Writers selected have been blocked successfully.";
         }
         return "System failed to block writers selected.";
