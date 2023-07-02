@@ -36,9 +36,6 @@ public class RatingController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addRating(Rating rating){
-        if (rating == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid input").build();
-        }
         return Response.ok().entity(ratingService.addRating(rating)).build();
     }
     
@@ -46,9 +43,6 @@ public class RatingController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateRatingValue(Rating rating) {
-        if (rating == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid input").build();
-        }
         return Response.ok().entity(ratingService.updateRatingValue(rating)).build();
     }
     
@@ -56,9 +50,6 @@ public class RatingController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response checkRatingExists(Rating rating) {
-        if (rating == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid input").build();
-        }
         return Response.ok().entity(ratingService.checkRatingExists(rating)).build();
     }
     
@@ -66,13 +57,7 @@ public class RatingController {
     @GET
     public Response getRating(@PathParam("accountId")Integer accountId,
                                    @PathParam("storyId")Integer storyId){
-        Rating rating = ratingService.getRating(accountId, storyId);
-        
-        if (rating == null) {
-            return Response.status(Response.Status.EXPECTATION_FAILED).entity("Operation failed").build();
-        }else{
-            return Response.ok().entity(rating).build();
-        }        
+        return Response.ok().entity(ratingService.getRating(accountId, storyId)).build();
     }
     
     @Path("/getRatingValue/{storyId}")
@@ -84,37 +69,31 @@ public class RatingController {
     @Path("/getRatingsByStory/{storyId}")
     @GET
     public Response getRatingsByStory(@PathParam("storyId")Integer storyId){
-        List<Rating> storyRatings = ratingService.getRatingsByStory(storyId);
-        
-        if(storyRatings.isEmpty()){
-            return Response.status(Response.Status.EXPECTATION_FAILED).entity("Operation failed").build();
-        }else{
-            return Response.ok().entity(storyRatings).build();
-        }        
+        List<Rating> storyRatings = new ArrayList<>();
+        for(Rating ratings : ratingService.getRatingsByStory(storyId)){
+            storyRatings.add(ratings);
+        }
+        return Response.ok().entity(storyRatings).build();
     }
     
     @Path("/getRatingByReaderId/{accountId}")
     @GET
     public Response getRatingsByReaderId(@PathParam("accountId")Integer accountId){
-        List<Rating> readerRatings = ratingService.getRatingsByReaderId(accountId);
-        
-        if(readerRatings.isEmpty()){
-            return Response.status(Response.Status.EXPECTATION_FAILED).entity("Operation failed").build();
-        }else{
-            return Response.ok().entity(readerRatings).build();
+        List<Rating> readerRatings = new ArrayList<>();
+        for(Rating ratings : ratingService.getRatingsByReaderId(accountId)){
+            readerRatings.add(ratings);
         }
+        return Response.ok().entity(readerRatings).build();
     }
     
     @Path("/getAllRatings")
     @GET
     public Response getAllRatings(){
-        List<Rating> allRatings = ratingService.getAllRatings();
-        
-        if(allRatings.isEmpty()){
-            return Response.status(Response.Status.EXPECTATION_FAILED).entity("Operation failed").build();
-        }else{
-            return Response.ok().entity(allRatings).build();
+        List<Rating> allRatings = new ArrayList<>();
+        for(Rating ratings : ratingService.getAllRatings()){
+            allRatings.add(ratings);
         }
+        return Response.ok().entity(allRatings).build();
     }
     
     @Path("getTopHighestRatedStories/{startDate}/{endDate}/{numberOfEntries}")
