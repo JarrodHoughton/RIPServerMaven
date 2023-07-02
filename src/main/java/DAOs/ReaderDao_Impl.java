@@ -42,8 +42,6 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
                 reader.setPhoneNumber(rs.getString("accountPhoneNumber"));
                 reader.setUserType(rs.getString("accountType"));
                 reader.setVerified(rs.getString("verified").equals("F") ? Boolean.FALSE : Boolean.TRUE);
-                reader.setFavouriteGenreIds(getFavouriteGenresOfUser(reader.getId()));
-                reader.setFavouriteStoryIds(getFavouriteStoriesOfUser(reader.getId()));
             }
         } catch (SQLException e) {
             Logger.getLogger(ReaderDao_Impl.class.getName()).log(Level.SEVERE, null, e);
@@ -51,6 +49,12 @@ public class ReaderDao_Impl implements ReaderDao_Interface {
         } finally {
             closeConnections();
         }
+        
+        if (reader != null) {
+            reader.setFavouriteGenreIds(getFavouriteGenresOfUser(reader.getId()));
+            reader.setFavouriteStoryIds(getFavouriteStoriesOfUser(reader.getId()));
+        }
+        
         return reader;
     }
 

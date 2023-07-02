@@ -54,6 +54,8 @@ public class LoginController {
             salt = user.getSalt();
             userType = user.getUserType();
             userVerified = String.valueOf(user.getVerified());
+        } else {
+            System.out.println("User not found!!!!");
         }
         userDetails.put("salt", salt);
         userDetails.put("userFound", userFound);
