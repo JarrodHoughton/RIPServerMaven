@@ -6,7 +6,7 @@ package Controllers;
 
 /**
  *
- * @author 27713
+ * @author Kylynn van der Merwe
  */
 import Models.Comment;
 import ServiceLayers.CommentService_Impl;
@@ -18,8 +18,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.List;
 
 @Path("/comment")
 public class CommentController {

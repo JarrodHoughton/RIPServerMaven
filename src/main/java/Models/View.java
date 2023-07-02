@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 /**
  *
- * @author 27713
+ * @author Kylynn van der Merwe
  */
 public class View extends StoryStatistic {
 

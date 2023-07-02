@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 
 /**
  *
- * @author 27713
+ * @author Kylynn van der Merwe
  */
 public interface RatingDao_Interface {
     
