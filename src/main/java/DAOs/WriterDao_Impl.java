@@ -416,13 +416,15 @@ public class WriterDao_Impl implements WriterDao_Interface {
 
         try {
             System.out.println(searchValue + " " + numberOfWriters + " " + currentId + " " + next);
-            String comparator = "<=";
+            String comparator = "<";
+            String order = "DESC";
             if (next) {
-                comparator = ">=";
+                comparator = ">";
+                order = "ASC";
             }
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(
-                    "SELECT accountId FROM accounts WHERE (accountName LIKE ? OR accountSurname LIKE ? OR accountEmail LIKE ?) and accountType='W' and accountId " + comparator + " ? ORDER BY accountId ASC LIMIT ?;");
+                    "SELECT accountId FROM accounts WHERE (accountName LIKE ? OR accountSurname LIKE ? OR accountEmail LIKE ?) and accountType='W' and accountId " + comparator + " ? GROUP BY accountId ORDER BY accountId "+order+" LIMIT ?;");
             prepStmt.setString(1, "%"+searchValue+"%");
             prepStmt.setString(2, "%"+searchValue+"%");
             prepStmt.setString(3, "%"+searchValue+"%");
