@@ -415,9 +415,10 @@ public class WriterDao_Impl implements WriterDao_Interface {
         List<Integer> writerIds = null;
 
         try {
-            String comparator = "<";
+            System.out.println(searchValue + " " + numberOfWriters + " " + currentId + " " + next);
+            String comparator = "<=";
             if (next) {
-                comparator = ">";
+                comparator = ">=";
             }
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(
