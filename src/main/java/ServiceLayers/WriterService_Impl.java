@@ -36,8 +36,8 @@ public class WriterService_Impl implements WriterService_Interface {
     }
 
     @Override
-    public List<Writer> getWriters(Integer numberOfWriters, Integer currentId, Boolean next) {
-        return writerDao.getWriters(numberOfWriters, currentId, next);
+    public List<Writer> getWriters(Integer numberOfWriters, Integer currentId) {
+        return writerDao.getWriters(numberOfWriters, currentId);
     }
 
     @Override
@@ -99,8 +99,8 @@ public class WriterService_Impl implements WriterService_Interface {
     }
 
     @Override
-    public List<Writer> searchForWriters(String searchValue, Integer numberOfWriters, Integer currentId, Boolean next) {
-        return writerDao.searchForWriters(searchValue, numberOfWriters, currentId, next);
+    public List<Writer> searchForWriters(String searchValue, Integer numberOfWriters, Integer pageNumber) {
+        return writerDao.searchForWriters(searchValue, numberOfWriters, pageNumber);
     }
 
 }

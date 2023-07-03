@@ -51,10 +51,10 @@ public class WriterController {
     @GET
     public Response getWriters(
             @QueryParam("numberOfWriters") Integer numberOfWriters,
-            @QueryParam("currentId") Integer currentId,
-            @QueryParam("next") Boolean next
+            @QueryParam("pageNumber") Integer pageNumber
+            
     ) {
-        return Response.ok().entity(writerService.getWriters(numberOfWriters, currentId, next)).build();
+        return Response.ok().entity(writerService.getWriters(numberOfWriters, pageNumber)).build();
     }
     
     @Path("/searchForWriters")
@@ -62,10 +62,9 @@ public class WriterController {
     public Response searchForWriters(
             @QueryParam("searchValue") String searchValue,
             @QueryParam("numberOfWriters") Integer numberOfWriters,
-            @QueryParam("currentId") Integer currentId,
-            @QueryParam("next") String next
-    ) {
-        return Response.ok().entity(writerService.searchForWriters(searchValue , numberOfWriters, currentId, Boolean.valueOf(next))).build();
+            @QueryParam("pageNumber") Integer pageNumber
+            ) {
+        return Response.ok().entity(writerService.searchForWriters(searchValue , numberOfWriters, pageNumber)).build();
     }
     
     @Path("/updateWriter")

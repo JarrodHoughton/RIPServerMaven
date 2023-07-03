@@ -159,21 +159,16 @@ public class WriterDao_Impl implements WriterDao_Interface {
     }
 
     @Override
-    public List<Writer> getWriters(Integer numberOfWriters, Integer currentId, Boolean next) {
+    public List<Writer> getWriters(Integer numberOfWriters, Integer pageNumber) {
         List<Writer> writers = null;
         List<Integer> writerIds = null;
 
         try {
-            String order = "DESC";
-            String comparator = "<";
-            if (next) {
-                comparator = ">";
-                order = "ASC";
-            }
+            Integer currentOffSet = pageNumber*numberOfWriters;
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(
-                    "SELECT accountId FROM accounts WHERE accountType='W' and accountId " + comparator + " ? ORDER BY accountId "+order+" LIMIT ?;");
-            prepStmt.setInt(1, currentId);
+                    "SELECT accountId FROM accounts WHERE accountType='W' ORDER BY accountId  LIMIT ?,?;");
+            prepStmt.setInt(1, currentOffSet);
             prepStmt.setInt(2, numberOfWriters);
             rs = prepStmt.executeQuery();
             writerIds = new ArrayList<>();
@@ -410,25 +405,20 @@ public class WriterDao_Impl implements WriterDao_Interface {
     }
 
     @Override
-    public List<Writer> searchForWriters(String searchValue, Integer numberOfWriters, Integer currentId, Boolean next) {
+    public List<Writer> searchForWriters(String searchValue, Integer numberOfWriters, Integer pageNumber) {
         List<Writer> writers = null;
         List<Integer> writerIds = null;
 
         try {
-            System.out.println(searchValue + " " + numberOfWriters + " " + currentId + " " + next);
-            String comparator = "<";
-            String order = "DESC";
-            if (next) {
-                comparator = ">";
-                order = "ASC";
-            }
+            System.out.println(searchValue + " " + numberOfWriters + " " + pageNumber + " ");
+            Integer startingOffset = pageNumber*numberOfWriters;
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(
-                    "SELECT accountId FROM accounts WHERE (accountName LIKE ? OR accountSurname LIKE ? OR accountEmail LIKE ?) and accountType='W' and accountId " + comparator + " ? GROUP BY accountId ORDER BY accountId "+order+" LIMIT ?;");
+                    "SELECT accountId FROM accounts WHERE (accountName LIKE ? OR accountSurname LIKE ? OR accountEmail LIKE ?) and accountType='W' GROUP BY accountId ORDER BY accountId  LIMIT ?,?;");
             prepStmt.setString(1, "%"+searchValue+"%");
             prepStmt.setString(2, "%"+searchValue+"%");
             prepStmt.setString(3, "%"+searchValue+"%");
-            prepStmt.setInt(4, currentId);
+            prepStmt.setInt(4, startingOffset);
             prepStmt.setInt(5, numberOfWriters);
             rs = prepStmt.executeQuery();
             writerIds = new ArrayList<>();

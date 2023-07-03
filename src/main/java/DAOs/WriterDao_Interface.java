@@ -15,8 +15,8 @@ import java.util.List;
 public interface WriterDao_Interface {
     public Writer getWriter(Integer writerId);
     public Writer getWriterByEmail(String email);
-    public List<Writer> getWriters(Integer numberOfWriters, Integer offset, Boolean next);
-    public List<Writer> searchForWriters(String searchValue, Integer numberOfWriters, Integer currentId, Boolean next);
+    public List<Writer> getWriters(Integer numberOfWriters, Integer pageNumber);
+    public List<Writer> searchForWriters(String searchValue, Integer numberOfWriters, Integer pageNumber);
     public Boolean addWriter(Integer readerId);
     public Boolean addWriters(List<Integer> writerIds);
     public Boolean deleteWriter(Integer writerId);
