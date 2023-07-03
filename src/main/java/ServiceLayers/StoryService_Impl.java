@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  *
- * @author jarro
+ * @author Jarrod
  */
 public class StoryService_Impl implements StoryService_Interface{
     private StoryDao_Interface storyDao;
@@ -33,8 +33,8 @@ public class StoryService_Impl implements StoryService_Interface{
     }
 
     @Override
-    public List<Story> getStoriesInGenre(Integer genreId, Integer numberOfStories, Integer offset) {
-        return storyDao.getStoriesInGenre(genreId, numberOfStories, offset);
+    public List<Story> getStoriesInGenre(Integer genreId, Integer numberOfStories, Integer currentId, Boolean next) {
+        return storyDao.getStoriesInGenre(genreId, numberOfStories, currentId, next);
     }
 
     @Override
@@ -94,8 +94,8 @@ public class StoryService_Impl implements StoryService_Interface{
     }
 
     @Override
-    public List<Story> searchForStories(String searchValue) {
-        return storyDao.searchForStories(searchValue);
+    public List<Story> searchForStories(String searchValue, Integer numberOfStories, Integer currentId, Boolean next) {
+        return storyDao.searchForStories(searchValue, numberOfStories, currentId, next);
     }
 
     @Override

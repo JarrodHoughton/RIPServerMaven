@@ -74,6 +74,13 @@ public class MailController {
         return Response.ok().entity(mailService.notifyApprovedWriters(accountIds, Boolean.TRUE)).build();
     }
     
+    @Path("/notifyBlockedWriters")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response notifyBlockedWriters(List<Integer> accountIds) {
+        return Response.ok().entity(mailService.notifyBlockedWriters(accountIds)).build();
+    }
+    
     @Path("/notifyRejectedWriters")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

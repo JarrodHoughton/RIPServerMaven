@@ -46,7 +46,7 @@ public class LoginController {
         String userFound = "false";
         String salt = "";
         String userType = "";
-        String userVerified = "";
+        String userVerified = "false";
         HashMap<String, String> userDetails = new HashMap<>();
         if (readerService.userExists(email)) {
             Reader user = readerService.getReader(email);

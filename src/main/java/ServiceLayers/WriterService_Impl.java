@@ -36,8 +36,8 @@ public class WriterService_Impl implements WriterService_Interface {
     }
 
     @Override
-    public List<Writer> getAllWriters() {
-        return writerDao.getAllWriters();
+    public List<Writer> getWriters(Integer numberOfWriters, Integer currentId, Boolean next) {
+        return writerDao.getWriters(numberOfWriters, currentId, next);
     }
 
     @Override
@@ -96,6 +96,11 @@ public class WriterService_Impl implements WriterService_Interface {
             return "Writers selected have been added successfully.";
         }
         return "System failed to add writers selected.";
+    }
+
+    @Override
+    public List<Writer> searchForWriters(String searchValue, Integer numberOfWriters, Integer currentId, Boolean next) {
+        return writerDao.searchForWriters(searchValue, numberOfWriters, currentId, next);
     }
 
 }

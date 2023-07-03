@@ -12,6 +12,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
@@ -46,10 +47,25 @@ public class WriterController {
         return Response.ok().entity(writerService.getWriter(writerId)).build();
     }
     
-    @Path("/getAllWriters")
+    @Path("/getWriters")
     @GET
-    public Response getALlWriters() {
-        return Response.ok().entity(writerService.getAllWriters()).build();
+    public Response getWriters(
+            @QueryParam("numberOfWriters") Integer numberOfWriters,
+            @QueryParam("currentId") Integer currentId,
+            @QueryParam("next") Boolean next
+    ) {
+        return Response.ok().entity(writerService.getWriters(numberOfWriters, currentId, next)).build();
+    }
+    
+    @Path("/searchForWriters")
+    @GET
+    public Response searchForWriters(
+            @QueryParam("searchValue") String searchValue,
+            @QueryParam("numberOfWriters") Integer numberOfWriters,
+            @QueryParam("currentId") Integer currentId,
+            @QueryParam("next") String next
+    ) {
+        return Response.ok().entity(writerService.searchForWriters(searchValue , numberOfWriters, currentId, Boolean.valueOf(next))).build();
     }
     
     @Path("/updateWriter")

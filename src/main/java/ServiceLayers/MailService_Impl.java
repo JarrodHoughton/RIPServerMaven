@@ -601,6 +601,32 @@ public class MailService_Impl implements MailService_Interface {
             return "Something went wrong notifying the author via email.";
         }
     }
+    
+    @Override
+    public String notifyBlockedWriters(List<Integer> accountIds) {
+        String subject = "Readers Are Innovators: Writer Application Status";
+        String message
+                    = "We regret to inform you that your writer priviliges on the RIP platform has been revoked.\n"
+                    + "\n\n"
+                    + "If you would like to become a writer again. Please create a new writer application.\n"
+                    + "Kind regards,\n"
+                    + "Readers Are Innovators Team";
+        Boolean emailsSent = true;
+        for (Integer accountId : accountIds) {
+            Reader reader = readerService.getReader(accountId);
+            String currentEmail = emailTemplate.replace(Reader_Name_Location, reader.getName() + " " + reader.getSurname());
+            currentEmail = currentEmail.replace(Message_Location, message);
+            if (!sendMailWithHTML(reader.getEmail(), currentEmail, subject)) {
+                emailsSent = false;
+            }
+        }
+
+        if (emailsSent) {
+            return "The readers have been notified via email.";
+        } else {
+            return "Something went wrong... Could not notify readers via email.";
+        }
+    }
 
     private String Reader_Name_Location = "[Reader_Name]";
     private String Message_Location = "[Message_Location]";

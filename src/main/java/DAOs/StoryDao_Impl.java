@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -247,7 +248,7 @@ public class StoryDao_Impl implements StoryDao_Interface {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("SELECT * FROM stories WHERE approved='F' AND submitted='T' AND rejected='F' LIMIT ? OFFSET ?;");
             prepStmt.setInt(1, numberOfStories);
-            prepStmt.setInt(2, numberOfStories*offset);
+            prepStmt.setInt(2, numberOfStories * offset);
             rs = prepStmt.executeQuery();
             while (rs.next()) {
                 Story story = new Story();
@@ -286,16 +287,23 @@ public class StoryDao_Impl implements StoryDao_Interface {
     }
 
     @Override
-    public List<Story> getStoriesInGenre(Integer genreId, Integer numberOfStories, Integer offset) {
+    public List<Story> getStoriesInGenre(Integer genreId, Integer numberOfStories, Integer currentId, Boolean next) {
         List<Story> stories = null;
         List<Integer> storyIds = null;
         try {
+            String order = "DESC";
+            String comparator = "<";
+            if (next) {
+                order = "ASC";
+                comparator = ">";
+            }
+            String sql = "SELECT DISTINCT S.storyId FROM stories_genres AS SG RIGHT JOIN stories AS S ON S.storyId=SG.storyId WHERE SG.genreId=? AND S.submitted='T' AND S.approved='T'  and SG.storyId "+comparator+" ? ORDER BY S.storyId "+order+" LIMIT ?;";
             storyIds = new ArrayList<>();
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT S.storyId FROM stories_genres AS SG INNER JOIN stories AS S ON S.storyId=SG.storyId WHERE SG.genreId=? AND S.submitted='T' AND S.approved='T' LIMIT ? OFFSET ?;");
+            prepStmt = connection.prepareStatement(sql);
             prepStmt.setInt(1, genreId);
-            prepStmt.setInt(2, numberOfStories);
-            prepStmt.setInt(3, offset);
+            prepStmt.setInt(2, currentId);
+            prepStmt.setInt(3, numberOfStories);
             rs = prepStmt.executeQuery();
             while (rs.next()) {
                 storyIds.add(rs.getInt(1));
@@ -311,6 +319,9 @@ public class StoryDao_Impl implements StoryDao_Interface {
             stories = new ArrayList<>();
             for (Integer storyId : storyIds) {
                 stories.add(getStory(storyId));
+            }
+            if (!next) {
+                Collections.reverse(stories);
             }
         } else {
             return null;
@@ -344,9 +355,9 @@ public class StoryDao_Impl implements StoryDao_Interface {
         } finally {
             closeConnections();
         }
-        
+
         updated = updated && deleteStoryGenres(story) && addStoryGenres(story);
-        
+
         if (story.getImage() != null) {
             updated = updated && updateImage(story);
         } else {
@@ -469,11 +480,11 @@ public class StoryDao_Impl implements StoryDao_Interface {
 
     private Boolean addStoryGenres(Story story) {
         Boolean added = true;
-        
+
         if (story.getGenreIds().isEmpty()) {
             return false;
         }
-        
+
         try {
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement("INSERT INTO stories_genres(storyId, genreId) VALUES(?, ?);");
@@ -591,14 +602,23 @@ public class StoryDao_Impl implements StoryDao_Interface {
     }
 
     @Override
-    public List<Story> searchForStories(String searchValue) {
+    public List<Story> searchForStories(String searchValue, Integer numberOfStories, Integer currentId, Boolean next) {
         List<Story> storySearchResults = null;
         List<Integer> storyIds = null;
         try {
+            String order = "DESC";
+            String comparator = "<";
+            if (next) {
+                order = "ASC";
+                comparator = ">";
+            }
+            String sql = "SELECT DISTINCT * FROM stories WHERE title LIKE ? AND submitted='T' AND approved='T'  and storyId "+comparator+" ? ORDER BY storyId "+order+" LIMIT ?;";
             storyIds = new ArrayList<>();
             connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement("SELECT storyId FROM stories WHERE title LIKE ? AND submitted = 'T' AND approved = 'T' LIMIT 20;");
-            prepStmt.setString(1, "%" + searchValue + "%");
+            prepStmt = connection.prepareStatement(sql);
+            prepStmt.setString(1, "%"+searchValue+"%");
+            prepStmt.setInt(2, currentId);
+            prepStmt.setInt(3, numberOfStories);
             rs = prepStmt.executeQuery();
             while (rs.next()) {
                 storyIds.add(rs.getInt("storyId"));
@@ -614,6 +634,9 @@ public class StoryDao_Impl implements StoryDao_Interface {
             storySearchResults = new ArrayList<>();
             for (Integer storyId : storyIds) {
                 storySearchResults.add(getStory(storyId));
+            }
+            if (next) {
+                Collections.reverse(storyIds);
             }
         }
         return storySearchResults;

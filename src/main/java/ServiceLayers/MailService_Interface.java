@@ -18,4 +18,5 @@ public interface MailService_Interface {
     public String sendReferralEmail(String recipientEmail, String recipientName);
     public String notifyApprovedWriters(List<Integer> accountIds, Boolean approved);
     public String notifyWriterOfStorySubmission(Integer writerId, Boolean approved);
+    public String notifyBlockedWriters(List<Integer> accountIds);
 }

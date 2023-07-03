@@ -48,8 +48,10 @@ public class StoryController {
     public Response getStoriesInGenre(
             @QueryParam("genreId") Integer genreId, 
             @QueryParam("numberOfStories") Integer numberOfStories, 
-            @QueryParam("offset") Integer offset) {
-        return Response.ok().entity(storyService.getStoriesInGenre(genreId, numberOfStories, offset)).build();
+            @QueryParam("currentId") Integer currentId,
+            @QueryParam("next") String next
+    ) {
+        return Response.ok().entity(storyService.getStoriesInGenre(genreId, numberOfStories, currentId, Boolean.valueOf(next))).build();
     }
     
     @Path("/addStory")
@@ -96,10 +98,15 @@ public class StoryController {
         return Response.ok().entity(storiesHolder).build();
     }
     
-    @Path("/searchForStories/{searchValue}")
+    @Path("/searchForStories")
     @GET
-    public Response searchForStories(@PathParam("searchValue") String searchValue) {
-        return Response.ok().entity(storyService.searchForStories(searchValue)).build();
+    public Response searchForStories(
+            @QueryParam("searchValue") String searchValue, 
+            @QueryParam("numberOfStories") Integer numberOfStories, 
+            @QueryParam("currentId") Integer currentId,
+            @QueryParam("next") String next
+    ) {
+        return Response.ok().entity(storyService.searchForStories(searchValue, numberOfStories, currentId, Boolean.valueOf(next))).build();
     }
     
     @Path("/getWritersSubmittedStories")
