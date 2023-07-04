@@ -348,6 +348,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
         List<Integer> topWriters = new ArrayList<>();
         try {
             connection = DBManager.getConnection();
+            updateViewCount(connection);
             prepStmt = connection.prepareStatement("SELECT accountId, SUM(viewCount) AS totalViews "
                     + "FROM stories GROUP BY accountId ORDER BY totalViews DESC LIMIT ?;");
             prepStmt.setInt(1, numberOfWriters);
@@ -401,6 +402,28 @@ public class WriterDao_Impl implements WriterDao_Interface {
             }
         } catch (SQLException ex) {
             Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private static void updateViewCount(Connection conn) {
+        PreparedStatement statement = null;
+        try {
+            String query = "UPDATE stories s "
+                    + "SET s.viewCount = (SELECT COUNT(*) FROM views v WHERE v.storyId = s.storyId)";
+            statement = conn.prepareStatement(query);
+            statement.executeUpdate();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ViewDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ViewDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
 
