@@ -6,9 +6,11 @@ package Controllers;
 
 import ServiceLayers.SMSService_Impl;
 import ServiceLayers.SMSService_Interface;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 /**
@@ -17,15 +19,19 @@ import jakarta.ws.rs.core.Response;
  */
 @Path("/sms")
 public class SMSController {
-    private final SMSService_Interface smsService;
+    private final SMSService_Interface smsService;    
     
     public SMSController(){
-        this.smsService = new SMSService_Impl();
+        this.smsService = new SMSService_Impl();        
     }
     
-    @Path("/sendSMS/{phoneNumber}")
+    @Path("/sendsms/{phoneNumber}/{message}")
     @GET
-    public Response sendSMS(@PathParam("phoneNumber")String phoneNumber){
-        return Response.ok().entity(smsService.sendSMS(phoneNumber)).build();
-    }
+    @Consumes(MediaType.APPLICATION_XML)
+    public Response sendSMS(@PathParam("phoneNumber")String phoneNumber,@PathParam("message")String message){   
+        return Response.ok().entity(smsService.sendSMS(phoneNumber, message)).build();
+        
+        
+    }    
+    
 }

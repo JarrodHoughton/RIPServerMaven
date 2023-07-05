@@ -9,5 +9,5 @@ package ServiceLayers;
  * @author Kylynn van der Merwe
  */
 public interface SMSService_Interface {    
-    public String sendSMS(String phoneNumber);
+    public String sendSMS(String phoneNumber, String message);
 }
