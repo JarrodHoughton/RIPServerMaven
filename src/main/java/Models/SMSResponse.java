@@ -4,15 +4,22 @@
  */
 package Models;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Kylynn van der Merwe
  */
-@XmlRootElement
+@XmlRootElement(name = "smsresp")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class SMSResponse {
+    @XmlElement(name = "code")
     private String responseCode;
+    
+    @XmlElement(name = "desc")
     private String description;
     
     public SMSResponse(){
