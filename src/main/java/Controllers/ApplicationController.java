@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  *
- * @author jarro
+ * @author Jarrod
  */
 @Path("/applications")
 public class ApplicationController {

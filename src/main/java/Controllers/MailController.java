@@ -52,13 +52,19 @@ public class MailController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response sendVerificationEmail(Reader reader) {
-        return Response.ok().entity(mailService.sendVerificationEmailWithHTML(reader)).build();
+        return Response.ok().entity(mailService.sendVerificationEmail(reader)).build();
     }
     
-    @Path("/sendReferralEmail/{recipientEmail}/{recipientName}")
+    @Path("/sendChangePasswordEmail/{accountEmail}")
     @GET
-    public Response sendReferralEmail(@PathParam("recipientEmail") String recipientEmail, @PathParam("recipientName") String recipientName) {
-        return Response.ok().entity(mailService.sendReferralEmail(recipientEmail, recipientName)).build();
+    public Response sendChangePasswordEmail(@PathParam("accountEmail") String accountEmail) {
+        return Response.ok().entity(mailService.sendChangePasswordEmail(accountEmail)).build();
+    }
+    
+    @Path("/sendReferralEmail/{recipientEmail}/{recipientName}/{recipientPhoneNumber}")
+    @GET
+    public Response sendReferralEmail(@PathParam("recipientEmail") String recipientEmail, @PathParam("recipientName") String recipientName, @PathParam("recipientPhoneNumber") String recipientPhoneNumber) {
+        return Response.ok().entity(mailService.sendReferralEmail(recipientEmail, recipientName, recipientPhoneNumber)).build();
     }
     
     @Path("/notifyWriterOfStorySubmission/{writerId}/{approved}")

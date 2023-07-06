@@ -59,7 +59,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
                 writer.setPhoneNumber(rs.getString("accountPhoneNumber"));
                 writer.setUserType(rs.getString("accountType"));
                 writer.setVerified(rs.getString("verified").equals("F") ? Boolean.FALSE : Boolean.TRUE);
-            }   
+            }
         } catch (SQLException ex) {
             Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -73,7 +73,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
 
             //getting all the writer's favourite genre Ids
             writer.setFavouriteGenreIds(getWritersFavouriteGenreIds(writer.getId()));
-            
+
             //getting all the writer's submitted and drafted story Ids
             writer = setCreatedStories(writer);
         }
@@ -164,7 +164,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
         List<Integer> writerIds = null;
 
         try {
-            Integer currentOffSet = pageNumber*numberOfWriters;
+            Integer currentOffSet = pageNumber * numberOfWriters;
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(
                     "SELECT accountId FROM accounts WHERE accountType='W' ORDER BY accountId  LIMIT ?,?;");
@@ -244,18 +244,18 @@ public class WriterDao_Impl implements WriterDao_Interface {
         } finally {
             closeConnections();
         }
-        
+
         if (writer != null) {
             //getting all the writer's favourite story Ids
             writer.setFavouriteStoryIds(getWritersFavouriteStoryIds(writer.getId()));
 
             //getting all the writer's favourite genre Ids
             writer.setFavouriteGenreIds(getWritersFavouriteGenreIds(writer.getId()));
-            
+
             //getting all the writer's submitted and drafted story Ids
             writer = setCreatedStories(writer);
         }
-        
+
         return writer;
     }
 
@@ -276,7 +276,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
         }
         return added;
     }
-    
+
     @Override
     public Boolean addWriters(List<Integer> writerIds) {
         Boolean added = false;
@@ -404,7 +404,7 @@ public class WriterDao_Impl implements WriterDao_Interface {
             Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private static void updateViewCount(Connection conn) {
         PreparedStatement statement = null;
         try {
@@ -433,20 +433,25 @@ public class WriterDao_Impl implements WriterDao_Interface {
         List<Integer> writerIds = null;
 
         try {
-            System.out.println(searchValue + " " + numberOfWriters + " " + pageNumber + " ");
-            Integer startingOffset = pageNumber*numberOfWriters;
-            connection = DBManager.getConnection();
-            prepStmt = connection.prepareStatement(
-                    "SELECT accountId FROM accounts WHERE (accountName LIKE ? OR accountSurname LIKE ? OR accountEmail LIKE ?) and accountType='W' GROUP BY accountId ORDER BY accountId  LIMIT ?,?;");
-            prepStmt.setString(1, "%"+searchValue+"%");
-            prepStmt.setString(2, "%"+searchValue+"%");
-            prepStmt.setString(3, "%"+searchValue+"%");
-            prepStmt.setInt(4, startingOffset);
-            prepStmt.setInt(5, numberOfWriters);
-            rs = prepStmt.executeQuery();
             writerIds = new ArrayList<>();
-            while (rs.next()) {
-                writerIds.add(rs.getInt("accountId"));
+            for (String value : searchValue.split(" ")) {
+                System.out.println(searchValue + " " + numberOfWriters + " " + pageNumber + " ");
+                Integer startingOffset = pageNumber * numberOfWriters;
+                connection = DBManager.getConnection();
+                prepStmt = connection.prepareStatement(
+                        "SELECT accountId FROM accounts WHERE (accountName LIKE ? OR accountSurname LIKE ? OR accountEmail LIKE ?) and accountType='W' GROUP BY accountId ORDER BY accountId  LIMIT ?,?;");
+                prepStmt.setString(1, "%" + value + "%");
+                prepStmt.setString(2, "%" + value + "%");
+                prepStmt.setString(3, "%" + value + "%");
+                prepStmt.setInt(4, startingOffset);
+                prepStmt.setInt(5, numberOfWriters);
+                rs = prepStmt.executeQuery();
+                while (rs.next()) {
+                    if (!writerIds.contains(rs.getInt("accountId"))) {
+                        writerIds.add(rs.getInt("accountId"));
+                    }
+                }
+                closeConnections();
             }
         } catch (SQLException ex) {
             Logger.getLogger(WriterDao_Impl.class.getName()).log(Level.SEVERE, null, ex);

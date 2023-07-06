@@ -13,10 +13,10 @@ import java.util.List;
  */
 public interface MailService_Interface {
     public String sendMail(String recipientEmail, String emailContent, String subject);
-    public String sendVerficationEmail(Reader reader);
-    public String sendVerificationEmailWithHTML(Reader reader);
-    public String sendReferralEmail(String recipientEmail, String recipientName);
+    public String sendVerificationEmail(Reader reader);
+    public String sendReferralEmail(String recipientEmail, String recipientName, String phoneNumber);
     public String notifyApprovedWriters(List<Integer> accountIds, Boolean approved);
     public String notifyWriterOfStorySubmission(Integer writerId, Boolean approved);
     public String notifyBlockedWriters(List<Integer> accountIds);
+    public String sendChangePasswordEmail(String email);
 }

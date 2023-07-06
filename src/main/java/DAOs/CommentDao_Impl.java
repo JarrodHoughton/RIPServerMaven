@@ -36,7 +36,7 @@ public class CommentDao_Impl implements CommentDao_Interface{
             connection = DBManager.getConnection();
             prepStmt = connection.prepareStatement(
                     "SELECT C.commentId, C.commentDate, C.commentMessage, C.accountId, C.storyId, A.accountName, A.accountSurname FROM comments as C \n" +
-                    "INNER JOIN accounts as A on A.accountId=C.accountId WHERE C.storyId=? ORDER BY C.commentDate DESC;");
+                    "INNER JOIN accounts as A on A.accountId=C.accountId WHERE C.storyId=? AND commentDate <= current_timestamp ORDER BY C.commentDate DESC;");
             prepStmt.setInt(1, storyId);
             rs = prepStmt.executeQuery();
             while (rs.next()){

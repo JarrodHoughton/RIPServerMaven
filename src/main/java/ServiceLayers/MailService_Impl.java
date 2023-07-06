@@ -50,10 +50,12 @@ import java.util.logging.Logger;
 public class MailService_Impl implements MailService_Interface {
     private ReaderService_Interface readerService = null;
     private static final String SERVER_EMAIL = "readersareinnovators.platform@gmail.com";
-    private static final String CREDENTIALS_FILE_PATH = "/client_secret_866186881474-r38sas7onvsd0g69ckh154l9ou6kdch2.apps.googleusercontent.com.json";
+    private static final String CREDENTIALS_FILE_PATH = "/client_secret_866186881474-3qm8fihh7svcdath62nhv9j127fpdar5.apps.googleusercontent.com.json";
     private final Gmail service;
+    private SMSService_Interface smsService;
 
     public MailService_Impl() throws IOException, GeneralSecurityException {
+        smsService = new SMSService_Impl();
         readerService = new ReaderService_Impl();
         NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
@@ -123,194 +125,28 @@ public class MailService_Impl implements MailService_Interface {
     }
 
     @Override
-    public String sendVerficationEmail(Reader reader) {
-        ReaderDao_Interface readerDao = new ReaderDao_Impl();
-        String verificationLink = "http://localhost:8080/RIPClientMaven/LoginController?submit=verifyReader&readerId=" + reader.getId() + "&verifyToken=" + readerDao.getVerifyToken(reader.getId());
-        String emailContent
-                = "Dear " + reader.getName() + ",\n\n"
-                + "Thank you for signing up to our platform!\n\n"
+    public String sendVerificationEmail(Reader reader) {
+        String verificationToken = readerService.getVerifyToken(reader.getId());
+        String smsMessage = "Thank you for signing up to our platform!\n\n"
                 + "Kindly follow the link below to verify your account:\n"
-                + verificationLink + "\n\n"
+                + "http://192.168.36.57:8080/RIPClientMaven/LoginController?submit=verifyReader&readerId=" + reader.getId() + "&verifyToken=" + verificationToken
                 + "Kindest Regards," + "\n"
                 + "Readers Are Innovators Team!";
+        smsService.sendSMS(reader.getPhoneNumber(), smsMessage);
+        String verificationLink = "LoginController?submit=verifyReader&readerId=" + reader.getId() + "&verifyToken=" + verificationToken;
         String subject = "Readers Are Innovators: Verify Your Account!";
-        return sendMail(reader.getEmail(), emailContent, subject);
-    }
-
-    @Override
-    public String sendVerificationEmailWithHTML(Reader reader) {
-        String verificationToken = readerService.getVerifyToken(reader.getId());
-        String verificationLink = "http://localhost:8080/RIPClientMaven/LoginController?submit=verifyReader&readerId=" + reader.getId() + "&verifyToken=" + verificationToken;
-        String testContent = "<!DOCTYPE html>\n"
-                + "<html>\n"
-                + "<head>\n"
-                + "    <title>Verify Account</title>\n"
-                + "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n"
-                + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
-                + "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n"
-                + "    <style>\n"
-                + "	\n"
-                + "        @media screen {\n"
-                + "            @font-face {\n"
-                + "                font-family: 'Lato';\n"
-                + "                font-style: normal;\n"
-                + "                font-weight: 400;\n"
-                + "                src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');\n"
-                + "            }\n"
-                + "\n"
-                + "            @font-face {\n"
-                + "                font-family: 'Lato';\n"
-                + "                font-style: normal;\n"
-                + "                font-weight: 700;\n"
-                + "                src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');\n"
-                + "            }\n"
-                + "\n"
-                + "            @font-face {\n"
-                + "                font-family: 'Lato';\n"
-                + "                font-style: italic;\n"
-                + "                font-weight: 400;\n"
-                + "                src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');\n"
-                + "            }\n"
-                + "\n"
-                + "            @font-face {\n"
-                + "                font-family: 'Lato';\n"
-                + "                font-style: italic;\n"
-                + "                font-weight: 700;\n"
-                + "                src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');\n"
-                + "            }\n"
-                + "        }\n"
-                + "\n"
-                + "        /* CLIENT-SPECIFIC STYLES */\n"
-                + "        body,\n"
-                + "        table,\n"
-                + "        td,\n"
-                + "        a {\n"
-                + "            -webkit-text-size-adjust: 100%;\n"
-                + "            -ms-text-size-adjust: 100%;\n"
-                + "        }\n"
-                + "\n"
-                + "        table,\n"
-                + "        td {\n"
-                + "            mso-table-lspace: 0pt;\n"
-                + "            mso-table-rspace: 0pt;\n"
-                + "        }\n"
-                + "\n"
-                + "        img {\n"
-                + "            -ms-interpolation-mode: bicubic;\n"
-                + "        }\n"
-                + "\n"
-                + "        /* RESET STYLES */\n"
-                + "        img {\n"
-                + "            border: 0;\n"
-                + "            height: auto;\n"
-                + "            line-height: 100%;\n"
-                + "            outline: none;\n"
-                + "            text-decoration: none;\n"
-                + "        }\n"
-                + "\n"
-                + "        table {\n"
-                + "            border-collapse: collapse !important;\n"
-                + "        }\n"
-                + "\n"
-                + "        body {\n"
-                + "            height: 100% !important;\n"
-                + "            margin: 0 !important;\n"
-                + "            padding: 0 !important;\n"
-                + "            width: 100% !important;\n"
-                + "        }\n"
-                + "\n"
-                + "        /* iOS BLUE LINKS */\n"
-                + "        a[x-apple-data-detectors] {\n"
-                + "            color: inherit !important;\n"
-                + "            text-decoration: none !important;\n"
-                + "            font-size: inherit !important;\n"
-                + "            font-family: inherit !important;\n"
-                + "            font-weight: inherit !important;\n"
-                + "            line-height: inherit !important;\n"
-                + "        }\n"
-                + "\n"
-                + "        /* MOBILE STYLES */\n"
-                + "        @media screen and (max-width:600px) {\n"
-                + "            h1 {\n"
-                + "                font-size: 32px !important;\n"
-                + "                line-height: 32px !important;\n"
-                + "            }\n"
-                + "        }\n"
-                + "\n"
-                + "        /* ANDROID CENTER FIX */\n"
-                + "        div[style*=\"margin: 16px 0;\"] {\n"
-                + "            margin: 0 !important;\n"
-                + "        }\n"
-                + "    </style>\n"
-                + "</head>\n"
-                + "\n"
-                + "<body style=\"background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;\">\n"
-                + "<!-- HIDDEN PREHEADER TEXT -->\n"
-                + "<div style=\"display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;\">\n"
-                + "    We're thrilled to have you here! \n"
-                + "</div>\n"
-                + "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n"
-                + "    <!-- LOGO -->\n"
-                + "    <tr>\n"
-                + "        <td bgcolor=\"red\" align=\"center\">\n"
-                + "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\n"
-                + "                <tr>\n"
-                + "                    <td align=\"center\" valign=\"top\" style=\"padding: 40px 10px 40px 10px;\"> </td>\n"
-                + "                </tr>\n"
-                + "            </table>\n"
-                + "        </td>\n"
-                + "    </tr>\n"
-                + "    <tr>\n"
-                + "        <td bgcolor=\"red\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">\n"
-                + "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\n"
-                + "                <tr>\n"
-                + "                    <td bgcolor=\"#ffffff\" align=\"center\" valign=\"top\" style=\"padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;\">\n"
-                + "                        <h1 style=\"font-size: 48px; font-weight: 400; margin: 2;\">Welcome  " + reader.getName() + " " + reader.getSurname() + "!</h1> \n"
-                + "                        <a href=\"http://localhost:8080/RIPClientMaven/index.jsp\" target=\"_blank\" style=\"display: inline-block;\">\n"
-                + "                            <img src=\"https://www.nicepng.com/png/full/10-101646_books-png.png\" alt=\"Readers Are Innovators\" width=\"125\" height=\"120\" style=\"display: block; border: 0px;\" />\n"
-                + "                        </a>\n"
-                + "                    </td>\n"
-                + "                </tr>\n"
-                + "            </table>\n"
-                + "        </td>\n"
-                + "    </tr>\n"
-                + "    <tr>\n"
-                + "        <td bgcolor=\"#f4f4f4\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">\n"
-                + "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\n"
-                + "                <tr>\n"
-                + "                    <td bgcolor=\"#ffffff\" align=\"left\" style=\"padding: 0px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\">\n"
-                + "                        <p style=\"margin: 0;\">Thank you for joining Readers Are Innovators!</p>\n"
-                + "                    </td>\n"
-                + "                </tr>\n"
-                + "                <tr>\n"
-                + "                    <td bgcolor=\"#ffffff\" align=\"left\">\n"
-                + "                        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n"
-                + "                            <tr>\n"
-                + "                                <td bgcolor=\"#ffffff\" align=\"center\" style=\"padding: 20px 30px 30px 30px;\">\n"
-                + "                                    <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n"
-                + "                                        <tr>\n"
-                + "                                            <td align=\"center\" style=\"border-radius: 3px;\" bgcolor=\"red\">\n"
-                + "                                                <a href=\"" + verificationLink + "\" target=\"_blank\" style=\"font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid red; display: inline-block;\">\n"
-                + "                                                    Activate Account\n"
-                + "                                                </a>\n"
-                + "                                            </td>\n"
-                + "                                        </tr>\n"
-                + "                                    </table>\n"
-                + "                                </td>\n"
-                + "                            </tr>\n"
-                + "                        </table>\n"
-                + "                    </td>\n"
-                + "                </tr> <!-- COPY -->\n"
-                + "            </table>\n"
-                + "        </td>\n"
-                + "    </tr>\n"
-                + "</table>\n"
-                + "</body>\n"
-                + "</html>\n";
-        String subject = "Readers Are Innovators: Verify Your Account!";
-
-        if (sendMailWithHTML(reader.getEmail(), testContent, subject)) {
-            return "A verification email has been sent to you. Please verify your account before logging into Readers Are Innovators again.";
+        String message
+                = 
+                "Thank you for signing up to our platform!\n\n"
+                + "Kindly follow the link below to verify your account:\n"
+                + "Kindest Regards," + "\n"
+                + "Readers Are Innovators Team!";
+        String emailContent = emailTemplate.replace(Reader_Name_Location, reader.getName() + " " + reader.getSurname());
+        emailContent = emailContent.replace(Link_Location, verificationLink);
+        emailContent = emailContent.replace(Message_Location, message);
+        emailContent = emailContent.replace(Link_Button_Message, "Verify");
+        if (sendMailWithHTML(reader.getEmail(), emailContent, subject)) {
+            return "A verification link has been sent to you. Please verify your account before logging into Readers Are Innovators again.";
         } else {
             return "Something went wrong... Please make sure you have registered with a valid email address.";
         }
@@ -354,183 +190,23 @@ public class MailService_Impl implements MailService_Interface {
     }
 
     @Override
-    public String sendReferralEmail(String recipientEmail, String recipientName) {
-        String subject = "Readers Are Innovators";
-        String emailContent = "<html><body>"
-                + "<h2>Dear " + recipientName + ",</h2>"
-                + "<p>A friend has shared us with you!</p>"
-                + "<p><a href=\"http://localhost:8080/RIPClientMaven/index.jsp\">"
-                + "<button style=\"background-color: #778899; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;\">Home Page</button>"
-                + "</a></p>"
-                + "<p>Kindest Regards,<br>Readers Are Innovators Team</p>"
-                + "</body></html>";
-        String testContent = "<!DOCTYPE html>\n"
-                + "<html>\n"
-                + "<head>\n"
-                + "    <title>Referral</title>\n"
-                + "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n"
-                + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
-                + "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n"
-                + "    <style>\n"
-                + "	\n"
-                + "        @media screen {\n"
-                + "            @font-face {\n"
-                + "                font-family: 'Lato';\n"
-                + "                font-style: normal;\n"
-                + "                font-weight: 400;\n"
-                + "                src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');\n"
-                + "            }\n"
-                + "\n"
-                + "            @font-face {\n"
-                + "                font-family: 'Lato';\n"
-                + "                font-style: normal;\n"
-                + "                font-weight: 700;\n"
-                + "                src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');\n"
-                + "            }\n"
-                + "\n"
-                + "            @font-face {\n"
-                + "                font-family: 'Lato';\n"
-                + "                font-style: italic;\n"
-                + "                font-weight: 400;\n"
-                + "                src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');\n"
-                + "            }\n"
-                + "\n"
-                + "            @font-face {\n"
-                + "                font-family: 'Lato';\n"
-                + "                font-style: italic;\n"
-                + "                font-weight: 700;\n"
-                + "                src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');\n"
-                + "            }\n"
-                + "        }\n"
-                + "\n"
-                + "        /* CLIENT-SPECIFIC STYLES */\n"
-                + "        body,\n"
-                + "        table,\n"
-                + "        td,\n"
-                + "        a {\n"
-                + "            -webkit-text-size-adjust: 100%;\n"
-                + "            -ms-text-size-adjust: 100%;\n"
-                + "        }\n"
-                + "\n"
-                + "        table,\n"
-                + "        td {\n"
-                + "            mso-table-lspace: 0pt;\n"
-                + "            mso-table-rspace: 0pt;\n"
-                + "        }\n"
-                + "\n"
-                + "        img {\n"
-                + "            -ms-interpolation-mode: bicubic;\n"
-                + "        }\n"
-                + "\n"
-                + "        /* RESET STYLES */\n"
-                + "        img {\n"
-                + "            border: 0;\n"
-                + "            height: auto;\n"
-                + "            line-height: 100%;\n"
-                + "            outline: none;\n"
-                + "            text-decoration: none;\n"
-                + "        }\n"
-                + "\n"
-                + "        table {\n"
-                + "            border-collapse: collapse !important;\n"
-                + "        }\n"
-                + "\n"
-                + "        body {\n"
-                + "            height: 100% !important;\n"
-                + "            margin: 0 !important;\n"
-                + "            padding: 0 !important;\n"
-                + "            width: 100% !important;\n"
-                + "        }\n"
-                + "\n"
-                + "        /* iOS BLUE LINKS */\n"
-                + "        a[x-apple-data-detectors] {\n"
-                + "            color: inherit !important;\n"
-                + "            text-decoration: none !important;\n"
-                + "            font-size: inherit !important;\n"
-                + "            font-family: inherit !important;\n"
-                + "            font-weight: inherit !important;\n"
-                + "            line-height: inherit !important;\n"
-                + "        }\n"
-                + "\n"
-                + "        /* MOBILE STYLES */\n"
-                + "        @media screen and (max-width:600px) {\n"
-                + "            h1 {\n"
-                + "                font-size: 32px !important;\n"
-                + "                line-height: 32px !important;\n"
-                + "            }\n"
-                + "        }\n"
-                + "\n"
-                + "        /* ANDROID CENTER FIX */\n"
-                + "        div[style*=\"margin: 16px 0;\"] {\n"
-                + "            margin: 0 !important;\n"
-                + "        }\n"
-                + "    </style>\n"
-                + "</head>\n"
-                + "\n"
-                + "<body style=\"background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;\">\n"
-                + "<!-- HIDDEN PREHEADER TEXT -->\n"
-                + "<div style=\"display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;\">\n"
-                + "    We're thrilled to have you here!. \n"
-                + "</div>\n"
-                + "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n"
-                + "    <!-- LOGO -->\n"
-                + "    <tr>\n"
-                + "        <td bgcolor=\"red\" align=\"center\">\n"
-                + "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\n"
-                + "                <tr>\n"
-                + "                    <td align=\"center\" valign=\"top\" style=\"padding: 40px 10px 40px 10px;\"> </td>\n"
-                + "                </tr>\n"
-                + "            </table>\n"
-                + "        </td>\n"
-                + "    </tr>\n"
-                + "    <tr>\n"
-                + "        <td bgcolor=\"red\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">\n"
-                + "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\n"
-                + "                <tr>\n"
-                + "                    <td bgcolor=\"#ffffff\" align=\"center\" valign=\"top\" style=\"padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;\">\n"
-                + "                        <h1 style=\"font-size: 48px; font-weight: 400; margin: 2;\">Hello " + recipientName + "! </h1> \n"
-                + "                        <a href=\"http://localhost:8080/RIPClientMaven/\" target=\"_blank\" style=\"display: inline-block;\">\n"
-                + "                            <img src=\"https://www.nicepng.com/png/full/10-101646_books-png.png\" alt=\"Readers Are Innovators\" width=\"125\" height=\"120\" style=\"display: block; border: 0px;\" />\n"
-                + "                        </a>\n"
-                + "                    </td>\n"
-                + "                </tr>\n"
-                + "            </table>\n"
-                + "        </td>\n"
-                + "    </tr>\n"
-                + "    <tr>\n"
-                + "        <td bgcolor=\"#f4f4f4\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">\n"
-                + "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\n"
-                + "                <tr>\n"
-                + "                    <td bgcolor=\"#ffffff\" align=\"left\" style=\"padding: 0px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\">\n"
-                + "                        <p style=\"margin: 0;\">Someone has shared our platform with you!</p>\n"
-                + "                    </td>\n"
-                + "                </tr>\n"
-                + "                <tr>\n"
-                + "                    <td bgcolor=\"#ffffff\" align=\"left\">\n"
-                + "                        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n"
-                + "                            <tr>\n"
-                + "                                <td bgcolor=\"#ffffff\" align=\"center\" style=\"padding: 20px 30px 30px 30px;\">\n"
-                + "                                    <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n"
-                + "                                        <tr>\n"
-                + "                                            <td align=\"center\" style=\"border-radius: 3px;\" bgcolor=\"red\">\n"
-                + "                                                <a href=\"http://localhost:8080/RIPClientMaven/\" target=\"_blank\" style=\"font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid red; display: inline-block;\">\n"
-                + "                                                    Home Page\n"
-                + "                                                </a>\n"
-                + "                                            </td>\n"
-                + "                                        </tr>\n"
-                + "                                    </table>\n"
-                + "                                </td>\n"
-                + "                            </tr>\n"
-                + "                        </table>\n"
-                + "                    </td>\n"
-                + "                </tr> <!-- COPY -->\n"
-                + "            </table>\n"
-                + "        </td>\n"
-                + "    </tr>\n"
-                + "</table>\n"
-                + "</body>\n"
-                + "</html>\n";
-        if (sendMailWithHTML(recipientEmail, testContent, subject)) {
+    public String sendReferralEmail(String recipientEmail, String recipientName, String phoneNumber) {
+        String smsMessage = "A friend has shared us with you!\n\n"
+                + "Click the link below to check out our story of the day!"
+                + "http://192.168.36.57:8080/RIPClientMaven/StoryController?submit=storyOfTheDay&readerName="+recipientName
+                + "Kindest Regards," + "\n"
+                + "Readers Are Innovators Team!";
+        smsService.sendSMS(phoneNumber, smsMessage);
+        String subject = "Readers Are Innovators: Welcome New Reader!";
+        String message = 
+                "A friend has shared us with you!\n\n"
+                + "Click the link below to check out our story of the day!"
+                + "Kindest Regards, \n\n"+ "Readers Are Innovators Team";
+        String emailContent = emailTemplate.replace(Reader_Name_Location, recipientName);
+        emailContent = emailContent.replace(Message_Location, message);
+        emailContent = emailContent.replace(Link_Button_Message, "Story Of The Day");
+        emailContent = emailContent.replace(Link_Location, "StoryController?submit=storyOfTheDay&readerName="+recipientName);
+        if (sendMailWithHTML(recipientEmail, emailContent, subject)) {
             return "A an email has been sent to " + recipientName + ".";
         } else {
             return "Something went wrong... Please make sure you have entered a valid email address.";
@@ -561,7 +237,10 @@ public class MailService_Impl implements MailService_Interface {
         for (Integer accountId : accountIds) {
             Reader reader = readerService.getReader(accountId);
             String currentEmail = emailTemplate.replace(Reader_Name_Location, reader.getName() + " " + reader.getSurname());
+            currentEmail = currentEmail.replace(Link_Location, "");
+            currentEmail = currentEmail.replace(Link_Button_Message, "Home Page");
             currentEmail = currentEmail.replace(Message_Location, message);
+            smsService.sendSMS(reader.getPhoneNumber(), message);
             if (!sendMailWithHTML(reader.getEmail(), currentEmail, subject)) {
                 emailsSent = false;
             }
@@ -595,6 +274,9 @@ public class MailService_Impl implements MailService_Interface {
         }
         Reader reader = readerService.getReader(writerId);
         String currentEmail = emailTemplate.replace(Reader_Name_Location, reader.getName() + " " + reader.getSurname()).replace(Message_Location, message);
+        currentEmail = currentEmail.replace(Link_Location, "");
+        currentEmail = currentEmail.replace(Link_Button_Message, "Home Page");
+        smsService.sendSMS(reader.getPhoneNumber(), message);
         if (sendMailWithHTML(reader.getEmail(), currentEmail, subject)) {
             return "The author has been notified via email.";
         } else {
@@ -615,7 +297,10 @@ public class MailService_Impl implements MailService_Interface {
         for (Integer accountId : accountIds) {
             Reader reader = readerService.getReader(accountId);
             String currentEmail = emailTemplate.replace(Reader_Name_Location, reader.getName() + " " + reader.getSurname());
+            currentEmail = currentEmail.replace(Link_Location, "");
+            currentEmail = currentEmail.replace(Link_Button_Message, "Home Page");
             currentEmail = currentEmail.replace(Message_Location, message);
+            smsService.sendSMS(reader.getPhoneNumber(), message);
             if (!sendMailWithHTML(reader.getEmail(), currentEmail, subject)) {
                 emailsSent = false;
             }
@@ -627,9 +312,43 @@ public class MailService_Impl implements MailService_Interface {
             return "Something went wrong... Could not notify readers via email.";
         }
     }
+    
+    @Override
+    public String sendChangePasswordEmail(String email) {
+        if (!readerService.userExists(email)) {
+            return "The email you've entered does not exist.";
+        }
+        Reader reader = readerService.getReader(email);
+        String userToken = readerService.getVerifyToken(reader.getId());
+        String message =
+                "Click the link below to change you're password.\n"
+                + "If you did not request to change your password then please ingore this email.\n"
+                + "\n\n"
+                + "Kind regards,\n"
+                + "Readers Are Innovators Team";
+        String smsMessage =
+                "Click the link below to change you're password.\n"
+                +"http://192.168.36.57:8080/RIPClientMaven/ReaderController?submit=allowPasswordChangeOnLogin&readerId="+reader.getId()+"&verifyToken="+userToken
+                + "If you did not request to change your password then please ingore this message.\n"
+                + "\n\n"
+                + "Kind regards,\n"
+                + "Readers Are Innovators Team";
+        smsService.sendSMS(reader.getPhoneNumber(), smsMessage);
+        String subject = "Readers Are Innovators: Change Password";
+        String currentEmail = emailTemplate.replace(Reader_Name_Location, reader.getName() + " " + reader.getSurname()).replace(Message_Location, message);
+        currentEmail = currentEmail.replace(Link_Location, "ReaderController?submit=allowPasswordChangeOnLogin&readerId="+reader.getId()+"&verifyToken="+userToken);
+        currentEmail = currentEmail.replace(Link_Button_Message, "Change Password");
+        if (sendMailWithHTML(reader.getEmail(), currentEmail, subject)) {
+            return "A link sent via email.";
+        } else {
+            return "Something went wrong sending an email to your account.";
+        }
+    }
 
     private String Reader_Name_Location = "[Reader_Name]";
     private String Message_Location = "[Message_Location]";
+    private String Link_Location = "[Link]";
+    private String Link_Button_Message = "[Link_Button_Message]";
     private String emailTemplate = "<!DOCTYPE html>\n"
             + "<html>\n"
             + "<head>\n"
@@ -733,11 +452,11 @@ public class MailService_Impl implements MailService_Interface {
             + "    </style>\n"
             + "</head>\n"
             + "\n"
-            + "<body style=\"background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;\">\n"
+            + "<body style=\"background: linear-gradient(180deg, #0d0d0d, #111111, #0d0d0d); margin: 0 !important; padding: 0 !important;\">\n"
             + "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n"
             + "    <!-- LOGO -->\n"
             + "    <tr>\n"
-            + "        <td bgcolor=\"red\" align=\"center\">\n"
+            + "        <td style=\"background: linear-gradient(180deg, #0d0d0d, #111111, #0d0d0d);\" align=\"center\">\n"
             + "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\n"
             + "                <tr>\n"
             + "                    <td align=\"center\" valign=\"top\" style=\"padding: 40px 10px 40px 10px;\"> </td>\n"
@@ -746,12 +465,12 @@ public class MailService_Impl implements MailService_Interface {
             + "        </td>\n"
             + "    </tr>\n"
             + "    <tr>\n"
-            + "        <td bgcolor=\"red\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">\n"
+            + "        <td style=\"background: linear-gradient(180deg, #0d0d0d, #111111, #0d0d0d);\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">\n"
             + "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\n"
             + "                <tr>\n"
             + "                    <td bgcolor=\"#ffffff\" align=\"center\" valign=\"top\" style=\"padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;\">\n"
             + "                        <h1 style=\"font-size: 48px; font-weight: 400; margin: 2;\">Hello [Reader_Name]! </h1> \n"
-            + "                        <a href=\"http://localhost:8080/RIPClientMaven/\" target=\"_blank\" style=\"display: inline-block;\">\n"
+            + "                        <a href=\"http://192.168.36.57:8080/RIPClientMaven/\" target=\"_blank\" style=\"display: inline-block;\">\n"
             + "                            <img src=\"https://www.nicepng.com/png/full/10-101646_books-png.png\" alt=\"Readers Are Innovators\" width=\"125\" height=\"120\" style=\"display: block; border: 0px;\" />\n"
             + "                        </a>\n"
             + "                    </td>\n"
@@ -774,9 +493,9 @@ public class MailService_Impl implements MailService_Interface {
             + "                                <td bgcolor=\"#ffffff\" align=\"center\" style=\"padding: 20px 30px 30px 30px;\">\n"
             + "                                    <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n"
             + "                                        <tr>\n"
-            + "                                            <td align=\"center\" style=\"border-radius: 3px;\" bgcolor=\"red\">\n"
-            + "                                                <a href=\"http://localhost:8080/RIPClientMaven/\" target=\"_blank\" style=\"font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid red; display: inline-block;\">\n"
-            + "                                                    Home Page\n"
+            + "                                            <td align=\"center\" style=\"border-radius: 3px;\" bgcolor=\"#0d6efd\">\n"
+            + "                                                <a href=\"http://192.168.36.57:8080/RIPClientMaven/[Link]\" target=\"_blank\" style=\"font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 5px; display: inline-block;\">\n"
+            + "                                                    [Link_Button_Message]\n"
             + "                                                </a>\n"
             + "                                            </td>\n"
             + "                                        </tr>\n"
