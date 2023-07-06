@@ -30,15 +30,15 @@ import java.util.logging.Logger;
  */
 public class SMSService_Impl implements SMSService_Interface{
     private static final String SMSGATEWAY = "http://196.41.180.157:8080/sms/sms_request";
+    private static final String USER = "user";
+    private static final String PASSWORD = "password";
     private final Client client;
     private WebTarget webTarget;
-    private final ObjectMapper mapper;
     private Response response;
     private final DateTimeFormatter outputFormatter;
     
     public SMSService_Impl(){
         client = ClientBuilder.newClient();
-        mapper = new ObjectMapper();
         outputFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd,hh:mm:ss");
     }
     
@@ -46,17 +46,28 @@ public class SMSService_Impl implements SMSService_Interface{
     public String sendSMS(String phoneNumber, String message) {
         
         //hits the SMS gateway and receives a response
-        SMSRequest smsRequest = new SMSRequest(LocalDateTime.now().format(outputFormatter), "user", "password", phoneNumber, message);
+        SMSRequest smsRequest = new SMSRequest(LocalDateTime.now().format(outputFormatter), USER, PASSWORD, phoneNumber, message);
         webTarget = client.target(SMSGATEWAY);
         response = webTarget.request(MediaType.APPLICATION_XML).post(Entity.xml(jaxbObjectToXML(smsRequest)));
         
-        //converts the xml response to an SMSResponse object
-        SMSResponse smsResponse = xMLToJaxbObject(response.readEntity(String.class));
-        response.close();
-        if(smsResponse.getResponseCode().equals("0000")){
-            return "SMS send succesfully";
-        }else{
-            return "Failed to send SMS.  Error: " + smsResponse.getDescription();
+        
+        if (response.getStatus() != Response.Status.OK.getStatusCode()){
+            return "Failed to send SMS";
+        }
+        
+        try{
+            //converts the xml response to an SMSResponse object
+            SMSResponse smsResponse = XMLToJaxbObject(response.readEntity(String.class));
+            response.close();
+            if(smsResponse.getResponseCode().equals("0000")){
+                return "SMS send succesfully";
+            }else{
+                return "Failed to send SMS.  Error: " + smsResponse.getDescription();
+            }
+        }finally{
+            if(response!=null){
+                response.close();
+            }
         }
     }
     
@@ -78,7 +89,7 @@ public class SMSService_Impl implements SMSService_Interface{
         return xmlString;
     }
     
-    private static SMSResponse xMLToJaxbObject(String xmlString) {
+    private static SMSResponse XMLToJaxbObject(String xmlString) {
     SMSResponse smsResponse = null;
     try {
         JAXBContext context = JAXBContext.newInstance(SMSResponse.class);
