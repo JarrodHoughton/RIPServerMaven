@@ -129,7 +129,7 @@ public class MailService_Impl implements MailService_Interface {
         String verificationToken = readerService.getVerifyToken(reader.getId());
         String smsMessage = "Thank you for signing up to our platform!\n\n"
                 + "Kindly follow the link below to verify your account:\n"
-                + "http://192.168.36.57:8080/RIPClientMaven/LoginController?submit=verifyReader&readerId=" + reader.getId() + "&verifyToken=" + verificationToken
+                + "http://localhost:8080/RIPClientMaven/LoginController?submit=verifyReader&readerId=" + reader.getId() + "&verifyToken=" + verificationToken
                 + "Kindest Regards," + "\n"
                 + "Readers Are Innovators Team!";
         smsService.sendSMS(reader.getPhoneNumber(), smsMessage);
@@ -193,7 +193,7 @@ public class MailService_Impl implements MailService_Interface {
     public String sendReferralEmail(String recipientEmail, String recipientName, String phoneNumber) {
         String smsMessage = "A friend has shared us with you!\n\n"
                 + "Click the link below to check out our story of the day!"
-                + "http://192.168.36.57:8080/RIPClientMaven/StoryController?submit=storyOfTheDay&readerName="+recipientName
+                + "http://localhost:8080/RIPClientMaven/StoryController?submit=storyOfTheDay&readerName="+recipientName
                 + "Kindest Regards," + "\n"
                 + "Readers Are Innovators Team!";
         smsService.sendSMS(phoneNumber, smsMessage);
@@ -328,7 +328,7 @@ public class MailService_Impl implements MailService_Interface {
                 + "Readers Are Innovators Team";
         String smsMessage =
                 "Click the link below to change you're password.\n"
-                +"http://192.168.36.57:8080/RIPClientMaven/ReaderController?submit=allowPasswordChangeOnLogin&readerId="+reader.getId()+"&verifyToken="+userToken
+                +"http://localhost:8080/RIPClientMaven/ReaderController?submit=allowPasswordChangeOnLogin&readerId="+reader.getId()+"&verifyToken="+userToken
                 + "If you did not request to change your password then please ingore this message.\n"
                 + "\n\n"
                 + "Kind regards,\n"
@@ -470,7 +470,7 @@ public class MailService_Impl implements MailService_Interface {
             + "                <tr>\n"
             + "                    <td bgcolor=\"#ffffff\" align=\"center\" valign=\"top\" style=\"padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;\">\n"
             + "                        <h1 style=\"font-size: 48px; font-weight: 400; margin: 2;\">Hello [Reader_Name]! </h1> \n"
-            + "                        <a href=\"http://192.168.36.57:8080/RIPClientMaven/\" target=\"_blank\" style=\"display: inline-block;\">\n"
+            + "                        <a href=\"http://localhost:8080/RIPClientMaven/\" target=\"_blank\" style=\"display: inline-block;\">\n"
             + "                            <img src=\"https://www.nicepng.com/png/full/10-101646_books-png.png\" alt=\"Readers Are Innovators\" width=\"125\" height=\"120\" style=\"display: block; border: 0px;\" />\n"
             + "                        </a>\n"
             + "                    </td>\n"
@@ -494,7 +494,7 @@ public class MailService_Impl implements MailService_Interface {
             + "                                    <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n"
             + "                                        <tr>\n"
             + "                                            <td align=\"center\" style=\"border-radius: 3px;\" bgcolor=\"#0d6efd\">\n"
-            + "                                                <a href=\"http://192.168.36.57:8080/RIPClientMaven/[Link]\" target=\"_blank\" style=\"font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 5px; display: inline-block;\">\n"
+            + "                                                <a href=\"http://localhost:8080/RIPClientMaven/[Link]\" target=\"_blank\" style=\"font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 5px; display: inline-block;\">\n"
             + "                                                    [Link_Button_Message]\n"
             + "                                                </a>\n"
             + "                                            </td>\n"
