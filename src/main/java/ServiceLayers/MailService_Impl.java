@@ -4,9 +4,8 @@
  */
 package ServiceLayers;
 
-import DAOs.ReaderDao_Impl;
-import DAOs.ReaderDao_Interface;
 import Models.Reader;
+import Utils.GetProperties;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -52,9 +51,12 @@ public class MailService_Impl implements MailService_Interface {
     private static final String SERVER_EMAIL = "readersareinnovators.platform@gmail.com";
     private static final String CREDENTIALS_FILE_PATH = "/client_secret_866186881474-3qm8fihh7svcdath62nhv9j127fpdar5.apps.googleusercontent.com.json";
     private final Gmail service;
+    private String clientUrl; 
     private SMSService_Interface smsService;
 
     public MailService_Impl() throws IOException, GeneralSecurityException {
+        this.clientUrl = new GetProperties("config.properties").get("clientUrl");
+        this.emailTemplate = this.emailTemplate.replace("[clientUrl]", clientUrl);
         smsService = new SMSService_Impl();
         readerService = new ReaderService_Impl();
         NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -127,11 +129,9 @@ public class MailService_Impl implements MailService_Interface {
     @Override
     public String sendVerificationEmail(Reader reader) {
         String verificationToken = readerService.getVerifyToken(reader.getId());
-        String smsMessage = "Thank you for signing up to our platform!\n\n"
-                + "Kindly follow the link below to verify your account:\n"
-                + "http://localhost:8080/RIPClientMaven/LoginController?submit=verifyReader&readerId=" + reader.getId() + "&verifyToken=" + verificationToken
-                + "Kindest Regards," + "\n"
-                + "Readers Are Innovators Team!";
+        String smsMessage = 
+                "RIP Verify Account: \n"
+                + clientUrl + "LoginController?submit=verifyReader&readerId=" + reader.getId() + "&verifyToken=" + verificationToken;
         smsService.sendSMS(reader.getPhoneNumber(), smsMessage);
         String verificationLink = "LoginController?submit=verifyReader&readerId=" + reader.getId() + "&verifyToken=" + verificationToken;
         String subject = "Readers Are Innovators: Verify Your Account!";
@@ -191,11 +191,7 @@ public class MailService_Impl implements MailService_Interface {
 
     @Override
     public String sendReferralEmail(String recipientEmail, String recipientName, String phoneNumber) {
-        String smsMessage = "A friend has shared us with you!\n\n"
-                + "Click the link below to check out our story of the day!"
-                + "http://localhost:8080/RIPClientMaven/StoryController?submit=storyOfTheDay&readerName="+recipientName
-                + "Kindest Regards," + "\n"
-                + "Readers Are Innovators Team!";
+        String smsMessage = clientUrl + "StoryController?submit=storyOfTheDay&readerName="+recipientName;
         smsService.sendSMS(phoneNumber, smsMessage);
         String subject = "Readers Are Innovators: Welcome New Reader!";
         String message = 
@@ -240,21 +236,22 @@ public class MailService_Impl implements MailService_Interface {
             currentEmail = currentEmail.replace(Link_Location, "");
             currentEmail = currentEmail.replace(Link_Button_Message, "Home Page");
             currentEmail = currentEmail.replace(Message_Location, message);
-            smsService.sendSMS(reader.getPhoneNumber(), message);
+            smsService.sendSMS(reader.getPhoneNumber(), "Your writer application has been approved on the RIP platform!");
             if (!sendMailWithHTML(reader.getEmail(), currentEmail, subject)) {
                 emailsSent = false;
             }
         }
 
         if (emailsSent) {
-            return "The readers have been notified via email.";
+            return "The reader(s) have been notified via email.";
         } else {
-            return "Something went wrong... Could not notify readers via email.";
+            return "Something went wrong... Could not notify reader(s) via email.";
         }
     }
 
     @Override
     public String notifyWriterOfStorySubmission(Integer writerId, Boolean approved) {
+        String smsMessage = "Readers Are Innovators: Your story was approved!";
         String message
                 = "Congratulations!\n"
                 + "A story you've submitted on the Readers Are Innovators platform has been approved.\n"
@@ -271,12 +268,13 @@ public class MailService_Impl implements MailService_Interface {
                     + "Better luck next time!\n"
                     + "Kind regards,\n"
                     + "Readers Are Innovators Team";
+            smsMessage = "Readers Are Innovators: Your story was rejected...";
         }
         Reader reader = readerService.getReader(writerId);
         String currentEmail = emailTemplate.replace(Reader_Name_Location, reader.getName() + " " + reader.getSurname()).replace(Message_Location, message);
         currentEmail = currentEmail.replace(Link_Location, "");
         currentEmail = currentEmail.replace(Link_Button_Message, "Home Page");
-        smsService.sendSMS(reader.getPhoneNumber(), message);
+        smsService.sendSMS(reader.getPhoneNumber(), smsMessage);
         if (sendMailWithHTML(reader.getEmail(), currentEmail, subject)) {
             return "The author has been notified via email.";
         } else {
@@ -299,17 +297,17 @@ public class MailService_Impl implements MailService_Interface {
             String currentEmail = emailTemplate.replace(Reader_Name_Location, reader.getName() + " " + reader.getSurname());
             currentEmail = currentEmail.replace(Link_Location, "");
             currentEmail = currentEmail.replace(Link_Button_Message, "Home Page");
-            currentEmail = currentEmail.replace(Message_Location, message);
-            smsService.sendSMS(reader.getPhoneNumber(), message);
+            currentEmail = currentEmail.replace(Message_Location, "Readers Are Innovators: You have been blocked as a writer :[");
+            smsService.sendSMS(reader.getPhoneNumber(), "Readers Are Innovators: You have been blocked as a writer :[");
             if (!sendMailWithHTML(reader.getEmail(), currentEmail, subject)) {
                 emailsSent = false;
             }
         }
 
         if (emailsSent) {
-            return "The readers have been notified via email.";
+            return "The reader(s) have been notified via email.";
         } else {
-            return "Something went wrong... Could not notify readers via email.";
+            return "Something went wrong... Could not notify reader(s) via email.";
         }
     }
     
@@ -326,20 +324,14 @@ public class MailService_Impl implements MailService_Interface {
                 + "\n\n"
                 + "Kind regards,\n"
                 + "Readers Are Innovators Team";
-        String smsMessage =
-                "Click the link below to change you're password.\n"
-                +"http://localhost:8080/RIPClientMaven/ReaderController?submit=allowPasswordChangeOnLogin&readerId="+reader.getId()+"&verifyToken="+userToken
-                + "If you did not request to change your password then please ingore this message.\n"
-                + "\n\n"
-                + "Kind regards,\n"
-                + "Readers Are Innovators Team";
+        String smsMessage =clientUrl+"ReaderController?submit=allowPasswordChangeOnLogin&readerId="+reader.getId()+"&verifyToken="+userToken;
         smsService.sendSMS(reader.getPhoneNumber(), smsMessage);
         String subject = "Readers Are Innovators: Change Password";
         String currentEmail = emailTemplate.replace(Reader_Name_Location, reader.getName() + " " + reader.getSurname()).replace(Message_Location, message);
         currentEmail = currentEmail.replace(Link_Location, "ReaderController?submit=allowPasswordChangeOnLogin&readerId="+reader.getId()+"&verifyToken="+userToken);
         currentEmail = currentEmail.replace(Link_Button_Message, "Change Password");
         if (sendMailWithHTML(reader.getEmail(), currentEmail, subject)) {
-            return "A link sent via email.";
+            return "A link sent via email to change your password.";
         } else {
             return "Something went wrong sending an email to your account.";
         }
@@ -470,7 +462,7 @@ public class MailService_Impl implements MailService_Interface {
             + "                <tr>\n"
             + "                    <td bgcolor=\"#ffffff\" align=\"center\" valign=\"top\" style=\"padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;\">\n"
             + "                        <h1 style=\"font-size: 48px; font-weight: 400; margin: 2;\">Hello [Reader_Name]! </h1> \n"
-            + "                        <a href=\"http://localhost:8080/RIPClientMaven/\" target=\"_blank\" style=\"display: inline-block;\">\n"
+            + "                        <a href=\"[clientUrl]\" target=\"_blank\" style=\"display: inline-block;\">\n"
             + "                            <img src=\"https://www.nicepng.com/png/full/10-101646_books-png.png\" alt=\"Readers Are Innovators\" width=\"125\" height=\"120\" style=\"display: block; border: 0px;\" />\n"
             + "                        </a>\n"
             + "                    </td>\n"
@@ -494,7 +486,7 @@ public class MailService_Impl implements MailService_Interface {
             + "                                    <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n"
             + "                                        <tr>\n"
             + "                                            <td align=\"center\" style=\"border-radius: 3px;\" bgcolor=\"#0d6efd\">\n"
-            + "                                                <a href=\"http://localhost:8080/RIPClientMaven/[Link]\" target=\"_blank\" style=\"font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 5px; display: inline-block;\">\n"
+            + "                                                <a href=\"[clientUrl][Link]\" target=\"_blank\" style=\"font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 5px; display: inline-block;\">\n"
             + "                                                    [Link_Button_Message]\n"
             + "                                                </a>\n"
             + "                                            </td>\n"

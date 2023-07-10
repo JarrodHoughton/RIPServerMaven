@@ -2,7 +2,6 @@ package ServiceLayers;
 
 import DAOs.RatingDao_Impl;
 import DAOs.RatingDao_Interface;
-import DAOs.ViewDao_Impl;
 import Models.Rating;
 import java.sql.Timestamp;
 import java.util.List;
@@ -37,13 +36,13 @@ public class RatingService_Impl implements RatingService_Interface {
     public String addRating(Rating rating) {
         
         if (ratingDao.checkRatingExists(rating)) {
-            return "Rating already exists";
+            return "Your rating already exists.";
         }
         
         if(ratingDao.addRating(rating)){
-            return "Rating has been added";
+            return "Thank you for rating this story!";
         }else{
-            return "System failed to add rating";
+            return "Sorry, we were unable to record your rating at this time.";
         }
     }
 
@@ -65,9 +64,9 @@ public class RatingService_Impl implements RatingService_Interface {
     @Override
     public String updateRatingValue(Rating rating) {
         if (ratingDao.updateRatingValue(rating)) {
-            return "rating successfully updated";
+            return "Your rating has been changed!";
         } else {
-          return "rating not updated";  
+          return "Sorry,we were unable to update the rating at this time.";  
         }
     }
 

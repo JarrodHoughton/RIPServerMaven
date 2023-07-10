@@ -38,9 +38,9 @@ public class CommentService_Impl implements CommentService_Interface {
     @Override
     public String addComment(Comment comment) {
         if(commentDao.addComment(comment)){
-            return "Comment has been added to the story";
+            return "Thank you for commenting!";
         }else{
-            return "System failed to add comment to story";
+            return "Sorry, we were unable to record your comment at this time.";
         }
     }
     

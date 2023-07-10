@@ -25,18 +25,18 @@ public class LikeService_Impl implements LikeService_Interface {
         }
         
         if(likeDao.addLike(like)){
-            return "Like added";
+            return "Thank you for liking this story!";
         }else{
-            return "System failed to add like";
+            return "Sorry, we were unable to record your like at this time.";
         }
     }
 
     @Override
     public String deleteLike(Like like) {
         if(likeDao.deleteLike(like)){
-            return "Like removed.";
+            return "Your like has been removed.";
         }else{
-            return "System failed to remove like";
+            return "Sorry, we were unable to remove your like at this time.";
         }
     }
 

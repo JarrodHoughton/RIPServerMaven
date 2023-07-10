@@ -30,8 +30,8 @@ import java.util.logging.Logger;
  */
 public class SMSService_Impl implements SMSService_Interface{
     private static final String SMSGATEWAY = "http://196.41.180.157:8080/sms/sms_request";
-    private static final String USER = "user";
-    private static final String PASSWORD = "password";
+    private static final String USER = "GROUP4";
+    private static final String PASSWORD = "g4roup";
     private final Client client;
     private WebTarget webTarget;
     private Response response;
@@ -60,8 +60,10 @@ public class SMSService_Impl implements SMSService_Interface{
             SMSResponse smsResponse = XMLToJaxbObject(response.readEntity(String.class));
             response.close();
             if(smsResponse.getResponseCode().equals("0000")){
+                System.out.println("SMS send succesfully");
                 return "SMS send succesfully";
             }else{
+                System.out.println("Failed to send SMS.  Error: " + smsResponse.getDescription());
                 return "Failed to send SMS.  Error: " + smsResponse.getDescription();
             }
         }finally{

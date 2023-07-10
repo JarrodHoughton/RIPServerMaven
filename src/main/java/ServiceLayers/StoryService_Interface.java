@@ -4,7 +4,6 @@
  */
 package ServiceLayers;
 
-import Models.Genre;
 import Models.Story;
 import java.util.List;
 

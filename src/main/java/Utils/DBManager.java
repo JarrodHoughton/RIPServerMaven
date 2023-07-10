@@ -4,6 +4,7 @@
  */
 package Utils;
 
+import java.net.URL;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,7 +12,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 /**
  *
- * @author jarro
+ * @author Jarrod
  */
 public class DBManager {
 
@@ -20,12 +21,12 @@ public class DBManager {
     public DBManager() {}
 
     static {
-        //GetProperties properties = new GetProperties("src\\main\\java\\Properties\\config.properties");
+        GetProperties properties = new GetProperties("config.properties");
         dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/RIPDB?autoReconnect=true&useSSL=false&allowMultiQueries=true");
-        dataSource.setPassword("root");
-        dataSource.setUsername("root");
+        dataSource.setDriverClassName(properties.get("dbDriverClassName"));
+        dataSource.setUrl(properties.get("url"));
+        dataSource.setPassword(properties.get("dbPassword"));
+        dataSource.setUsername(properties.get("dbUser"));
         dataSource.setMinIdle(10);
         dataSource.setMaxIdle(10);
         dataSource.setMaxOpenPreparedStatements(100);
